@@ -21,6 +21,9 @@ int main (int argc, char **argv)
   int token = 0;
   while (token = yylex()) {
     switch (token){
+    case '~':
+    case '@':
+    case '`':
     case ',':
     case ';':
     case ':':
@@ -71,6 +74,8 @@ int main (int argc, char **argv)
     case TK_PR_PRIVATE: print_nome (TK_PR_PRIVATE); break;
     case TK_PR_PUBLIC: print_nome (TK_PR_PUBLIC); break;
     case TK_PR_PROTECTED: print_nome (TK_PR_PROTECTED); break;
+    case TK_PR_END: print_nome (TK_PR_END); break;
+    case TK_PR_DEFAULT: print_nome (TK_PR_DEFAULT); break;
     case TK_OC_LE: print_nome (TK_OC_LE); break;
     case TK_OC_GE: print_nome (TK_OC_GE); break;
     case TK_OC_EQ: print_nome (TK_OC_EQ); break;
