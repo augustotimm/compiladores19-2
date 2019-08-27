@@ -1,0 +1,8 @@
+if
+else
+// dsadasd
+-1
+?
+true true
+false
+5 + (-2)
