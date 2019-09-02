@@ -1,6 +1,9 @@
 %{
+#include <stdio.h>
 int yylex(void);
-void yyerror (char const *s);
+void yyerror (char const *s) {
+    printf("erro %s",s);
+};
 %}
 
 %token TK_PR_INT
@@ -51,6 +54,10 @@ void yyerror (char const *s);
 
 %%
 
-programa:
-
+programa: expressao_alg
+expressao_alg: number sum number | expressao_alg2
+expressao_alg2: '('expressao_alg')' | number times number 
+sum: '+' | '-'
+times: '*' | '/'
+number: expressao_alg | TK_IDENTIFICADOR | TK_LIT_FLOAT | TK_LIT_INT
 %%
