@@ -51,17 +51,47 @@ void yyerror (char const *s);
 %token TOKEN_ERRO
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
+%left '^'
+%left ':'
+%left '?'
+%left '|' '&'
+
+%right UNARIO
+
 %%
 
 entry: programa;
-programa:expressao_alg;
-expressao_alg: expressao_alg sum expressao_alg2 | expressao_alg2;
-expressao_alg2:  expressao_alg2 times expressao_alg3 | expressao_alg3  ;
-expressao_alg3:'('expressao_alg')' | number;
-sum: '+' | '-';
-times: '*' | '/';
-number:  TK_IDENTIFICADOR | TK_LIT_FLOAT | TK_LIT_INT;
+programa: expressao   ;
+
+
+expressao: '(' expressao ')'
+        | expressao '+' expressao 
+        | expressao '-' expressao 
+        | expressao '*' expressao 
+        | expressao '/' expressao 
+        | expressao '%' expressao 
+        | expressao '|' expressao 
+        | expressao '&' expressao 
+        | expressao '^' expressao 
+        | '+' expressao %prec UNARIO
+        | '-' expressao %prec UNARIO
+        | '!' expressao %prec UNARIO
+        | '&' expressao %prec UNARIO
+        | '*' expressao %prec UNARIO
+        | expressao '?'  expressao ':' expressao
+        | '#' expressao %prec UNARIO
+        | literal
+        | variavel;
+
+literal: TK_LIT_CHAR
+        | TK_LIT_FALSE
+        | TK_LIT_FLOAT
+        | TK_LIT_INT
+        | TK_LIT_STRING
+        | TK_LIT_TRUE;
+
+variavel: TK_IDENTIFICADOR;
 %%
 
 void yyerror (char const *s) {
