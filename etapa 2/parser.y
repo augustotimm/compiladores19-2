@@ -62,8 +62,16 @@ void yyerror (char const *s);
 %%
 
 entry: programa;
-programa: expressao   ;
+programa: expressao   | declaracao;
 
+declaracao: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
+
+
+tipo: TK_PR_INT
+    |   TK_PR_BOOL
+    |   TK_PR_CHAR
+    |   TK_PR_FLOAT
+    |   TK_PR_STRING;
 
 expressao: '(' expressao ')'
         | expressao '+' expressao 
