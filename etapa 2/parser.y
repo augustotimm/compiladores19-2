@@ -59,6 +59,9 @@ void yyerror (char const *s);
 
 %right UNARIO
 
+
+
+
 %%
 
 entry: programa;
@@ -66,6 +69,8 @@ programa: expressao | comando_simples;
 
 comando_simples:  declaracao
             | atribuicao
+            | comando_entrada
+            | comando_saida
             ;
 
 
@@ -74,6 +79,12 @@ declaracao: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
 atribuicao: TK_IDENTIFICADOR '=' expressao
     | TK_IDENTIFICADOR '[' expressao ']' '=' expressao
 ;
+
+comando_entrada: TK_PR_INPUT expressao;
+
+comando_saida: TK_PR_OUTPUT lista_expressao;
+
+lista_expressao: expressao | lista_expressao ',' expressao;
 
 
 tipo: TK_PR_INT
