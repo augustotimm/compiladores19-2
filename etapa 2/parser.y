@@ -67,7 +67,7 @@ void yyerror (char const *s);
 entry: programa;
 programa: expressao | comando_simples;
 
-comando_simples:  declaracao
+comando_simples:  declaracao_local
             | atribuicao
             | comando_entrada
             | comando_saida
@@ -77,7 +77,7 @@ comando_simples:  declaracao
             ;
 
 
-declaracao: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
+declaracao_local: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
 
 atribuicao: TK_IDENTIFICADOR '=' expressao
     | TK_IDENTIFICADOR '[' expressao ']' '=' expressao
