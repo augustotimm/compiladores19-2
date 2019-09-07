@@ -71,6 +71,9 @@ comando_simples:  declaracao
             | atribuicao
             | comando_entrada
             | comando_saida
+            | comando_return
+            | TK_PR_BREAK
+            | TK_PR_CONTINUE
             ;
 
 
@@ -83,6 +86,8 @@ atribuicao: TK_IDENTIFICADOR '=' expressao
 comando_entrada: TK_PR_INPUT expressao;
 
 comando_saida: TK_PR_OUTPUT lista_expressao;
+
+comando_return: TK_PR_RETURN expressao;
 
 lista_expressao: expressao | lista_expressao ',' expressao;
 
