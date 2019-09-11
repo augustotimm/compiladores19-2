@@ -69,6 +69,8 @@ programa: expressao | comando_simples;
 
 comando_simples:  declaracao_local
             | atribuicao
+            | chamada_funcao
+            | comando_shift
             | comando_entrada
             | comando_saida
             | comando_return
@@ -82,6 +84,7 @@ declaracao_local: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
 atribuicao: TK_IDENTIFICADOR '=' expressao
     | TK_IDENTIFICADOR '[' expressao ']' '=' expressao
 ;
+chamada_funcao: TK_IDENTIFICADOR '(' ')' |  TK_IDENTIFICADOR '(' lista_expressao ')'
 
 comando_entrada: TK_PR_INPUT expressao;
 
@@ -89,7 +92,11 @@ comando_saida: TK_PR_OUTPUT lista_expressao;
 
 comando_return: TK_PR_RETURN expressao;
 
+comando_shift: TK_IDENTIFICADOR '<''<' expressao |  TK_IDENTIFICADOR '>''>' expressao ;
+
 lista_expressao: expressao | lista_expressao ',' expressao;
+
+
 
 
 tipo: TK_PR_INT
