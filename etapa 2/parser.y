@@ -124,6 +124,7 @@ expressao: '(' expressao ')'
         | expressao '&' expressao 
         | expressao '^' expressao 
         | '+' expressao %prec UNARIO
+        | '?' expressao %prec UNARIO
         | '-' expressao %prec UNARIO
         | '!' expressao %prec UNARIO
         | '&' expressao %prec UNARIO
