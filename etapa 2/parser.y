@@ -76,6 +76,7 @@ comando_simples:  declaracao_local
             | comando_return
             | TK_PR_BREAK
             | TK_PR_CONTINUE
+            | controle_fluxo
             ;
 
 
@@ -94,10 +95,18 @@ comando_return: TK_PR_RETURN expressao;
 
 comando_shift: TK_IDENTIFICADOR '<''<' expressao |  TK_IDENTIFICADOR '>''>' expressao ;
 
+controle_fluxo: if_declaracao ;
+
+if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao;
+
+else_declaracao: %empty | TK_PR_ELSE bloco_comandos_start;
+
 lista_expressao: expressao | lista_expressao ',' expressao;
 
+bloco_comandos_start: '{' bloco_comandos '}' ;
 
 
+bloco_comandos: bloco_comandos ';' comando_simples ';' | comando_simples ';';
 
 tipo: TK_PR_INT
     |   TK_PR_BOOL
