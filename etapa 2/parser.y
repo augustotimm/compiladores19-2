@@ -85,7 +85,7 @@ declaracao_local: tipo TK_IDENTIFICADOR | TK_PR_STATIC tipo TK_IDENTIFICADOR;
 atribuicao: TK_IDENTIFICADOR '=' expressao
     | TK_IDENTIFICADOR '[' expressao ']' '=' expressao
 ;
-chamada_funcao: TK_IDENTIFICADOR '(' ')' |  TK_IDENTIFICADOR '(' lista_expressao ')'
+chamada_funcao: TK_IDENTIFICADOR '(' ')' |  TK_IDENTIFICADOR '(' lista_expressao ')' ;
 
 comando_entrada: TK_PR_INPUT expressao;
 
@@ -95,18 +95,29 @@ comando_return: TK_PR_RETURN expressao;
 
 comando_shift: TK_IDENTIFICADOR '<''<' expressao |  TK_IDENTIFICADOR '>''>' expressao ;
 
-controle_fluxo: if_declaracao ;
+controle_fluxo: if_declaracao | for_declaracao | while_declaracao;
 
 if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao;
 
 else_declaracao: %empty | TK_PR_ELSE bloco_comandos_start;
 
+for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_comandos ')' bloco_comandos_start;
+
+while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start;
+
+for_lista_comandos: for_comandos | for_lista_comandos ',' for_comandos ;
+
+for_comandos: atribuicao
+            | comando_shift
+            | declaracao_local;
+
 lista_expressao: expressao | lista_expressao ',' expressao;
 
-bloco_comandos_start: '{' bloco_comandos '}' ;
+
+bloco_comandos_start: '{' bloco_comandos '}' | '{' '}' ;
 
 
-bloco_comandos: bloco_comandos ';' comando_simples ';' | comando_simples ';';
+bloco_comandos: bloco_comandos comando_simples ';' | comando_simples ';';
 
 tipo: TK_PR_INT
     |   TK_PR_BOOL
