@@ -65,7 +65,17 @@ void yyerror (char const *s);
 %%
 
 entry: programa;
-programa: expressao | comando_simples;
+programa: def_funcao;
+
+def_funcao: cabecalho_funcao bloco_comandos_start ;
+
+cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao | TK_PR_STATIC TK_IDENTIFICADOR parametros_funcao ;
+
+parametros_funcao: '(' lista_parametros ')' | '(' ')';
+
+lista_parametros: lista_parametros ',' parametro | parametro;
+
+parametro: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICADOR;
 
 comando_simples:  declaracao_local
             | atribuicao
