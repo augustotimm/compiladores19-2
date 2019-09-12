@@ -65,12 +65,14 @@ void yyerror (char const *s);
 %%
 
 entry: programa;
+
 programa: def_funcao | declaracao_var_global;
 
-declaracao_var_global: tipo TK_IDENTIFICADOR 
-                    |  '['TK_LIT_INT ']' tipo TK_IDENTIFICADOR  
-                    |  TK_PR_STATIC tipo TK_IDENTIFICADOR  
-                    |  TK_PR_STATIC '['TK_LIT_INT ']' tipo  TK_IDENTIFICADOR  ;
+
+declaracao_var_global: tipo TK_IDENTIFICADOR ';'
+                    |  '['TK_LIT_INT ']' tipo TK_IDENTIFICADOR  ';'
+                    |  TK_PR_STATIC tipo TK_IDENTIFICADOR  ';'
+                    |  TK_PR_STATIC '['TK_LIT_INT ']' tipo  TK_IDENTIFICADOR ';' ;
 
 def_funcao: cabecalho_funcao bloco_comandos_start ;
 
