@@ -66,7 +66,11 @@ void yyerror (char const *s);
 
 entry: programa;
 
-programa: def_funcao | declaracao_var_global;
+programa: lista_elementos | %empty;
+
+lista_elementos: lista_elementos elemento | elemento;
+
+elemento: declaracao_var_global | def_funcao;
 
 
 declaracao_var_global: tipo TK_IDENTIFICADOR ';'
