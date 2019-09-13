@@ -182,6 +182,6 @@ variavel: TK_IDENTIFICADOR;
 %%
 
 void yyerror(const char *s) {
-    printf("Erro  na linha de numero: %d \t ultimo token lido: %c\n", get_line_number(), yytext[0]);
+    printf(" %s:Erro  na linha de numero: %d \t ultimo token lido: %c\n",s, get_line_number(), yytext[0]);
     exit(1);
 }
