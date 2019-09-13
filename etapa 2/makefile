@@ -1,5 +1,5 @@
 all: parser.y scanner.l
-	bison -d parser.y
+	bison -d parser.y -Wconflicts-sr
 	flex  -o parser.lex.c scanner.l
 	gcc  -o etapa2 parser.lex.c parser.tab.c -lfl -lm 
 

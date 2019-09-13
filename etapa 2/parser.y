@@ -1,7 +1,10 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
+
 int yylex(void);
 void yyerror (char const *s);
+extern int get_line_number();
 %}
 
 %token TK_PR_INT
@@ -66,7 +69,7 @@ void yyerror (char const *s);
 
 entry: programa;
 
-programa: lista_elementos | %empty;
+programa: lista_elementos {printf("programa");} | %empty; 
 
 lista_elementos: lista_elementos elemento | elemento;
 
@@ -114,7 +117,7 @@ comando_saida: TK_PR_OUTPUT lista_expressao;
 
 comando_return: TK_PR_RETURN expressao;
 
-comando_shift: TK_IDENTIFICADOR '<''<' expressao |  TK_IDENTIFICADOR '>''>' expressao ;
+comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao |  TK_IDENTIFICADOR TK_OC_SR expressao ;
 
 controle_fluxo: if_declaracao | for_declaracao | while_declaracao;
 
@@ -176,6 +179,7 @@ literal: TK_LIT_CHAR
 variavel: TK_IDENTIFICADOR;
 %%
 
-void yyerror (char const *s) {
-    printf("erro %s",s);
-};
+void yyerror(const char *s) {
+    printf("Error on line %d: %s\n", get_line_number(), s);
+    exit(1);
+}

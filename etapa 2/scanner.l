@@ -64,16 +64,17 @@ int get_line_number();
 "%>%" { return TK_OC_FORWARD_PIPE; }
 "%|%" { return TK_OC_BASH_PIPE; }
 
+"false" { return TK_LIT_FALSE; }
+"true"  { return TK_LIT_TRUE; }
 '.'               { return TK_LIT_CHAR; }
 \"([^\\"]|\\.)*\" { return TK_LIT_STRING; }
 
 [a-zA-Z_][a-zA-Z_0-9]* { return TK_IDENTIFICADOR; }
 
-[-+]?[0-9]+                            { return TK_LIT_INT; }
+[-+]?[0-9]+                            { printf("litnumber");return TK_LIT_INT; }
 [-+]?[0-9]+"."[0-9]+([eE][-+]?[0-9]+)? { return TK_LIT_FLOAT; }
 
-"false" { return TK_LIT_FALSE; }
-"true"  { return TK_LIT_TRUE; }
+
 
 . {return TOKEN_ERRO; }
 
