@@ -5,6 +5,8 @@
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
+extern char *yytext;
+
 %}
 
 %token TK_PR_INT
@@ -69,7 +71,7 @@ extern int get_line_number();
 
 entry: programa;
 
-programa: lista_elementos {printf("programa");} | %empty; 
+programa: lista_elementos | %empty; 
 
 lista_elementos: lista_elementos elemento | elemento;
 
@@ -180,6 +182,6 @@ variavel: TK_IDENTIFICADOR;
 %%
 
 void yyerror(const char *s) {
-    printf("Error on line %d: %s\n", get_line_number(), s);
+    printf("Erro  na linha de numero: %d \t ultimo token lido: %c\n", get_line_number(), yytext[0]);
     exit(1);
 }
