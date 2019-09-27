@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include "uthash.h"
 #include <stdbool.h>
+#include <stdlib.h>
+
+#include "utlist.h"
 
 struct NodoArvore_t;
 
@@ -13,10 +15,10 @@ typedef struct MyString
 /*
 Struct utilizada junto com a biblioteca uthash.h para poder utilizar os filhos como hash
 */
-typedef struct NodoHash_t{
+typedef struct NodoList_t{
     struct NodoArvore_t *nodo;
-    int id;
-} NodoHash_t;
+    struct NodoList_t* next;
+} NodoList_t;
 
 typedef enum {
     Tint,
@@ -46,8 +48,12 @@ typedef struct ValorLexico_t {
 typedef struct NodoArvore_t{
     int childrenNumber;
     ValorLexico_t valorLexico;
-    NodoHash_t *children;
+    NodoList_t *children;
 } NodoArvore_t;
+
+void printNodo(NodoArvore_t* nodo);
+NodoArvore_t* criarNodo();
+NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 
 
 extern void libera(void *tree);
