@@ -1,16 +1,19 @@
 #include "helper.h"
 
 void libera(void *tree){
-    NodoArvore_t* nodo, *nodoDois;
+    
+    NodoArvore_t* nodo, *nodoDois, *nodoTres;
     nodo = criarNodo();
     nodoDois = criarNodo();
+    nodoTres = criarNodo();
     addChildren(nodo,nodoDois);
-   // printNodo(nodo);
-
+    addChildren(nodoDois, nodoTres );
+    printNodo(nodo);
+    deletaNodo(nodo);
+    
 }
 
 void exporta(void *tree){
-    printf("exporta\n");
 }
 
 void printNodo(NodoArvore_t* nodo){
@@ -28,7 +31,8 @@ void printNodo(NodoArvore_t* nodo){
 
 NodoArvore_t* criarNodo(){
     NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
-    printf("Nodo: %p\n",novoNodo);
+    novoNodo->childrenNumber = 0;
+    
     return novoNodo;
 }
 
@@ -44,5 +48,19 @@ NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
 
     parent->childrenNumber++;
     return parent;
+    
+}
+
+bool deletaNodo(NodoArvore_t* nodo){
+    NodoList_t* elt;
+    if(nodo->childrenNumber != 0 ){
+        LL_FOREACH(nodo->children,elt){
+            deletaNodo(elt->nodo);            
+        }
+        free(nodo->children);
+
+    }
+    free(nodo);
+    return true;
     
 }
