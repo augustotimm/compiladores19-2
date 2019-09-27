@@ -6,4 +6,4 @@ all: parser.y scanner.l
 	gcc  -o etapa3 lex.yy.o parser.tab.o -lfl -lm  main.c helper.c
 
 clean:
-	rm -rf parser.lex.c parser.tab.c etapa2 parser.tab.h rm lex.yy.* parser.tab.* parser.output etapa2
+	rm -rf parser.lex.c parser.tab.c etapa2 parser.tab.h rm lex.yy.* parser.tab.* parser.output etapa3
