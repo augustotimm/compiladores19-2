@@ -6,10 +6,7 @@
 
 struct NodoArvore_t;
 
-typedef struct MyString
-{
-    char valor[512];
-}MyString;
+
 
 
 /*
@@ -34,7 +31,7 @@ typedef struct ValorLexico_t {
     char tokenText[20];
     Tipo_t tipo;
     bool isLiteral;
-    MyString *stringValue;
+    char stringValue[512];
     bool boolValue;
     char charValue;
 
@@ -56,7 +53,6 @@ NodoArvore_t* criarNodo();
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 bool deletaNodo(NodoArvore_t* nodo);
 void saveNodo(NodoArvore_t* nodo, FILE* file);
-
 
 extern void libera(void *tree);
 extern void exporta(void *tree);
