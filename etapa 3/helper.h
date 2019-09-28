@@ -55,6 +55,8 @@ void printNodo(NodoArvore_t* nodo);
 NodoArvore_t* criarNodo();
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 bool deletaNodo(NodoArvore_t* nodo);
+void saveNodo(NodoArvore_t* nodo, FILE* file);
+
 
 extern void libera(void *tree);
 extern void exporta(void *tree);

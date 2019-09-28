@@ -9,11 +9,25 @@ void libera(void *tree){
     addChildren(nodo,nodoDois);
     addChildren(nodoDois, nodoTres );
     printNodo(nodo);
+    exporta(nodo);
     deletaNodo(nodo);
     
 }
 
 void exporta(void *tree){
+    FILE *file = fopen("./OUT.csv", "w");
+    saveNodo(tree,file);
+    fclose(file);
+}
+
+void saveNodo(NodoArvore_t* nodo, FILE* file){
+    NodoList_t* elt;
+    if(nodo->childrenNumber > 0 ){
+        LL_FOREACH(nodo->children,elt){
+            saveNodo(elt->nodo, file);
+            fprintf(file,"%p,%p\n", nodo, elt->nodo);
+        }
+    }
 }
 
 void printNodo(NodoArvore_t* nodo){
@@ -22,8 +36,7 @@ void printNodo(NodoArvore_t* nodo){
     if(nodo->childrenNumber > 0){
         NodoList_t* elt;
         LL_FOREACH(nodo->children,elt){
-            printf("Nodo: %p\n",elt);
-            printf("numero de filhos: %d\n", nodo->childrenNumber);
+            printNodo(elt->nodo);
         }
     }
     
