@@ -3,6 +3,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "helper.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -165,7 +166,7 @@ tipo: TK_PR_INT
 expressao: '(' expressao ')'
         | literal 
         | variavel
-        | expressao '+'  expressao 
+        | expressao '+'  expressao
         | expressao '-' expressao 
         | expressao '*' expressao 
         | expressao '/' expressao 
