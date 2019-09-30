@@ -3,8 +3,6 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "helper.h"
-
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
@@ -12,6 +10,14 @@ extern char *yytext;
 
 %}
 %error-verbose
+%code requires {
+  #include "helper.h"
+}
+
+%union{
+       NodoArvore_t* nodo; 
+       ValorLexico_t valor_lexico;
+}
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
