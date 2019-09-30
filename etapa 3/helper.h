@@ -28,12 +28,14 @@ typedef enum {
 
 typedef struct ValorLexico_t {
     int numeroLinha;
-    char tokenText[20];
     Tipo_t tipo;
     bool isLiteral;
-    char stringValue[512];
+    char *stringValue;
     bool boolValue;
     char charValue;
+    int intValue;
+    float floatValue;
+
 
 } ValorLexico_t;
 
