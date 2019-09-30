@@ -1,23 +1,20 @@
 #include "helper.h"
 
 void libera(void *tree){
+    if( tree != NULL){
+        deletaNodo(tree);
+    }
     
-    NodoArvore_t* nodo, *nodoDois, *nodoTres;
-    nodo = criarNodo();
-    nodoDois = criarNodo();
-    nodoTres = criarNodo();
-    addChildren(nodo,nodoDois);
-    addChildren(nodoDois, nodoTres );
-    printNodo(nodo);
-    exporta(nodo);
-    deletaNodo(nodo);
     
 }
 
 void exporta(void *tree){
-    FILE *file = fopen("./OUT.csv", "w");
-    saveNodo(tree,file);
-    fclose(file);
+    if( tree != NULL){
+        FILE *file = fopen("./OUT.csv", "w");
+        saveNodo(tree,file);
+        fclose(file);
+    }
+    
 }
 
 void saveNodo(NodoArvore_t* nodo, FILE* file){
@@ -70,6 +67,8 @@ bool deletaNodo(NodoArvore_t* nodo){
         LL_FOREACH(nodo->children,elt){
             deletaNodo(elt->nodo);            
         }
+        free(nodo->valorLexico->stringValue);
+        free(nodo->valorLexico);
         free(nodo->children);
 
     }
