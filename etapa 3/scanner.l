@@ -15,59 +15,69 @@
   yylval.valor_lexico.floatValue = 0; \
   yylval.valor_lexico.stringValue = strdup(yytext);\
 
-
-#define DEF_TYPE_CHAR yylval.valor_lexico.tipo  = Tchar; \
-  yylval.valor_lexico.boolValue = false; \
-  yylval.valor_lexico.intValue = 0; \
-  yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';
-
-#define DEF_TYPE_INT yylval.valor_lexico.tipo  = Tint; \
-  yylval.valor_lexico.charValue = '\0'; \
-  yylval.valor_lexico.boolValue = false; \
-  yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';
-
-#define DEF_TYPE_FLOAT yylval.valor_lexico.tipo  = Tfloat;\
-  yylval.valor_lexico.charValue = '\0'; \
-  yylval.valor_lexico.boolValue = false; \
-  yylval.valor_lexico.intValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';
-
-#define DEF_TYPE_BOOL yylval.valor_lexico.tipo  = Tbool;\
-  yylval.valor_lexico.charValue = '\0'; \
-  yylval.valor_lexico.intValue = 0; \
-  yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';
-
-#define DEF_TYPE_STRING yylval.valor_lexico.tipo  = Tstring; \
+#define DEF_OPERACAO yylval.valor_lexico.tipo  = Top;\
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue = strdup(yytext);
+
+#define DEF_TYPE_CHAR yylval.valor_lexico.tipo  = Tchar; 
+
+#define DEF_TYPE_INT yylval.valor_lexico.tipo  = Tint; 
+
+#define DEF_TYPE_FLOAT yylval.valor_lexico.tipo  = Tfloat;
+
+#define DEF_TYPE_BOOL yylval.valor_lexico.tipo  = Tbool;
+
+#define DEF_TYPE_STRING yylval.valor_lexico.tipo  = Tstring; 
 
 #define DEF_LIT_CHAR DEF_TYPE_CHAR; \
   DEF_ISLITERAL\
-  yylval.valor_lexico.charValue = yytext[1]; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.charValue = yytext[1]; 
 
 #define DEF_LIT_TRUE DEF_TYPE_BOOL; \
   DEF_ISLITERAL\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue[0] = '\0';\
   yylval.valor_lexico.boolValue = true;
 
 #define DEF_LIT_FALSE DEF_TYPE_BOOL; \
   DEF_ISLITERAL\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue[0] = '\0';\
   yylval.valor_lexico.boolValue = false;
 
 #define DEF_LIT_INT DEF_TYPE_INT; \
   DEF_ISLITERAL\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue[0] = '\0';\
   yylval.valor_lexico.intValue = atoi(yytext);\
 
 #define DEF_LIT_STRING DEF_TYPE_STRING; \
   DEF_ISLITERAL\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
   yylval.valor_lexico.stringValue= strdup(yytext);\
 
 #define DEF_LIT_FLOAT DEF_TYPE_FLOAT; \
   DEF_ISLITERAL\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.stringValue[0] = '\0';\
   yylval.valor_lexico.floatValue = atof(yytext);\
 
 
@@ -127,16 +137,16 @@ int get_line_number();
 
 
 " " {}
-"<="  {DEF_LINENUMBER; DEF_LIT_STRING; return TK_OC_LE; }
-">="  { return TK_OC_GE; }
-"=="  { return TK_OC_EQ; }
-"!="  { return TK_OC_NE; }
-"&&"  { return TK_OC_AND; }
-"||"  { return TK_OC_OR; }
-"<<"  { return TK_OC_SL; }
-">>"  { return TK_OC_SR; }
-"%>%" { return TK_OC_FORWARD_PIPE; }
-"%|%" { return TK_OC_BASH_PIPE; }
+"<="  {DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_LE; }
+">="  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_GE; }
+"=="  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_EQ; }
+"!="  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_NE; }
+"&&"  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_AND; }
+"||"  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_OR; }
+"<<"  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_SL; }
+">>"  { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_SR; }
+"%>%" { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_FORWARD_PIPE; }
+"%|%" { DEF_LINENUMBER; DEF_OPERACAO; return TK_OC_BASH_PIPE; }
 
 "false" {DEF_LINENUMBER; DEF_LIT_FALSE; return TK_LIT_FALSE; }
 "true"  { DEF_LINENUMBER; DEF_LIT_TRUE; return TK_LIT_TRUE; }
