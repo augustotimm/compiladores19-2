@@ -8,6 +8,13 @@
 
 #define DEF_NOTLITERAL yylval.valor_lexico.isLiteral = false;
 
+#define DEF_PALAVRA_RESERVADA yylval.valor_lexico.tipo  = Tpr;\
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue = strdup(yytext);\
+
 
 #define DEF_TYPE_CHAR yylval.valor_lexico.tipo  = Tchar; \
   yylval.valor_lexico.boolValue = false; \
@@ -90,37 +97,37 @@ int get_line_number();
     return yytext[0];
 }
 
-"int"       { return TK_PR_INT; }
-"float"     { return TK_PR_FLOAT; }
-"bool"      { return TK_PR_BOOL; }
-"char"      { return TK_PR_CHAR; }
-"string"    { return TK_PR_STRING; }
-"if"        { return TK_PR_IF; }
-"then"      { return TK_PR_THEN; }
-"else"      { return TK_PR_ELSE; }
-"while"     { return TK_PR_WHILE; }
-"do"        { return TK_PR_DO; }
-"input"     { return TK_PR_INPUT; }
-"output"    { return TK_PR_OUTPUT; }
-"return"    { return TK_PR_RETURN; }
-"const"     { return TK_PR_CONST; }
-"static"    { return TK_PR_STATIC; }
-"foreach"   { return TK_PR_FOREACH; }
-"for"       { return TK_PR_FOR; }
-"switch"    { return TK_PR_SWITCH; }
-"case"      { return TK_PR_CASE; }
-"break"     { return TK_PR_BREAK; }
-"continue"  { return TK_PR_CONTINUE; }
-"class"     { return TK_PR_CLASS; }
-"private"   { return TK_PR_PRIVATE; }
-"public"    { return TK_PR_PUBLIC; }
-"protected" { return TK_PR_PROTECTED; }
-"end" { return TK_PR_END; }
-"default" { return TK_PR_DEFAULT; }
+"int"       { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_INT; }
+"float"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_FLOAT; }
+"bool"      { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_BOOL; }
+"char"      { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_CHAR; }
+"string"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_STRING; }
+"if"        { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_IF; }
+"then"      { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_THEN; }
+"else"      { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_ELSE; }
+"while"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_WHILE; }
+"do"        { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_DO; }
+"input"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_INPUT; }
+"output"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_OUTPUT; }
+"return"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_RETURN; }
+"const"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_CONST; }
+"static"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_STATIC; }
+"foreach"   { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_FOREACH; }
+"for"       { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_FOR; }
+"switch"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_SWITCH; }
+"case"      { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_CASE; }
+"break"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_BREAK; }
+"continue"  { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_CONTINUE; }
+"class"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_CLASS; }
+"private"   { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_PRIVATE; }
+"public"    { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_PUBLIC; }
+"protected" { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_PROTECTED; }
+"end" { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_END; }
+"default" { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_DEFAULT; }
 
 
 " " {}
-"<="  { return TK_OC_LE; }
+"<="  {DEF_LINENUMBER; DEF_LIT_STRING; return TK_OC_LE; }
 ">="  { return TK_OC_GE; }
 "=="  { return TK_OC_EQ; }
 "!="  { return TK_OC_NE; }
