@@ -44,16 +44,20 @@
   yylval.valor_lexico.charValue = yytext[1]; \
 
 #define DEF_LIT_TRUE DEF_TYPE_BOOL; \
-  yylval.valor_lexico.bool = true;
+  yylval.valor_lexico.boolValue = true;
 
 #define DEF_LIT_FALSE DEF_TYPE_BOOL; \
-  yylval.valor_lexico.bool = false;
+  yylval.valor_lexico.boolValue = false;
 
 #define DEF_LIT_INT DEF_TYPE_INT; \
   yylval.valor_lexico.intValue = atoi(yytext);\
 
 #define DEF_LIT_STRING DEF_TYPE_STRING; \
   yylval.valor_lexico.stringValue= strdup(yytext);\
+
+#define DEF_LIT_FLOAT DEF_TYPE_FLOAT; \
+  yylval.valor_lexico.floatValue = atof(yytext);\
+
 
 int lineNumber=1;
 int get_line_number();
@@ -122,15 +126,15 @@ int get_line_number();
 "%>%" { return TK_OC_FORWARD_PIPE; }
 "%|%" { return TK_OC_BASH_PIPE; }
 
-"false" { return TK_LIT_FALSE; }
-"true"  { return TK_LIT_TRUE; }
+"false" {DEF_LINENUMBER; DEF_LIT_FALSE; return TK_LIT_FALSE; }
+"true"  { DEF_LINENUMBER; DEF_LIT_TRUE; return TK_LIT_TRUE; }
 '.'               { DEF_LINENUMBER; DEF_LIT_CHAR; return TK_LIT_CHAR; }
 \"([^\\"]|\\.)*\" {DEF_LINENUMBER; DEF_LIT_STRING; return TK_LIT_STRING; }
 
 [a-zA-Z_][a-zA-Z_0-9]* { return TK_IDENTIFICADOR; }
 
 [0-9]+   { DEF_LINENUMBER; DEF_LIT_INT; return TK_LIT_INT; }
-[-+]?[0-9]+"."[0-9]+([eE][-+]?[0-9]+)? { return TK_LIT_FLOAT; }
+[-+]?[0-9]+"."[0-9]+([eE][-+]?[0-9]+)? {DEF_LINENUMBER; DEF_LIT_FLOAT; return TK_LIT_FLOAT; }
 
 
 
