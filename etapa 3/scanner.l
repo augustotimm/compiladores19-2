@@ -44,18 +44,23 @@
   yylval.valor_lexico.charValue = yytext[1]; \
 
 #define DEF_LIT_TRUE DEF_TYPE_BOOL; \
+  DEF_ISLITERAL\
   yylval.valor_lexico.boolValue = true;
 
 #define DEF_LIT_FALSE DEF_TYPE_BOOL; \
+  DEF_ISLITERAL\
   yylval.valor_lexico.boolValue = false;
 
 #define DEF_LIT_INT DEF_TYPE_INT; \
+  DEF_ISLITERAL\
   yylval.valor_lexico.intValue = atoi(yytext);\
 
 #define DEF_LIT_STRING DEF_TYPE_STRING; \
+  DEF_ISLITERAL\
   yylval.valor_lexico.stringValue= strdup(yytext);\
 
 #define DEF_LIT_FLOAT DEF_TYPE_FLOAT; \
+  DEF_ISLITERAL\
   yylval.valor_lexico.floatValue = atof(yytext);\
 
 
