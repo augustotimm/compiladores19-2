@@ -46,7 +46,7 @@ typedef struct ValorLexico_t {
 */
 typedef struct NodoArvore_t{
     int childrenNumber;
-    ValorLexico_t valorLexico;
+    ValorLexico_t* valorLexico;
     NodoList_t *children;
 } NodoArvore_t;
 
