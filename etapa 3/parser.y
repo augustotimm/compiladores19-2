@@ -19,6 +19,34 @@ extern char *yytext;
        ValorLexico_t valor_lexico;
 }
 
+
+
+
+//Types
+
+//Tokens
+
+//Literals
+%type <valor_lexico> TK_LIT_CHAR TK_LIT_FALSE TK_LIT_TRUE TK_LIT_FLOAT TK_LIT_INT TK_LIT_STRING
+
+//Palavras Reservadas
+%type <valor_lexico> TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_CHAR TK_PR_STRING TK_PR_IF TK_PR_THEN TK_PR_ELSE
+%type <valor_lexico> TK_PR_WHILE TK_PR_DO TK_PR_INPUT TK_PR_OUTPUT TK_PR_RETURN TK_PR_CONST TK_PR_STATIC
+%type <valor_lexico> TK_PR_FOREACH TK_PR_FOR TK_PR_SWITCH TK_PR_CASE TK_PR_BREAK TK_PR_CONTINUE TK_PR_CLASS
+%type <valor_lexico> TK_PR_PRIVATE TK_PR_PUBLIC TK_PR_PROTECTED TK_PR_END TK_PR_DEFAULT
+
+//Operadores
+%type <valor_lexico> TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE TK_OC_AND TK_OC_OR TK_OC_SL TK_OC_SR TK_OC_FORWARD_PIPE TK_OC_BASH_PIPE
+
+//Identificador
+%type <valor_lexico> TK_IDENTIFICADOR
+
+
+//Nao terminais
+%type <nodo> variavel
+
+
+
 %token TK_PR_INT
 %token TK_PR_FLOAT
 %token TK_PR_BOOL
@@ -206,7 +234,10 @@ literal: TK_LIT_CHAR
         | TK_LIT_STRING
         | TK_LIT_TRUE;
 
-variavel: TK_IDENTIFICADOR
+variavel: TK_IDENTIFICADOR { 
+        NodoArvore_t* idNodo = criaNodo();
+        $$ = idNodo;
+ }
         | TK_IDENTIFICADOR '[' expressao ']'
 ;
 %%
