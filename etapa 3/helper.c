@@ -39,7 +39,7 @@ void printNodo(NodoArvore_t* nodo){
     
 }
 
-NodoArvore_t* criarNodo(){
+NodoArvore_t* criaNodo(){
     NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
     novoNodo->childrenNumber = 0;
     

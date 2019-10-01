@@ -25,12 +25,14 @@ typedef enum {
     Tstring,
     Tpr,
     Top,
+    Tid,
 } Tipo_t;
 
 
 typedef struct ValorLexico_t {
     int numeroLinha;
     Tipo_t tipo;
+    Tipo_t tipoOperador;
     bool isLiteral;
     char *stringValue;
     bool boolValue;
@@ -53,7 +55,7 @@ typedef struct NodoArvore_t{
 } NodoArvore_t;
 
 void printNodo(NodoArvore_t* nodo);
-NodoArvore_t* criarNodo();
+NodoArvore_t* criaNodo();
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 bool deletaNodo(NodoArvore_t* nodo);
 void saveNodo(NodoArvore_t* nodo, FILE* file);
