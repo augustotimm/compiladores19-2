@@ -46,6 +46,14 @@ NodoArvore_t* criaNodo(){
     return novoNodo;
 }
 
+NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico){
+    NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
+    novoNodo->childrenNumber = 0;
+    novoNodo->valorLexico = valor_lexico;
+    
+    return novoNodo;
+}
+
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
     if(parent->childrenNumber ==0){
         NodoList_t * head = NULL;
@@ -67,8 +75,7 @@ bool deletaNodo(NodoArvore_t* nodo){
         LL_FOREACH(nodo->children,elt){
             deletaNodo(elt->nodo);            
         }
-        free(nodo->valorLexico->stringValue);
-        free(nodo->valorLexico);
+        free(nodo->valorLexico.stringValue);
         free(nodo->children);
 
     }

@@ -50,7 +50,7 @@ typedef struct ValorLexico_t {
 */
 typedef struct NodoArvore_t{
     int childrenNumber;
-    ValorLexico_t* valorLexico;
+    ValorLexico_t valorLexico;
     NodoList_t *children;
 } NodoArvore_t;
 
@@ -59,6 +59,7 @@ NodoArvore_t* criaNodo();
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 bool deletaNodo(NodoArvore_t* nodo);
 void saveNodo(NodoArvore_t* nodo, FILE* file);
+NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico);
 
 extern void libera(void *tree);
 extern void exporta(void *tree);
