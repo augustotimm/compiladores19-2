@@ -41,9 +41,13 @@ extern char *yytext;
 //Identificador
 %type <valor_lexico> TK_IDENTIFICADOR
 
+//Tipo nontokens
+%type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#'
 
 //Nao terminais
-%type <nodo> variavel
+%type <nodo> variavel literal expressao chamada_funcao
+
+
 
 
 
@@ -197,48 +201,214 @@ tipo: TK_PR_INT
     |   TK_PR_FLOAT
     |   TK_PR_STRING;
 
-expressao: '(' expressao ')'
+expressao: '(' expressao ')' {
+                $$ = $2;
+}
         | literal 
+        {
+                $$ = $1;
+        }
         | variavel
+        {
+                $$ = $1;
+        }
         | expressao '+'  expressao
+        {
+                NodoArvore_t* plusNodo = criaNodoValorLexico($2);
+                addChildren(plusNodo, $1);
+                addChildren(plusNodo, $3);
+                $$=plusNodo;
+        }
         | expressao '-' expressao 
-        | expressao '*' expressao 
+        {
+                NodoArvore_t* minusNodo = criaNodoValorLexico($2);
+                addChildren(minusNodo, $1);
+                addChildren(minusNodo, $3);
+                $$=minusNodo;
+        }
+        | expressao '*' expressao
+        {
+                NodoArvore_t* multNodo = criaNodoValorLexico($2);
+                addChildren(multNodo, $1);
+                addChildren(multNodo, $3);
+                $$=multNodo;
+        }
         | expressao '/' expressao 
+        {
+                NodoArvore_t* divNodo = criaNodoValorLexico($2);
+                addChildren(divNodo, $1);
+                addChildren(divNodo, $3);
+                $$=divNodo;
+        }
         | expressao '%' expressao 
+        {
+                NodoArvore_t* restoNodo = criaNodoValorLexico($2);
+                addChildren(restoNodo, $1);
+                addChildren(restoNodo, $3);
+                $$=restoNodo;
+        }
         | expressao '|' expressao 
+        {
+                NodoArvore_t* orNodo = criaNodoValorLexico($2);
+                addChildren(orNodo, $1);
+                addChildren(orNodo, $3);
+                $$=orNodo;
+        }
         | expressao '&' expressao 
+        {
+                NodoArvore_t* andNodo = criaNodoValorLexico($2);
+                addChildren(andNodo, $1);
+                addChildren(andNodo, $3);
+                $$=andNodo;
+        }
         | expressao '^' expressao 
+        {
+                NodoArvore_t* powNodo = criaNodoValorLexico($2);
+                addChildren(powNodo, $1);
+                addChildren(powNodo, $3);
+                $$=powNodo;
+        }
         | expressao TK_OC_LE expressao
+        {
+                NodoArvore_t* leNodo = criaNodoValorLexico($2);
+                addChildren(leNodo, $1);
+                addChildren(leNodo, $3);
+                $$=leNodo;
+        }
         | expressao TK_OC_GE expressao
+        {
+                NodoArvore_t* geNodo = criaNodoValorLexico($2);
+                addChildren(geNodo, $1);
+                addChildren(geNodo, $3);
+                $$=geNodo;
+        }
         | expressao TK_OC_EQ expressao
+        {
+                NodoArvore_t* eqNodo = criaNodoValorLexico($2);
+                addChildren(eqNodo, $1);
+                addChildren(eqNodo, $3);
+                $$=eqNodo;
+        }
         | expressao TK_OC_NE expressao
+        {
+                NodoArvore_t* neNodo = criaNodoValorLexico($2);
+                addChildren(neNodo, $1);
+                addChildren(neNodo, $3);
+                $$=neNodo;
+        }
         | expressao TK_OC_AND expressao
+        {
+                NodoArvore_t* andNodo = criaNodoValorLexico($2);
+                addChildren(andNodo, $1);
+                addChildren(andNodo, $3);
+                $$=andNodo;
+        }
         | expressao TK_OC_OR expressao
+        {
+                NodoArvore_t* orNodo = criaNodoValorLexico($2);
+                addChildren(orNodo, $1);
+                addChildren(orNodo, $3);
+                $$=orNodo;
+        }
         | expressao TK_OC_SL expressao
+        {
+                NodoArvore_t* slNodo = criaNodoValorLexico($2);
+                addChildren(slNodo, $1);
+                addChildren(slNodo, $3);
+                $$=slNodo;
+        }
         | expressao TK_OC_SR expressao
+        {
+                NodoArvore_t* srNodo = criaNodoValorLexico($2);
+                addChildren(srNodo, $1);
+                addChildren(srNodo, $3);
+                $$=srNodo;
+        }
         | '+' expressao %prec UNARIO
+        {
+                NodoArvore_t* plusNodo = criaNodoValorLexico($1);
+                addChildren(plusNodo, $2);         
+                $$=plusNodo;
+        }        
         | '?' expressao %prec UNARIO
+        {
+                NodoArvore_t* interrogNodo = criaNodoValorLexico($1);
+                addChildren(interrogNodo, $2);         
+                $$=interrogNodo;
+        }        
         | '-' expressao %prec UNARIO
+        {
+                NodoArvore_t* minusNodo = criaNodoValorLexico($1);
+                addChildren(minusNodo, $2);         
+                $$=minusNodo;
+        }
         | '!' expressao %prec UNARIO
+        {
+                NodoArvore_t* notNodo = criaNodoValorLexico($1);
+                addChildren(notNodo, $2);         
+                $$=notNodo;
+        }
         | '&' expressao %prec UNARIO
+        {
+                NodoArvore_t* addressNodo = criaNodoValorLexico($1);
+                addChildren(addressNodo, $2);         
+                $$=addressNodo;
+        }
         | '*' expressao %prec UNARIO
+        {
+                NodoArvore_t* pointerNodo = criaNodoValorLexico($1);
+                addChildren(pointerNodo, $2);         
+                $$=pointerNodo;
+        }
         | expressao '?'  expressao ':' expressao
+        {
+                NodoArvore_t* tercNodo = criaNodoValorLexico($2);
+                addChildren(tercNodo, $1);
+                addChildren(tercNodo, $3);
+                addChildren(tercNodo, $5);
+                $$=tercNodo;
+        }
         | '#' expressao %prec UNARIO
+        {
+                NodoArvore_t* hashNodo = criaNodoValorLexico($1);
+                addChildren(hashNodo, $2);         
+                $$=hashNodo;
+        }
         |chamada_funcao
+        {
+                $$ =  $1;
+        }
 ;
 
-literal: TK_LIT_CHAR
-        | TK_LIT_FALSE
-        | TK_LIT_FLOAT
-        | TK_LIT_INT
-        | TK_LIT_STRING
-        | TK_LIT_TRUE;
+literal: TK_LIT_CHAR {
+        $$ = criaNodoValorLexico( $1);
+}
+        | TK_LIT_FALSE{
+        $$ = criaNodoValorLexico( $1);
+}
+        | TK_LIT_FLOAT{
+        $$ = criaNodoValorLexico( $1);
+}
+        | TK_LIT_INT{
+        $$ = criaNodoValorLexico( $1);
+}
+        | TK_LIT_STRING{
+        $$ = criaNodoValorLexico( $1);
+}
+        | TK_LIT_TRUE{
+        $$ = criaNodoValorLexico( $1);
+}
+        ;
 
 variavel: TK_IDENTIFICADOR { 
-        NodoArvore_t* idNodo = criaNodo();
+        NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
         $$ = idNodo;
  }
-        | TK_IDENTIFICADOR '[' expressao ']'
+        | TK_IDENTIFICADOR '[' expressao ']'{ 
+        NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
+        addChildren(idNodo, $3);
+        $$ = idNodo;
+ }
 ;
 %%
 
