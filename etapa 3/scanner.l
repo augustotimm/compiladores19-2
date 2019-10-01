@@ -22,9 +22,11 @@
   yylval.valor_lexico.floatValue = 0; \
   yylval.valor_lexico.stringValue = strdup(yytext);
 
-#define DEF_TYPE_CHAR yylval.valor_lexico.tipo  = Tchar; 
+#define DEF_TYPE_CHAR  yylval.valor_lexico.tipo  = Tchar; 
 
 #define DEF_TYPE_INT yylval.valor_lexico.tipo  = Tint; 
+
+#define DEF_TYPE_IDENTIFICADOR yylval.valor_lexico.tipo  = Tid; 
 
 #define DEF_TYPE_FLOAT yylval.valor_lexico.tipo  = Tfloat;
 
@@ -104,6 +106,7 @@ int get_line_number();
 
 
 [,;:()\[\]{}+\-|?*/<>=!&%#^.$~`@] {
+    DEF_LINENUMBER; DEF_OPERACAO;
     return yytext[0];
 }
 
