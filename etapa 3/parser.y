@@ -47,7 +47,7 @@ extern char *yytext;
 //Nao terminais
 %type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo atribuicao
 
-%type <nodo> comando_shift comando_entrada comando_saida
+%type <nodo> comando_shift comando_entrada comando_saida controle_fluxo if_declaracao else_declaracao
 
 
 
@@ -218,11 +218,37 @@ comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao
         }
         ;
 
-controle_fluxo: if_declaracao | for_declaracao | while_declaracao;
+controle_fluxo: if_declaracao
+        {
+                $$ = $1;
+        }
+        | for_declaracao 
+        {
+                $$ = $1;
+        }
+        | while_declaracao
+        {
+                $$ = $1;
+        };
 
-if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao;
+if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
+        {
+                NodoArvore_t* ifNodo = criaNodoValorLexico($1);
+                addChildren($1,$3);
+                addChildren($1,$5);
+                addChildren($1,$6);
+                $$ = ifNodo;
+        }
+;
 
-else_declaracao: %empty | TK_PR_ELSE bloco_comandos_start;
+else_declaracao: %empty { $$ =NULL;}
+        | TK_PR_ELSE bloco_comandos_start
+        {
+                NodoArvore_t* elseNodo = criaNodoValorLexico($1);
+                addChildren(elseNodo,$2);
+                $$=elseNodo;
+        }
+;
 
 for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_comandos ')' bloco_comandos_start;
 
