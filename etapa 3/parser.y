@@ -49,8 +49,9 @@ extern char *yytext;
 
 %type <nodo> comando_shift comando_entrada comando_saida controle_fluxo if_declaracao else_declaracao
 
+%type <nodo> for_declaracao for_comandos for_lista_comandos declaracao_local inicializacao declaracao_local_simples
 
-
+%type <nodo> while_declaracao comando_simples comando_return
 
 
 %token TK_PR_INT
@@ -141,24 +142,64 @@ lista_parametros: lista_parametros ',' parametro | parametro;
 
 parametro: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICADOR;
 
-comando_simples: atribuicao
-            | chamada_funcao
-            | comando_shift
-            | comando_entrada
-            | comando_saida
-            | comando_return
-            | TK_PR_BREAK
-            | TK_PR_CONTINUE
-            | controle_fluxo
-            | declaracao_local
+comando_simples: atribuicao {$$ = $1};
+            | chamada_funcao {$$ = $1};
+            | comando_shift {$$ = $1};
+            | comando_entrada {$$ = $1};
+            | comando_saida {$$ = $1};
+            | comando_return {$$ = $1};
+            | TK_PR_BREAK {$$ = criaNodoValorLexico($1)}
+            | TK_PR_CONTINUE {$$ = criaNodoValorLexico($1)}
+            | controle_fluxo {$$ = $1};
+            | declaracao_local {$$ = $1};
             ;
 
 
-declaracao_local: declaracao_local_simples inicializacao | TK_PR_STATIC declaracao_local_simples inicializacao;
+declaracao_local: declaracao_local_simples inicializacao 
+        {
+                if( $2 != NULL){
+                        addChildren($2,$1);
+                        $$=$1;
+                }
+                else{
+                        libera($1);
+                }
+        }
+        | TK_PR_STATIC declaracao_local_simples inicializacao
+         {
+                if( $2 != NULL){
+                        addChildren($2,$1);
+                        $$=$1;
+                }
+                else{
+                        libera($1);
+                }
+        }
+        ;
 
-inicializacao: TK_OC_LE literal | TK_OC_LE variavel | %empty;
+inicializacao: TK_OC_LE literal 
+        {
+                $$ = criaNodoValorLexico($1);
+                addChildren($$,$2);
+        }
+        | TK_OC_LE variavel 
+        {
+                $$ = criaNodoValorLexico($1);
+                addChildren($$,$2);
+        }
+        | %empty {$$=NULL};
+        
+        ;
 
-declaracao_local_simples: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICADOR;
+declaracao_local_simples: tipo TK_IDENTIFICADOR 
+        {
+                $$ = criaNodoValorLexico($2);
+        }
+        | TK_PR_CONST tipo TK_IDENTIFICADOR
+        {
+                $$ = criaNodoValorLexico($3);
+        }
+        ;
 
 
 atribuicao: variavel '=' expressao 
@@ -198,7 +239,12 @@ comando_saida: TK_PR_OUTPUT lista_expressao
         }
 ;
 
-comando_return: TK_PR_RETURN expressao;
+comando_return: TK_PR_RETURN expressao
+        {
+                $$ = criaNodoValorLexico($1);
+                addChildren($$,$2);
+        }
+;
 
 comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao 
         {
@@ -250,15 +296,40 @@ else_declaracao: %empty { $$ =NULL;}
         }
 ;
 
-for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_comandos ')' bloco_comandos_start;
+for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_comandos ')' bloco_comandos_start
+        {
+                NodoArvore_t* forNodo = criaNodoValorLexico($1);
+                addChildren(forNodo, $3);
+                addChildren(forNodo, $5);
+                addChildren(forNodo, $7);
+                addChildren(forNodo, $9);
+                $$ = forNodo;
+        }
+;
 
-while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start;
+while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
+        {
+                $$ = criaNodoValorLexico($1);
+                addChildren($$,$3);
+                addChildren($$,$6);
+        }
+;
 
-for_lista_comandos: for_comandos | for_lista_comandos ',' for_comandos ;
+for_lista_comandos: for_comandos 
+        {
+                $$ = $1;
+        }
+        | for_lista_comandos ',' for_comandos 
+        {
+                addChildren($1,$3);
+                $$ = $1;
+        }
+        ;
 
-for_comandos: atribuicao
-            | comando_shift
-            | declaracao_local;
+for_comandos: atribuicao { $$ = $1;}
+            | comando_shift {$$=$1;}
+            | declaracao_local {$$=$1;}
+            ;
 
 lista_expressao: expressao 
         {
