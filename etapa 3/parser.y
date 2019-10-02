@@ -7,6 +7,7 @@ int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
 extern char *yytext;
+extern void *arvore;
 
 %}
 %error-verbose
@@ -119,7 +120,7 @@ extern char *yytext;
 
 %%
 
-entry: programa {$$ = $1;};
+entry: programa {$$ = $1; arvore = $1;};
 
 programa: lista_elementos  {$$ =$1;}
         | %empty {$$ = NULL;}
@@ -127,7 +128,7 @@ programa: lista_elementos  {$$ =$1;}
 
 lista_elementos: lista_elementos elemento
         {
-                addChildren($1,$2);
+                $$ = addChildren($1,$2);
                 $$ = $1;
         }
         | elemento {$$ = $1;}
@@ -187,6 +188,7 @@ declaracao_local: declaracao_local_simples inicializacao
                 }
                 else{
                         libera($1);
+                        $$ = NULL;
                 }
         }
         | TK_PR_STATIC declaracao_local_simples inicializacao
@@ -197,6 +199,7 @@ declaracao_local: declaracao_local_simples inicializacao
                 }
                 else{
                         libera($2);
+                        $$ = NULL;
                 }
         }
         ;
