@@ -42,10 +42,12 @@ extern char *yytext;
 %type <valor_lexico> TK_IDENTIFICADOR
 
 //Tipo nontokens
-%type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#'
+%type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#' '='
 
 //Nao terminais
 %type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo atribuicao
+
+%type <nodo> comando_shift
 
 
 
@@ -186,7 +188,23 @@ comando_saida: TK_PR_OUTPUT lista_expressao;
 
 comando_return: TK_PR_RETURN expressao;
 
-comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao |  TK_IDENTIFICADOR TK_OC_SR expressao ;
+comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao 
+        {
+                NodoArvore_t* slNodo = criaNodoValorLexico($2);
+                NodoArvore_t* identificador = criaNodoValorLexico($1);
+                addChildren(slNodo,identificador);
+                addChildren(slNodo, $3);
+                $$ = slNodo;
+        }
+        |  TK_IDENTIFICADOR TK_OC_SR expressao 
+        {
+                NodoArvore_t* srNodo = criaNodoValorLexico($2);
+                NodoArvore_t* identificador = criaNodoValorLexico($1);
+                addChildren(srNodo,identificador);
+                addChildren(srNodo, $3);
+                $$ = srNodo;
+        }
+        ;
 
 controle_fluxo: if_declaracao | for_declaracao | while_declaracao;
 
