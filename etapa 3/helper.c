@@ -17,6 +17,18 @@ void exporta(void *tree){
     
 }
 
+ValorLexico_t criaValorLexicoOP(char* valor){
+    ValorLexico_t novoValor;
+    novoValor.tipo = Top;
+    novoValor.charValue = '\0'; 
+    novoValor.boolValue = false; 
+    novoValor.floatValue = 0; 
+    novoValor.stringValue = strdup(valor);
+    novoValor.intValue = 0;
+
+    return novoValor;
+}
+
 void saveNodo(NodoArvore_t* nodo, FILE* file){
     NodoList_t* elt;
     if(nodo->childrenNumber > 0 ){

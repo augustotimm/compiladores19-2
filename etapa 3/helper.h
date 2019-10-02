@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
+#include<string.h> 
 #include "utlist.h"
 
 struct NodoArvore_t;
@@ -60,6 +60,7 @@ NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child);
 bool deletaNodo(NodoArvore_t* nodo);
 void saveNodo(NodoArvore_t* nodo, FILE* file);
 NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico);
+ValorLexico_t criaValorLexicoOP(char* valor);
 
 extern void libera(void *tree);
 extern void exporta(void *tree);
