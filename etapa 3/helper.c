@@ -55,6 +55,12 @@ NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico){
 }
 
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
+    if( child == NULL) {
+        return NULL;
+    }
+    if( parent == NULL) {
+        return NULL;
+    }
     if(parent->childrenNumber ==0){
         NodoList_t * head = NULL;
         parent->children = head;
