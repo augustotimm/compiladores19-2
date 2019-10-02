@@ -53,7 +53,7 @@ extern char *yytext;
 
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
-%type <nodo> cabecalho_funcao def_funcao elemento
+%type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -119,13 +119,21 @@ extern char *yytext;
 
 %%
 
-entry: programa;
+entry: programa {$$ = $1;};
 
-programa: lista_elementos | %empty; 
+programa: lista_elementos  {$$ =$1;}
+        | %empty {$$ = NULL;}
+        ; 
 
-lista_elementos: lista_elementos elemento | elemento;
+lista_elementos: lista_elementos elemento
+        {
+                addChildren($1,$2);
+                $$ = $1;
+        }
+        | elemento {$$ = $1;}
+        ;
 
-elemento: declaracao_var_global 
+elemento: declaracao_var_global { $$ = NULL;}
         | def_funcao {$$=$1;}
 ;
 
