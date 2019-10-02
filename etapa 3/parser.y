@@ -53,6 +53,7 @@ extern char *yytext;
 
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
+%type <nodo> cabecalho_funcao def_funcao elemento
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -124,17 +125,32 @@ programa: lista_elementos | %empty;
 
 lista_elementos: lista_elementos elemento | elemento;
 
-elemento: declaracao_var_global | def_funcao;
+elemento: declaracao_var_global 
+        | def_funcao {$$=$1;}
+;
 
 
 declaracao_var_global: tipo variavel ';'
-                    
-                    |  TK_PR_STATIC tipo variavel  ';'
-                    ;
+        |  TK_PR_STATIC tipo variavel  ';'
+;
 
-def_funcao: cabecalho_funcao bloco_comandos_start ;
+def_funcao: cabecalho_funcao bloco_comandos_start 
+        {
+                $$ = $1;
+                addChildren($$,$2);
+        }
+;
 
-cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao ;
+cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
+        {
+                $$ = criaNodoValorLexico($2);
+        }
+        | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao 
+        {
+                $$ = criaNodoValorLexico($3);
+        }                
+        
+        ;
 
 parametros_funcao: '(' lista_parametros ')' | '(' ')';
 
@@ -599,7 +615,9 @@ variavel: TK_IDENTIFICADOR {
  }
         | TK_IDENTIFICADOR '[' expressao ']'{ 
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
-        addChildren(idNodo, $3);
+        NodoArvore_t* bracketNodo = criaNodoValorLexico( criaValorLexicoOP("[]") );
+        addChildren(bracketNodo, $3);
+        addChildren(idNodo,bracketNodo);
         $$ = idNodo;
  }
 ;
