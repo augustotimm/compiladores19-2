@@ -355,6 +355,7 @@ bloco_comandos_start: '{' bloco_comandos '}'
 bloco_comandos: bloco_comandos comando_simples ';' 
         {
                 addChildren($1,$2);
+                $$ = $1;
         }
         | comando_simples ';' 
         {
@@ -362,6 +363,11 @@ bloco_comandos: bloco_comandos comando_simples ';'
         }
         | bloco_comandos_start ';'
         {
+                $$ = $1;
+        }
+        | bloco_comandos bloco_comandos_start ';'
+        {
+                addChildren($1,$2);
                 $$ = $1;
         }
         ;
