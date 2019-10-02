@@ -51,7 +51,7 @@ extern char *yytext;
 
 %type <nodo> for_declaracao for_comandos for_lista_comandos declaracao_local inicializacao declaracao_local_simples
 
-%type <nodo> while_declaracao comando_simples comando_return
+%type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
 
 %token TK_PR_INT
@@ -142,16 +142,16 @@ lista_parametros: lista_parametros ',' parametro | parametro;
 
 parametro: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICADOR;
 
-comando_simples: atribuicao {$$ = $1};
-            | chamada_funcao {$$ = $1};
-            | comando_shift {$$ = $1};
-            | comando_entrada {$$ = $1};
-            | comando_saida {$$ = $1};
-            | comando_return {$$ = $1};
-            | TK_PR_BREAK {$$ = criaNodoValorLexico($1)}
-            | TK_PR_CONTINUE {$$ = criaNodoValorLexico($1)}
-            | controle_fluxo {$$ = $1};
-            | declaracao_local {$$ = $1};
+comando_simples: atribuicao {$$ = $1;};
+            | chamada_funcao {$$ = $1;};
+            | comando_shift {$$ = $1;};
+            | comando_entrada {$$ = $1;};
+            | comando_saida {$$ = $1;};
+            | comando_return {$$ = $1;};
+            | TK_PR_BREAK {$$ = criaNodoValorLexico($1);}
+            | TK_PR_CONTINUE {$$ = criaNodoValorLexico($1);}
+            | controle_fluxo {$$ = $1;};
+            | declaracao_local {$$ = $1;};
             ;
 
 
@@ -167,12 +167,12 @@ declaracao_local: declaracao_local_simples inicializacao
         }
         | TK_PR_STATIC declaracao_local_simples inicializacao
          {
-                if( $2 != NULL){
-                        addChildren($2,$1);
-                        $$=$1;
+                if( $3 != NULL){
+                        addChildren($3,$2);
+                        $$=$2;
                 }
                 else{
-                        libera($1);
+                        libera($2);
                 }
         }
         ;
@@ -187,7 +187,7 @@ inicializacao: TK_OC_LE literal
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
         }
-        | %empty {$$=NULL};
+        | %empty {$$=NULL;};
         
         ;
 
@@ -280,9 +280,9 @@ controle_fluxo: if_declaracao
 if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
         {
                 NodoArvore_t* ifNodo = criaNodoValorLexico($1);
-                addChildren($1,$3);
-                addChildren($1,$5);
-                addChildren($1,$6);
+                addChildren(ifNodo,$3);
+                addChildren(ifNodo,$5);
+                addChildren(ifNodo,$6);
                 $$ = ifNodo;
         }
 ;
@@ -344,10 +344,27 @@ lista_expressao: expressao
         ;
 
 
-bloco_comandos_start: '{' bloco_comandos '}' | '{' '}' ;
+bloco_comandos_start: '{' bloco_comandos '}' 
+        {
+                $$ = $2;
+        }
+        | '{' '}'  {$$ = NULL;}
+        ;
 
 
-bloco_comandos: bloco_comandos comando_simples ';' | comando_simples ';' | bloco_comandos_start ';';
+bloco_comandos: bloco_comandos comando_simples ';' 
+        {
+                addChildren($1,$2);
+        }
+        | comando_simples ';' 
+        {
+                $$ = $1;
+        }
+        | bloco_comandos_start ';'
+        {
+                $$ = $1;
+        }
+        ;
 
 tipo: TK_PR_INT
         {
