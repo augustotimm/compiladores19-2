@@ -46,7 +46,7 @@ extern void *arvore;
 %type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#' '='
 
 //Nao terminais
-%type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo atribuicao
+%type <nodo> variavel literal expressao chamada_funcao lista_expressao atribuicao
 
 %type <nodo> comando_shift comando_entrada comando_saida controle_fluxo if_declaracao else_declaracao
 
@@ -55,6 +55,9 @@ extern void *arvore;
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
 %type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry
+
+%destructor{ libera($$); } variavel literal expressao
+
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -145,8 +148,8 @@ elemento: declaracao_var_global { $$ = NULL;}
 ;
 
 
-declaracao_var_global: tipo variavel ';'
-        |  TK_PR_STATIC tipo variavel  ';'
+declaracao_var_global: tipo variavel {libera($2); }';'
+        |  TK_PR_STATIC tipo variavel {libera($3); liberaValorLexico($1); } ';'
 ;
 
 def_funcao: cabecalho_funcao bloco_comandos_start 
@@ -419,23 +422,23 @@ bloco_comandos: bloco_comandos comando_simples ';'
 
 tipo: TK_PR_INT
         {
-                $$ = criaNodoValorLexico($1);                
+                liberaValorLexico($1);
         }
     |   TK_PR_BOOL
     {
-        $$ = criaNodoValorLexico($1);
+        liberaValorLexico($1);
     }
     |   TK_PR_CHAR
     {
-        $$ = criaNodoValorLexico($1);
+        liberaValorLexico($1);
     }
     |   TK_PR_FLOAT
     {
-        $$ = criaNodoValorLexico($1);
-    }
+        liberaValorLexico($1);    
+        }
     |   TK_PR_STRING
     {
-        $$ = criaNodoValorLexico($1);
+        liberaValorLexico($1);    
     }
     ;
 
