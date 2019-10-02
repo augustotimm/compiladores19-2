@@ -45,7 +45,7 @@ extern char *yytext;
 %type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#'
 
 //Nao terminais
-%type <nodo> variavel literal expressao chamada_funcao lista_expressao
+%type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo
 
 
 
@@ -217,10 +217,26 @@ bloco_comandos_start: '{' bloco_comandos '}' | '{' '}' ;
 bloco_comandos: bloco_comandos comando_simples ';' | comando_simples ';' | bloco_comandos_start ';';
 
 tipo: TK_PR_INT
+        {
+                $$ = criaNodoValorLexico($1);                
+        }
     |   TK_PR_BOOL
+    {
+        $$ = criaNodoValorLexico($1);
+    }
     |   TK_PR_CHAR
+    {
+        $$ = criaNodoValorLexico($1);
+    }
     |   TK_PR_FLOAT
-    |   TK_PR_STRING;
+    {
+        $$ = criaNodoValorLexico($1);
+    }
+    |   TK_PR_STRING
+    {
+        $$ = criaNodoValorLexico($1);
+    }
+    ;
 
 expressao: '(' expressao ')' {
                 $$ = $2;
