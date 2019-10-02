@@ -61,6 +61,7 @@ bool deletaNodo(NodoArvore_t* nodo);
 void saveNodo(NodoArvore_t* nodo, FILE* file);
 NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico);
 ValorLexico_t criaValorLexicoOP(char* valor);
+void liberaValorLexico(ValorLexico_t valor);
 
 extern void libera(void *tree);
 extern void exporta(void *tree);

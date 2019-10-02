@@ -40,12 +40,12 @@ void saveNodo(NodoArvore_t* nodo, FILE* file){
 }
 
 void printNodo(NodoArvore_t* nodo){
-    printf("Nodo: %p\n",nodo);
-    printf("numero de filhos: %d\n", nodo->childrenNumber);
+    
     if(nodo->childrenNumber > 0){
         NodoList_t* elt;
         LL_FOREACH(nodo->children,elt){
             printNodo(elt->nodo);
+            printf("%s:%s\n", nodo->valorLexico.stringValue , elt->nodo->valorLexico.stringValue);
         }
     }
     
@@ -67,10 +67,13 @@ NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico){
 }
 
 NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
-    if( child == NULL) {
-        return NULL;
+    if( child == NULL && parent != NULL) {
+        return parent;
     }
-    if( parent == NULL) {
+    if( parent == NULL && child != NULL) {
+        return child;
+    }
+    if( parent == NULL && child == NULL){
         return NULL;
     }
     if(parent->childrenNumber ==0){
@@ -100,4 +103,8 @@ bool deletaNodo(NodoArvore_t* nodo){
     free(nodo);
     return true;
     
+}
+
+void liberaValorLexico(ValorLexico_t valor){
+    free(valor.stringValue);
 }
