@@ -45,7 +45,7 @@ extern char *yytext;
 %type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#'
 
 //Nao terminais
-%type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo
+%type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo atribuicao
 
 
 
@@ -160,6 +160,12 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICA
 
 
 atribuicao: variavel '=' expressao 
+        {
+                NodoArvore_t* atrNodo = criaNodoValorLexico($2);
+                addChildren(atrNodo,$1);
+                addChildren(atrNodo,$3);
+                $$ = atrNodo;
+        }
 ;
 chamada_funcao: TK_IDENTIFICADOR '(' ')' 
         {
