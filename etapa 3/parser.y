@@ -47,7 +47,7 @@ extern char *yytext;
 //Nao terminais
 %type <nodo> variavel literal expressao chamada_funcao lista_expressao tipo atribuicao
 
-%type <nodo> comando_shift comando_entrada
+%type <nodo> comando_shift comando_entrada comando_saida
 
 
 
@@ -190,7 +190,13 @@ comando_entrada: TK_PR_INPUT expressao
         }
 ;
 
-comando_saida: TK_PR_OUTPUT lista_expressao;
+comando_saida: TK_PR_OUTPUT lista_expressao
+        {
+                NodoArvore_t* outputNodo = criaNodoValorLexico($1);
+                addChildren(outputNodo,$2);
+                $$ = outputNodo;
+        }
+;
 
 comando_return: TK_PR_RETURN expressao;
 
