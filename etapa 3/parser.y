@@ -128,8 +128,14 @@ programa: lista_elementos  {$$ =$1;}
 
 lista_elementos: lista_elementos elemento
         {
-                $$ = addChildren($1,$2);
-                $$ = $1;
+                if($1 == NULL){
+                        $$ = $2;
+                }
+                else{
+                        $$ = addChildren($1,$2);
+                        $$ = $1;
+                }
+                
         }
         | elemento {$$ = $1;}
         ;
@@ -147,12 +153,14 @@ def_funcao: cabecalho_funcao bloco_comandos_start
         {
                 $$ = $1;
                 addChildren($$,$2);
+               // printf("%s",$1->valorLexico.stringValue);
         }
 ;
 
 cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
         {
                 $$ = criaNodoValorLexico($2);
+                
         }
         | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao 
         {
@@ -381,8 +389,13 @@ bloco_comandos_start: '{' bloco_comandos '}'
 
 bloco_comandos: bloco_comandos comando_simples ';' 
         {
-                addChildren($1,$2);
-                $$ = $1;
+                if($1 == NULL){
+                        $$ = $2;
+                }
+                else{
+                        addChildren($1,$2);
+                        $$ = $1;
+                }                
         }
         | comando_simples ';' 
         {
@@ -394,8 +407,13 @@ bloco_comandos: bloco_comandos comando_simples ';'
         }
         | bloco_comandos bloco_comandos_start ';'
         {
-                addChildren($1,$2);
-                $$ = $1;
+                if($1 == NULL){
+                        $$ = $2;
+                }
+                else{
+                        addChildren($1,$2);
+                        $$ = $1;
+                }  
         }
         ;
 
