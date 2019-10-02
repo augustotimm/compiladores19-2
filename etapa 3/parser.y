@@ -45,7 +45,7 @@ extern char *yytext;
 %type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#'
 
 //Nao terminais
-%type <nodo> variavel literal expressao chamada_funcao
+%type <nodo> variavel literal expressao chamada_funcao lista_expressao
 
 
 
@@ -161,7 +161,18 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICA
 
 atribuicao: variavel '=' expressao 
 ;
-chamada_funcao: TK_IDENTIFICADOR '(' ')' |  TK_IDENTIFICADOR '(' lista_expressao ')' ;
+chamada_funcao: TK_IDENTIFICADOR '(' ')' 
+        {
+                $$ = criaNodoValorLexico($1);
+                
+        }
+        |  TK_IDENTIFICADOR '(' lista_expressao ')' 
+        {
+                NodoArvore_t* chamadaNodo = criaNodoValorLexico($1);
+                addChildren(chamadaNodo,$3);
+                $$ = chamadaNodo;
+        }
+        ;
 
 comando_entrada: TK_PR_INPUT expressao;
 
@@ -187,7 +198,17 @@ for_comandos: atribuicao
             | comando_shift
             | declaracao_local;
 
-lista_expressao: expressao | lista_expressao ',' expressao;
+lista_expressao: expressao 
+        {
+                
+                $$ = $1;
+        }
+        | lista_expressao ',' expressao
+        {
+                addChildren($1, $3);
+                $$ = $1;
+        }
+        ;
 
 
 bloco_comandos_start: '{' bloco_comandos '}' | '{' '}' ;
