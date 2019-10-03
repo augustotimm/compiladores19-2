@@ -1,6 +1,7 @@
 #include "helper.h"
 
 void libera(void *tree){
+    printNodo(tree);
     if( tree != NULL){
         deletaNodo(tree);
     }
@@ -48,6 +49,10 @@ void printNodo(NodoArvore_t* nodo){
             printf("%s:%s\n", nodo->valorLexico.stringValue , elt->nodo->valorLexico.stringValue);
         }
     }
+    else{
+         //printf("%s\n", nodo->valorLexico.stringValue);
+    }
+    
     
 }
 
