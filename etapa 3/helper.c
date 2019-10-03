@@ -110,10 +110,7 @@ bool deletaNodo(NodoArvore_t* nodo){
             nodo->childrenNumber --;
         }
         freeLista( nodo->children);
-        liberaValorLexico(nodo->valorLexico);
         printf("Libera Nodo:%p\n", nodo);
-        free(nodo->children);
-
     }
     liberaValorLexico(nodo->valorLexico);
     free(nodo);
