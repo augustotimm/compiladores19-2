@@ -39,6 +39,7 @@
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue = calloc(2, sizeof(char));\
   yylval.valor_lexico.stringValue[0] =  yytext[1];\
   yylval.valor_lexico.stringValue[1] =  '\0';\
   yylval.valor_lexico.charValue = yytext[1]; 
