@@ -3,6 +3,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
@@ -56,7 +57,7 @@ extern void *arvore;
 
 %type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry
 
-%destructor{ libera($$); } variavel literal expressao
+//Destructors
 
 
 %token TK_PR_INT
@@ -105,16 +106,19 @@ extern void *arvore;
 %token TK_IDENTIFICADOR
 %token TOKEN_ERRO
 
-%left '+' '-'
-%left '*' '/' '%'
+%left '?'
 %left '^'
 %left ':'
-%left '?'
+
 %left '|' '&'
 
 %left TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE
 %left  TK_OC_AND TK_OC_OR 
 %left TK_OC_SL TK_OC_SR
+
+%left '+' '-'
+%left '*' '/' '%'
+
 
 %right UNARIO
 
@@ -125,7 +129,7 @@ extern void *arvore;
 
 entry: programa {$$ = $1; arvore = $1;};
 
-programa: lista_elementos  {$$ =$1;}
+programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
         ; 
 
@@ -140,7 +144,7 @@ lista_elementos: lista_elementos elemento
                 }
                 
         }
-        | elemento {$$ = $1;}
+        | elemento {$$ = $1;} 
         ;
 
 elemento: declaracao_var_global { $$ = NULL;}
@@ -456,6 +460,7 @@ expressao: '(' expressao ')' {
         | expressao '+'  expressao
         {
                 NodoArvore_t* plusNodo = criaNodoValorLexico($2);
+                
                 addChildren(plusNodo, $1);
                 addChildren(plusNodo, $3);
                 $$=plusNodo;
@@ -604,10 +609,12 @@ expressao: '(' expressao ')' {
         | expressao '?'  expressao ':' expressao
         {
                 NodoArvore_t* tercNodo = criaNodoValorLexico($2);
+                
                 addChildren(tercNodo, $1);
                 addChildren(tercNodo, $3);
                 addChildren(tercNodo, $5);
                 $$=tercNodo;
+                
         }
         | '#' expressao %prec UNARIO
         {
@@ -657,5 +664,6 @@ variavel: TK_IDENTIFICADOR {
 
 void yyerror(const char *s) {
     printf(" %s \nErro  na linha de numero: %d \t ultimo token lido: %c\n",s, get_line_number(), yytext[0]);
-    exit(1);
+    
+    
 }
