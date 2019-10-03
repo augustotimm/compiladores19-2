@@ -39,7 +39,8 @@
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.stringValue[0] =  yytext[1];\
+  yylval.valor_lexico.stringValue[1] =  '\0';\
   yylval.valor_lexico.charValue = yytext[1]; 
 
 #define DEF_LIT_TRUE DEF_TYPE_BOOL; \
@@ -47,7 +48,7 @@
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.stringValue = strdup(yytext);\
   yylval.valor_lexico.boolValue = true;
 
 #define DEF_LIT_FALSE DEF_TYPE_BOOL; \
@@ -55,7 +56,7 @@
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.stringValue = strdup(yytext);\
   yylval.valor_lexico.boolValue = false;
 
 #define DEF_LIT_INT DEF_TYPE_INT; \
@@ -63,7 +64,7 @@
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.stringValue = strdup(yytext);\
   yylval.valor_lexico.intValue = atoi(yytext);\
 
 #define DEF_LIT_STRING DEF_TYPE_STRING; \
@@ -72,16 +73,22 @@
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue= strdup(yytext);\
+  yylval.valor_lexico.stringValue = strdup(yytext);\
 
 #define DEF_LIT_FLOAT DEF_TYPE_FLOAT; \
   DEF_ISLITERAL\
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
-  yylval.valor_lexico.stringValue[0] = '\0';\
+  yylval.valor_lexico.stringValue =strdup(yytext);\
   yylval.valor_lexico.floatValue = atof(yytext);\
 
+#define DEF_IDENTIFICADOR \
+  yylval.valor_lexico.charValue = '\0'; \
+  yylval.valor_lexico.boolValue = false; \
+  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.floatValue = 0; \
+  yylval.valor_lexico.stringValue = strdup(yytext);\
 
 int lineNumber=1;
 int get_line_number();
@@ -105,10 +112,18 @@ int get_line_number();
 <COMMENT_MULT_LINE>.         {  }
 
 
-[,;:()\[\]{}+\-|?*/<>=!&%#^.$~`@] {
-    DEF_LINENUMBER; DEF_OPERACAO;
+[,;:()\[\]{}|<>%^.$~`@] {
     return yytext[0];
 }
+"?" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"=" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"+" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"-" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"*" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"/" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"!" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"&" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"#" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 
 "int"       { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_INT; }
 "float"     { DEF_LINENUMBER; DEF_PALAVRA_RESERVADA; return TK_PR_FLOAT; }
@@ -156,7 +171,7 @@ int get_line_number();
 '.'               { DEF_LINENUMBER; DEF_LIT_CHAR; return TK_LIT_CHAR; }
 \"([^\\"]|\\.)*\" {DEF_LINENUMBER; DEF_LIT_STRING; return TK_LIT_STRING; }
 
-[a-zA-Z_][a-zA-Z_0-9]* { return TK_IDENTIFICADOR; }
+[a-zA-Z_][a-zA-Z_0-9]* {DEF_LINENUMBER; DEF_TYPE_IDENTIFICADOR; DEF_IDENTIFICADOR; return TK_IDENTIFICADOR; }
 
 [0-9]+   { DEF_LINENUMBER; DEF_LIT_INT; return TK_LIT_INT; }
 [-+]?[0-9]+"."[0-9]+([eE][-+]?[0-9]+)? {DEF_LINENUMBER; DEF_LIT_FLOAT; return TK_LIT_FLOAT; }
