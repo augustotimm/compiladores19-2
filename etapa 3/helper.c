@@ -1,7 +1,8 @@
 #include "helper.h"
+void freeLista(NodoList_t* lista);
 
 void libera(void *tree){
-    printNodo(tree);
+    //printNodo(tree);
     if( tree != NULL){
         deletaNodo(tree);
     }
@@ -25,6 +26,7 @@ ValorLexico_t criaValorLexicoOP(char* valor){
     novoValor.boolValue = false; 
     novoValor.floatValue = 0; 
     novoValor.stringValue = strdup(valor);
+    printf("valor lexico: %p \n", novoValor.stringValue  );
     novoValor.intValue = 0;
 
     return novoValor;
@@ -58,6 +60,8 @@ void printNodo(NodoArvore_t* nodo){
 
 NodoArvore_t* criaNodo(){
     NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
+    printf("Cria Nodo: %p\n",novoNodo  );
+
     novoNodo->childrenNumber = 0;
     
     return novoNodo;
@@ -65,6 +69,7 @@ NodoArvore_t* criaNodo(){
 
 NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico){
     NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
+    printf("Cria Nodo: %p\n",novoNodo  );
     novoNodo->childrenNumber = 0;
     novoNodo->valorLexico = valor_lexico;
     
@@ -87,6 +92,8 @@ NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
     }
     
     NodoList_t * newChild = calloc(1, sizeof(NodoList_t));
+    printf("Cria Child: %p\n", newChild  );
+
     newChild->nodo =child;
     LL_APPEND( parent->children, newChild);
 
@@ -99,17 +106,36 @@ bool deletaNodo(NodoArvore_t* nodo){
     NodoList_t* elt;
     if(nodo->childrenNumber != 0 ){
         LL_FOREACH(nodo->children,elt){
-            deletaNodo(elt->nodo);            
+            deletaNodo(elt->nodo);
+            nodo->childrenNumber --;
         }
-        free(nodo->valorLexico.stringValue);
+        freeLista( nodo->children);
+        liberaValorLexico(nodo->valorLexico);
+        printf("Libera Nodo:%p\n", nodo);
         free(nodo->children);
 
     }
+    liberaValorLexico(nodo->valorLexico);
     free(nodo);
     return true;
     
 }
 
 void liberaValorLexico(ValorLexico_t valor){
-    free(valor.stringValue);
+    printf("Libera Valor Lexico:%p\n", valor.stringValue);
+    if(valor.stringValue != NULL){
+        free(valor.stringValue);
+    }
+    
+}
+
+void freeLista(NodoList_t* lista){
+    if(lista->next == NULL){
+        free(lista);
+    }
+    else{
+        freeLista(lista->next);
+        free(lista);
+    }
+    
 }
