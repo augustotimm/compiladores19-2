@@ -139,9 +139,7 @@ lista_elementos:lista_elementos  elemento
                         $$ = $2;
                 }
                 else{
-                       // printf("ADD CHILDREN ELEMENTO\n");
-                       // printNodo($1);
-                       // printNodo($2);
+
                         addChildren($1,$2);
                         $$ = $1;
                 }
@@ -150,22 +148,19 @@ lista_elementos:lista_elementos  elemento
         | elemento {$$ = $1; } 
         ;
 
-elemento: declaracao_var_global { $$ = $1; /*printf("VAR\n");printNodo($1);*/}
+elemento: declaracao_var_global { $$ = $1; }
         | def_funcao {$$=$1; }
 ;
 
 
 declaracao_var_global: tipo variavel ';' 
         {       
-                //printf("VAR2\n");
-                //printNodo($2);
+
                 if($2 != NULL){
-                        //printNodo($2);
+                        
                         if($2->childrenNumber == 0){
                                 libera($2); 
                                 $2 = NULL;
-                                //printf("VAR3\n");
-                                //printNodo($2);
                         }
                         
                 
@@ -200,7 +195,6 @@ def_funcao: cabecalho_funcao bloco_comandos_start
                         libera($1);
                         $$ = NULL;
                 }
-               // printf("%s",$1->valorLexico.stringValue);
         }
 ;
 
