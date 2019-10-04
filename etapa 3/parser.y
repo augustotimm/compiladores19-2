@@ -55,7 +55,7 @@ extern void *arvore;
 
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
-%type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry
+%type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry declaracao_var_global
 
 //Destructors
 
@@ -133,33 +133,73 @@ programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
         ; 
 
-lista_elementos: lista_elementos elemento
+lista_elementos:  elemento lista_elementos
         {
                 if($1 == NULL){
                         $$ = $2;
                 }
                 else{
-                        $$ = addChildren($1,$2);
+                       // printf("ADD CHILDREN ELEMENTO\n");
+                       // printNodo($1);
+                       // printNodo($2);
+                        addChildren($1,$2);
                         $$ = $1;
                 }
                 
         }
-        | elemento {$$ = $1;} 
+        | elemento {$$ = $1; } 
         ;
 
-elemento: declaracao_var_global { $$ = NULL;}
-        | def_funcao {$$=$1;}
+elemento: declaracao_var_global { $$ = $1; /*printf("VAR\n");printNodo($1);*/}
+        | def_funcao {$$=$1; }
 ;
 
 
-declaracao_var_global: tipo variavel {libera($2); }';'
-        |  TK_PR_STATIC tipo variavel {libera($3); liberaValorLexico($1); } ';'
+declaracao_var_global: tipo variavel ';' 
+        {       
+                //printf("VAR2\n");
+                //printNodo($2);
+                if($2 != NULL){
+                        //printNodo($2);
+                        if($2->childrenNumber == 0){
+                                libera($2); 
+                                $2 = NULL;
+                                //printf("VAR3\n");
+                                //printNodo($2);
+                        }
+                        
+                
+                }
+               
+                $$ = $2;
+                
+                        
+        }
+        |  TK_PR_STATIC tipo variavel ';'
+        {
+                if($3->childrenNumber == 0){
+                        libera($3); 
+                        $3=NULL;
+                }
+                liberaValorLexico($1); 
+                $$ = $3;
+                
+        } 
 ;
 
 def_funcao: cabecalho_funcao bloco_comandos_start 
-        {
-                $$ = $1;
-                addChildren($$,$2);
+        {       
+                
+                if($2 != NULL){
+                        
+                        addChildren($1,$2);
+                        $$=$1;                        
+                }
+                else{
+                        
+                        libera($1);
+                        $$ = NULL;
+                }
                // printf("%s",$1->valorLexico.stringValue);
         }
 ;
@@ -171,6 +211,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
         }
         | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao 
         {
+                liberaValorLexico($1);
                 $$ = criaNodoValorLexico($3);
         }                
         
@@ -180,7 +221,16 @@ parametros_funcao: '(' lista_parametros ')' | '(' ')';
 
 lista_parametros: lista_parametros ',' parametro | parametro;
 
-parametro: tipo TK_IDENTIFICADOR | TK_PR_CONST tipo TK_IDENTIFICADOR;
+parametro: tipo TK_IDENTIFICADOR
+        {
+                liberaValorLexico($2);
+        }
+        | TK_PR_CONST tipo TK_IDENTIFICADOR
+        {
+                liberaValorLexico($1);
+                liberaValorLexico($3);
+        }
+        ;
 
 comando_simples: atribuicao {$$ = $1;};
             | chamada_funcao {$$ = $1;};
@@ -199,7 +249,7 @@ declaracao_local: declaracao_local_simples inicializacao
         {
                 if( $2 != NULL){
                         addChildren($2,$1);
-                        $$=$1;
+                        $$=$2;
                 }
                 else{
                         libera($1);
@@ -208,6 +258,8 @@ declaracao_local: declaracao_local_simples inicializacao
         }
         | TK_PR_STATIC declaracao_local_simples inicializacao
          {
+                liberaValorLexico($1);
+                
                 if( $3 != NULL){
                         addChildren($3,$2);
                         $$=$2;
@@ -221,6 +273,7 @@ declaracao_local: declaracao_local_simples inicializacao
 
 inicializacao: TK_OC_LE literal 
         {
+                
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
         }
@@ -239,6 +292,8 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR
         }
         | TK_PR_CONST tipo TK_IDENTIFICADOR
         {
+                liberaValorLexico($1);
+
                 $$ = criaNodoValorLexico($3);
         }
         ;
@@ -351,9 +406,11 @@ for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_co
 
 while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
         {
+
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$3);
                 addChildren($$,$6);
+                liberaValorLexico($5);
         }
 ;
 
