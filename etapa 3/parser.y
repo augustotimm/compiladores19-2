@@ -133,7 +133,7 @@ programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
         ; 
 
-lista_elementos:  elemento lista_elementos
+lista_elementos:lista_elementos  elemento 
         {
                 if($1 == NULL){
                         $$ = $2;
