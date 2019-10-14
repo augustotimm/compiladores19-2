@@ -13,7 +13,7 @@ void libera(void *tree){
 
 void exporta(void *tree){
     if( tree != NULL){
-        FILE *file = fopen("./OUT.csv", "w");
+        FILE *file = fopen("./e3.csv", "w");
         saveNodo(tree,file);
         fclose(file);
     }
