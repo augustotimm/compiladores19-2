@@ -113,12 +113,17 @@ int get_line_number();
 <COMMENT_MULT_LINE>.         {  }
 
 
-[,;:()\[\]{}|<>%^.$~`@] {
+[,;:()\[\]{}.$~`@] {
     return yytext[0];
 }
 "?" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 "=" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"<" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+">" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 "+" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"%" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"|" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
+"^" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 "-" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 "*" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}
 "/" {    DEF_LINENUMBER; DEF_OPERACAO; return yytext[0];}

@@ -44,7 +44,7 @@ extern void *arvore;
 %type <valor_lexico> TK_IDENTIFICADOR
 
 //Tipo nontokens
-%type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#' '='
+%type <valor_lexico> '+' '-' '*' '/' '%' '|' '&' '^' '?' '!' '#' '=' '<' '>'
 
 //Nao terminais
 %type <nodo> variavel literal expressao chamada_funcao lista_expressao atribuicao
@@ -108,15 +108,14 @@ extern void *arvore;
 
 %left '?'
 %left '^'
-%left ':'
+%left ':' 
 
-%left '|' '&'
-
-%left TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE
+%left '|' '&' 
+%left TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE '<' '>'
 %left  TK_OC_AND TK_OC_OR 
 %left TK_OC_SL TK_OC_SR
 
-%left '+' '-'
+%left '+' '-' 
 %left '*' '/' '%'
 
 
@@ -381,9 +380,7 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
 else_declaracao: %empty { $$ =NULL;}
         | TK_PR_ELSE bloco_comandos_start
         {
-                NodoArvore_t* elseNodo = criaNodoValorLexico($1);
-                addChildren(elseNodo,$2);
-                $$=elseNodo;
+                $$=$2;
         }
 ;
 
@@ -538,10 +535,13 @@ expressao: '(' expressao ')' {
                 $$=divNodo;
         }
         | expressao '%' expressao 
-        {
+        {       
+                
                 NodoArvore_t* restoNodo = criaNodoValorLexico($2);
+                
                 addChildren(restoNodo, $1);
                 addChildren(restoNodo, $3);
+
                 $$=restoNodo;
         }
         | expressao '|' expressao 
@@ -566,6 +566,20 @@ expressao: '(' expressao ')' {
                 $$=powNodo;
         }
         | expressao TK_OC_LE expressao
+        {
+                NodoArvore_t* leNodo = criaNodoValorLexico($2);
+                addChildren(leNodo, $1);
+                addChildren(leNodo, $3);
+                $$=leNodo;
+        }
+        | expressao '<' expressao
+        {
+                NodoArvore_t* leNodo = criaNodoValorLexico($2);
+                addChildren(leNodo, $1);
+                addChildren(leNodo, $3);
+                $$=leNodo;
+        }
+        | expressao '>' expressao
         {
                 NodoArvore_t* leNodo = criaNodoValorLexico($2);
                 addChildren(leNodo, $1);

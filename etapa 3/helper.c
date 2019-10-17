@@ -2,7 +2,7 @@
 void freeLista(NodoList_t* lista);
 
 void libera(void *tree){
-    
+    printNodo(tree);
     if( tree != NULL){
         deletaNodo(tree);
         tree= NULL;
@@ -52,7 +52,7 @@ void printNodo(NodoArvore_t* nodo){
         }
         }
         else{
-           //printf("%s\n", nodo->valorLexico.stringValue);
+           printf("%s\n", nodo->valorLexico.stringValue);
         }
     }
     else{
@@ -105,18 +105,21 @@ NodoArvore_t* addChildren(NodoArvore_t* parent,NodoArvore_t* child){
 }
 
 bool deletaNodo(NodoArvore_t* nodo){
-    NodoList_t* elt;
-    if(nodo->childrenNumber > 0 ){
-        LL_FOREACH(nodo->children,elt){
-            deletaNodo(elt->nodo);
-            nodo->childrenNumber --;
+    if(nodo != NULL){
+        NodoList_t* elt;
+        if(nodo->childrenNumber > 0 ){
+            LL_FOREACH(nodo->children,elt){
+                deletaNodo(elt->nodo);
+                nodo->childrenNumber --;
+            }
+            freeLista( nodo->children);
         }
-        freeLista( nodo->children);
+        liberaValorLexico(nodo->valorLexico);
+        free(nodo);
+        nodo=NULL;
+        return true;
     }
-    liberaValorLexico(nodo->valorLexico);
-    free(nodo);
-    nodo=NULL;
-    return true;
+    
     
 }
 
