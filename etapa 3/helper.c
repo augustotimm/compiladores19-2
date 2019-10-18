@@ -12,13 +12,17 @@ void libera(void *tree){
 }
 
 void exporta(void *tree){
+    NodoArvore_t* nodo =  tree;
     if( tree != NULL){
         FILE *file = fopen("./e3.csv", "w");
-        saveNodo(tree,file);
+        saveLonelyNodo(tree, file);
+        saveNodo(tree, file);
         fclose(file);
     }
     
 }
+
+
 
 ValorLexico_t criaValorLexicoOP(char* valor){
     ValorLexico_t novoValor;
@@ -39,6 +43,14 @@ void saveNodo(NodoArvore_t* nodo, FILE* file){
             saveNodo(elt->nodo, file);
             fprintf(file,"%p,%p\n", nodo, elt->nodo);
         }
+    }
+}
+
+void saveLonelyNodo(NodoArvore_t* nodo, FILE* file){
+    if(nodo->childrenNumber == 0 ){
+              
+        fprintf(file,"%p,\n", nodo);
+        
     }
 }
 

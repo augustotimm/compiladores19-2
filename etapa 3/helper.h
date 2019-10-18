@@ -66,3 +66,4 @@ void freeLista(NodoList_t* lista);
 
 extern void libera(void *tree);
 extern void exporta(void *tree);
+void saveLonelyNodo(NodoArvore_t* nodo, FILE* file);
