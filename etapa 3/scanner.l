@@ -107,7 +107,7 @@ int get_line_number();
 \n  {lineNumber++;}
 
 "//".*  {}
-"/*".*                   BEGIN(COMMENT_MULT_LINE);
+"/*".                        BEGIN(COMMENT_MULT_LINE);
 <COMMENT_MULT_LINE>.*"*/"    BEGIN(INITIAL);
 <COMMENT_MULT_LINE>\n        { lineNumber++; }
 <COMMENT_MULT_LINE>.         {  }
