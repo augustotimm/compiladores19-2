@@ -134,7 +134,7 @@ programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
         ; 
 
-lista_elementos:  lista_elementos elemento  
+lista_elementos:   elemento  lista_elementos
         {
                 if($1 == NULL){
                         $$ = $2;
