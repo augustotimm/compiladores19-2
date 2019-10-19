@@ -55,7 +55,7 @@ extern void *arvore;
 
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
 
-%type <nodo> cabecalho_funcao def_funcao elemento lista_elementos programa entry declaracao_var_global
+%type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global 
 
 //Destructors
 
@@ -115,7 +115,9 @@ extern void *arvore;
 %left  TK_OC_AND TK_OC_OR 
 %left TK_OC_SL TK_OC_SR
 
-%left '+' '-' 
+%left '-' 
+%left '+' 
+
 %left '*' '/' '%'
 
 
@@ -132,7 +134,7 @@ programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
         ; 
 
-lista_elementos:lista_elementos  elemento 
+lista_elementos:  lista_elementos elemento  
         {
                 if($1 == NULL){
                         $$ = $2;
@@ -140,7 +142,7 @@ lista_elementos:lista_elementos  elemento
                 else{
 
                         addChildren($1,$2);
-                        $$ = $1;
+                        $$ = $2;
                 }
                 
         }
@@ -181,22 +183,24 @@ declaracao_var_global: tipo variavel ';'
         } 
 ;
 
-def_funcao: cabecalho_funcao bloco_comandos_start 
+def_funcao: cabecalho_funcao comandos_funcao 
         {       
-                
-                if($2 != NULL){
-                        
-                        addChildren($1,$2);
-                        $$=$1;                        
-                }
-                else{
-                        
-                        libera($1);
-                        $$ = NULL;
-                }
+                addChildren($1,$2);
+                $$=$1;                        
         }
 ;
 
+comandos_funcao: '{' bloco_comandos '}' 
+        {
+                $$ = $2;
+                
+        }
+        | '{' '}'
+        {
+                $$ = NULL;
+        }
+        ;
+;
 cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
         {
                 $$ = criaNodoValorLexico($2);
@@ -235,6 +239,7 @@ comando_simples: atribuicao {$$ = $1;};
             | TK_PR_CONTINUE {$$ = criaNodoValorLexico($1);}
             | controle_fluxo {$$ = $1;};
             | declaracao_local {$$ = $1;};
+            | bloco_comandos_start {$$ = $1 ;}
             ;
 
 
@@ -438,39 +443,27 @@ bloco_comandos_start: '{' bloco_comandos '}'
         {
                 $$ = $2;
         }
-        | '{' '}'  {$$ = NULL;}
+        | '{' '}'  {$$ = criaNodoValorLexico(criaValorLexicoOP("{}"));}
         ;
 
 
-bloco_comandos: bloco_comandos comando_simples ';' 
+bloco_comandos:  comando_simples ';' 
+        {
+                   $$ = $1;
+        }
+        |  comando_simples ';' bloco_comandos   
         {
                 if($1 == NULL){
-                        $$ = $2;
+                        $$ = $3;
                 }
                 else{
-                        addChildren($1,$2);
+                        addChildren($1,$3);
                         $$ = $1;
-                }                
+                }             
         }
-        | comando_simples ';' 
-        {
-                $$ = $1;
-        }
-        | bloco_comandos_start ';'
-        {
-                $$ = $1;
-        }
-        | bloco_comandos bloco_comandos_start ';'
-        {
-                if($1 == NULL){
-                        $$ = $2;
-                }
-                else{
-                        addChildren($1,$2);
-                        $$ = $1;
-                }  
-        }
+
         ;
+
 
 tipo: TK_PR_INT
         {
@@ -505,6 +498,13 @@ expressao: '(' expressao ')' {
         {
                 $$ = $1;
         }
+         | expressao '-' expressao 
+        {
+                NodoArvore_t* minusNodo = criaNodoValorLexico($2);
+                addChildren(minusNodo, $1);
+                addChildren(minusNodo, $3);
+                $$=minusNodo;
+        }
         | expressao '+'  expressao
         {
                 NodoArvore_t* plusNodo = criaNodoValorLexico($2);
@@ -512,14 +512,7 @@ expressao: '(' expressao ')' {
                 addChildren(plusNodo, $1);
                 addChildren(plusNodo, $3);
                 $$=plusNodo;
-        }
-        | expressao '-' expressao 
-        {
-                NodoArvore_t* minusNodo = criaNodoValorLexico($2);
-                addChildren(minusNodo, $1);
-                addChildren(minusNodo, $3);
-                $$=minusNodo;
-        }
+        }       
         | expressao '*' expressao
         {
                 NodoArvore_t* multNodo = criaNodoValorLexico($2);
