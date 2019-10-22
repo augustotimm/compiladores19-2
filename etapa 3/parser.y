@@ -216,7 +216,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
 
 parametros_funcao: '(' lista_parametros ')' | '(' ')';
 
-lista_parametros: lista_parametros ',' parametro | parametro;
+lista_parametros: parametro ','  lista_parametros | parametro;
 
 parametro: tipo TK_IDENTIFICADOR
         {
@@ -414,7 +414,7 @@ for_lista_comandos: for_comandos
         {
                 $$ = $1;
         }
-        | for_lista_comandos ',' for_comandos 
+        | for_comandos ','  for_lista_comandos
         {
                 addChildren($1,$3);
                 $$ = $1;
@@ -431,7 +431,7 @@ lista_expressao: expressao
                 
                 $$ = $1;
         }
-        | lista_expressao ',' expressao
+        |  expressao ','  lista_expressao
         {
                 addChildren($1, $3);
                 $$ = $1;
@@ -713,8 +713,8 @@ variavel: TK_IDENTIFICADOR {
         | TK_IDENTIFICADOR '[' expressao ']'{ 
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
         NodoArvore_t* bracketNodo = criaNodoValorLexico( criaValorLexicoOP("[]") );
-        addChildren(bracketNodo, $3);
         addChildren(idNodo,bracketNodo);
+        addChildren(idNodo, $3);
         $$ = idNodo;
  }
 ;

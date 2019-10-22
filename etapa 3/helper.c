@@ -2,7 +2,7 @@
 void freeLista(NodoList_t* lista);
 
 void libera(void *tree){
-    printNodo(tree);
+    //printNodo(tree);
     if( tree != NULL){
         deletaNodo(tree);
         tree= NULL;
@@ -12,7 +12,6 @@ void libera(void *tree){
 }
 
 void exporta(void *tree){
-    NodoArvore_t* nodo =  tree;
     if( tree != NULL){
         FILE *file = fopen("./e3.csv", "w");
         saveLonelyNodo(tree, file);
@@ -40,8 +39,9 @@ void saveNodo(NodoArvore_t* nodo, FILE* file){
     NodoList_t* elt;
     if(nodo->childrenNumber > 0 ){
         LL_FOREACH(nodo->children,elt){
-            saveNodo(elt->nodo, file);
             fprintf(file,"%p,%p\n", nodo, elt->nodo);
+
+            saveNodo(elt->nodo, file);
         }
     }
 }
@@ -59,12 +59,13 @@ void printNodo(NodoArvore_t* nodo){
         if(nodo->childrenNumber > 0){
         NodoList_t* elt;
         LL_FOREACH(nodo->children,elt){
-            printNodo(elt->nodo);
             printf("%s:%s\n", nodo->valorLexico.stringValue , elt->nodo->valorLexico.stringValue);
+            printNodo(elt->nodo);
+            
         }
         }
         else{
-           printf("%s\n", nodo->valorLexico.stringValue);
+           //printf("%s\n", nodo->valorLexico.stringValue);
         }
     }
     else{
