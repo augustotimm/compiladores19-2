@@ -1,1 +1,6 @@
 *.tgz
+etapa 3/.vscode/settings.json
+etapa 3/teste.txt
+etapa 3/.vscode/launch.json
+etapa 3/.vscode/tasks.json
+etapa 4/digraph.dot
