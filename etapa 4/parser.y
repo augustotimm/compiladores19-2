@@ -3,6 +3,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "semanticsHelper.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -35,7 +36,7 @@ extern void *arvore;
 %type <valor_lexico> TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_CHAR TK_PR_STRING TK_PR_IF TK_PR_THEN TK_PR_ELSE
 %type <valor_lexico> TK_PR_WHILE TK_PR_DO TK_PR_INPUT TK_PR_OUTPUT TK_PR_RETURN TK_PR_CONST TK_PR_STATIC
 %type <valor_lexico> TK_PR_FOREACH TK_PR_FOR TK_PR_SWITCH TK_PR_CASE TK_PR_BREAK TK_PR_CONTINUE TK_PR_CLASS
-%type <valor_lexico> TK_PR_PRIVATE TK_PR_PUBLIC TK_PR_PROTECTED TK_PR_END TK_PR_DEFAULT
+%type <valor_lexico> TK_PR_PRIVATE TK_PR_PUBLIC TK_PR_PROTECTED TK_PR_END TK_PR_DEFAULT tipo
 
 //Operadores
 %type <valor_lexico> TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE TK_OC_AND TK_OC_OR TK_OC_SL TK_OC_SR TK_OC_FORWARD_PIPE TK_OC_BASH_PIPE
@@ -128,7 +129,8 @@ extern void *arvore;
 
 %%
 
-entry: programa {$$ = $1; arvore = $1;};
+entry: {createHash(NULL); }
+programa {$$ = $2; arvore = $2;};
 
 programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
@@ -156,6 +158,14 @@ elemento: declaracao_var_global { $$ = $1; }
 
 declaracao_var_global: tipo variavel ';' 
         {       
+                HashTree_t* currentScope = getCurrentHash();
+                ValorSemantico_t* varGlobalSemantics = calloc(1, sizeof(ValorSemantico_t));
+                varGlobalSemantics->numerLinha = $1->numeroLinha;
+                varGlobalSemantics->tipo = $1->tipo;
+                varGlobalSemantics->nature = Nvar;
+                //todo definir sizeof
+                varGlobalSemantics->args = NULL;
+                varGlobalSemantics->valor_lexico = $1;
 
                 if($2 != NULL){
                         
