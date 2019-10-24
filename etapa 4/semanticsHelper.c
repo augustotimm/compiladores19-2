@@ -5,8 +5,10 @@ HashList_t* hashList = NULL;
 HashTree_t* createHash(HashTree_t* parent){
     HashTree_t* newHashT = calloc(1,sizeof(HashTree_t));
     MyHash_t* newHash = calloc(1,sizeof(MyHash_t));
+    newHash->valorSemantico = calloc(1,sizeof(ValorSemantico_t));
     newHashT->current =newHash;
     newHashT->parent = parent;
+    addHashToList(newHashT);
     return newHashT;
 }
 
@@ -17,6 +19,7 @@ void deleteHash(HashTree_t* hashT){
     UT_hash_handle hh = current->hh;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
+        liberaValorLexico( currentValue->valorSemantico->valorLexico_t );
         free(currentValue->valorSemantico);
         free(currentValue);
 
@@ -37,6 +40,15 @@ void addHashToList(HashTree_t* hashT){
         LL_APPEND( hashList, newhash);
     }
 
+}
+
+HashTree_t* getCurrentHash(){
+    HashList_t* tmp;
+    LL_FOREACH(hashList,tmp){
+        if(tmp->next== NULL){
+            return tmp->hash;
+        }
+    }
 }
 
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico){
@@ -68,4 +80,20 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
         
     }
     return NULL;    
+}
+
+
+void freeListaHash(){
+    if(hashList->next == NULL){
+        deleteHash(hashList->hash);
+        free(hashList);
+        hashList = NULL;
+    }
+    else{
+        freeLista(hashList->next);
+        deleteHash(hashList->hash);
+        free(hashList);
+        hashList = NULL;
+    }
+    
 }
