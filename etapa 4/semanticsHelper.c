@@ -24,6 +24,16 @@ void deleteHash(HashTree_t* hashT){
     free(hashT->current);
 }
 
+MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico){
+    MyHash_t* newInput = calloc(1, sizeof(MyHash_t));
+    newInput->identificador = valorSemantico->valorLexico_t.stringValue;
+    newInput->valorSemantico = valorSemantico;
+    MyHash_t* current = hashT->current;
+    UT_hash_handle hh = current->hh;
+    HASH_ADD_KEYPTR( hh, current,newInput, strlen(newInput->identificador), newInput);
+    return newInput;
+}
+
 
 ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     MyHash_t* found = NULL;
