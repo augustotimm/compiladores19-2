@@ -24,10 +24,10 @@ typedef struct ValorSemantico_t {
     Nature_s nature;
     int size;
     ArgsList_t* args;
-    struct ValorLexico_t valorLexico_t;
+    ValorLexico_t valorLexico_t;
 
 
-} ValorLexico_t;
+} ValorSemantico_t;
 
 typedef struct ArgsList_t{
     struct ValorSemantico_t *arg;
@@ -36,8 +36,9 @@ typedef struct ArgsList_t{
 
 
 typedef struct MyHash_t{
-    char* identificador;
+    const char* identificador;
     ValorSemantico_t* valorSemantico;
+    UT_hash_handle hh;
 
 } MyHash_t;
 
@@ -46,4 +47,4 @@ typedef struct HashTree_t{
     MyHash_t* parent;
 } HashTree_t;
 
-
+ValorSemantico_t* findSemanticValue( HashTree_t* hashT, char* key);
