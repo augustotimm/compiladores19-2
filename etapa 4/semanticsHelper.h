@@ -48,3 +48,4 @@ typedef struct HashTree_t{
 } HashTree_t;
 
 ValorSemantico_t* findSemanticValue( HashTree_t* hashT, char* key);
+HashTree_t* createHash(HashTree_t* parent);
