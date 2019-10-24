@@ -47,6 +47,12 @@ typedef struct HashTree_t{
     MyHash_t* parent;
 } HashTree_t;
 
+typedef struct HashList_t{
+    struct HashTree_t *hash;
+    struct HashList_t* next;
+} HashList_t;
+
+
 ValorSemantico_t* findSemanticValue( HashTree_t* hashT, char* key);
 HashTree_t* createHash(HashTree_t* parent);
 void deleteHash(HashTree_t* hashT);

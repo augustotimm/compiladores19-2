@@ -1,6 +1,6 @@
 #include "semanticsHelper.h"
 
-
+HashList_t* hashList = NULL;
 
 HashTree_t* createHash(HashTree_t* parent){
     HashTree_t* newHashT = calloc(1,sizeof(HashTree_t));
@@ -22,6 +22,21 @@ void deleteHash(HashTree_t* hashT){
 
     }
     free(hashT->current);
+}
+
+void addHashToList(HashTree_t* hashT){
+    if(hashList == NULL){
+        hashList = calloc(1,sizeof( HashList_t));
+        hashList->hash = hashT;
+        hashList->next = NULL;
+    }
+    else{
+        HashList_t* newhash = calloc(1,sizeof(HashList_t));
+        newhash->hash = hashT;
+        newhash->next = NULL;
+        LL_APPEND( hashList, newhash);
+    }
+
 }
 
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico){
@@ -54,5 +69,3 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     }
     return NULL;    
 }
-
-
