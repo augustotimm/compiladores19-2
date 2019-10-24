@@ -10,7 +10,19 @@ HashTree_t* createHash(HashTree_t* parent){
     return newHashT;
 }
 
+void deleteHash(HashTree_t* hashT){
+    MyHash_t* temp;
+    MyHash_t* currentValue;
+    MyHash_t* current = hashT->current;
+    UT_hash_handle hh = current->hh;
+    HASH_ITER(hh, current, currentValue, temp){
+        HASH_DEL(current,currentValue);
+        free(currentValue->valorSemantico);
+        free(currentValue);
 
+    }
+    free(hashT->current);
+}
 
 
 ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
