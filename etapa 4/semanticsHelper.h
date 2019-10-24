@@ -4,13 +4,6 @@
 
 
 
-typedef enum {
-    Tint,
-    Tfloat,
-    Tchar,
-    Tbool,
-    Tstring,
-} Tipo_s;
 
 typedef enum {
     Nliteral,
@@ -20,7 +13,7 @@ typedef enum {
 
 typedef struct ValorSemantico_t {
     int numeroLinha;
-    Tipo_s tipo;
+    Tipo_t tipo;
     Nature_s nature;
     int size;
     ArgsList_t* args;

@@ -23,9 +23,6 @@ typedef enum {
     Tchar,
     Tbool,
     Tstring,
-    Tpr,
-    Top,
-    Tid,
 } Tipo_t;
 
 
