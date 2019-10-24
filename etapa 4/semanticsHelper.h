@@ -2,11 +2,6 @@
 #include "utlist.h"
 #include "helper.h"
 
-typedef struct ArgsList_t{
-    struct ValorSemantico_t *arg;
-    struct ArgsList_t* next;
-} ArgsList_t;
-
 
 
 typedef enum {
@@ -33,3 +28,22 @@ typedef struct ValorSemantico_t {
 
 
 } ValorLexico_t;
+
+typedef struct ArgsList_t{
+    struct ValorSemantico_t *arg;
+    struct ArgsList_t* next;
+} ArgsList_t;
+
+
+typedef struct MyHash_t{
+    char* identificador;
+    ValorSemantico_t* valorSemantico;
+
+} MyHash_t;
+
+typedef struct HashTree_t{
+    MyHash_t* current;
+    MyHash_t* parent;
+} HashTree_t;
+
+
