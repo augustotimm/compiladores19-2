@@ -162,7 +162,7 @@ declaracao_var_global: tipo variavel ';'
                 HashTree_t* currentScope = getCurrentHash();
                 $1.stringValue =  strdup($2->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, Nvar);
-                addToHash(currentScope, varGlobalSemantics, $2->valorLexico.stringValue); 
+                addToHash(currentScope, varGlobalSemantics, $1.stringValue); 
                 if($2 != NULL){
                         
                         if($2->childrenNumber == 0){
@@ -182,7 +182,7 @@ declaracao_var_global: tipo variavel ';'
                 HashTree_t* currentScope = getCurrentHash();
                 $2.stringValue =  strdup($3->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, Nvar);
-                addToHash(currentScope, varGlobalSemantics, $3->valorLexico.stringValue); 
+                addToHash(currentScope, varGlobalSemantics, $2.stringValue); 
                 
                 if($3->childrenNumber == 0){
                         libera($3); 
@@ -217,9 +217,9 @@ comandos_funcao:
 cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
         { 
                 HashTree_t* currentScope = getCurrentHash();
-                $1.stringValue = $2.stringValue;
+                $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, Nfunc);
-                addToHash(currentScope, funcSemantics, $2.stringValue); 
+                addToHash(currentScope, funcSemantics, $1.stringValue); 
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
                 libera($3);

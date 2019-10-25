@@ -85,7 +85,7 @@ typedef struct ValorSemantico_t {
 
 
 typedef struct MyHash_t{
-    const char* identificador;
+    char* identificador;
     ValorSemantico_t* valorSemantico;
     UT_hash_handle hh;
 

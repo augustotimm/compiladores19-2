@@ -17,7 +17,8 @@ void deleteHash(HashTree_t* hashT){
     MyHash_t* current = hashT->current;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
-        free(currentValue->valorSemantico);
+        free( currentValue->valorSemantico);
+        free(currentValue->identificador);
         free(currentValue);
 
     }
