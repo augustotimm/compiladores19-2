@@ -15,15 +15,12 @@ void deleteHash(HashTree_t* hashT){
     MyHash_t* temp;
     MyHash_t* currentValue;
     MyHash_t* current = hashT->current;
-    UT_hash_handle hh = current->hh;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
-        liberaValorLexico( currentValue->valorSemantico->valorLexico );
         free(currentValue->valorSemantico);
         free(currentValue);
 
     }
-    free(hashT->current);
 }
 
 void addHashToList(HashTree_t* hashT){
@@ -77,7 +74,6 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
             return findSemanticValue(hashT->parent, key);
         }
         else{
-            //todo Not Found key
             return NULL;
         }
         
@@ -85,12 +81,12 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     return NULL;    
 }
 
-ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico){
+ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, Nature_s nature){
 
     ValorSemantico_t* semanticValue = calloc(1, sizeof(ValorSemantico_t));
     semanticValue->numeroLinha = valorLexico.numeroLinha;
     semanticValue->tipo = valorLexico.tipo;
-    semanticValue->nature = Nvar;
+    semanticValue->nature = nature;
     //todo definir sizeof
     semanticValue->args = NULL;
     semanticValue->valorLexico =valorLexico;
@@ -102,6 +98,7 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico){
 void freeListaHashRecursive(HashList_t* currentHashList){
     if(currentHashList->next == NULL){
         deleteHash(currentHashList->hash);
+        free(currentHashList->hash);
         free(currentHashList);
         currentHashList = NULL;
         return;
@@ -109,12 +106,13 @@ void freeListaHashRecursive(HashList_t* currentHashList){
     else{
         freeListaHashRecursive(currentHashList->next);
         deleteHash(currentHashList->hash);
+        free(currentHashList->hash);
         free(currentHashList);
         currentHashList = NULL;
     }
 }
 
-void freeListaHash(){
+void dumpHashes(){
     
     freeListaHashRecursive(hashList);
 }
