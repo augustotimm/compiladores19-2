@@ -161,7 +161,7 @@ declaracao_var_global: tipo variavel ';'
         {       
                 HashTree_t* currentScope = getCurrentHash();
                 $1.stringValue =  strdup($2->valorLexico.stringValue);
-                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, Nvar);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, varGlobalSemantics, $1.stringValue); 
                 if($2 != NULL){
                         
@@ -170,7 +170,6 @@ declaracao_var_global: tipo variavel ';'
                                 $2 = NULL;
                         }
                         
-                
                 }
                
                 $$ = $2;
@@ -181,7 +180,7 @@ declaracao_var_global: tipo variavel ';'
         {
                 HashTree_t* currentScope = getCurrentHash();
                 $2.stringValue =  strdup($3->valorLexico.stringValue);
-                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, Nvar);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, varGlobalSemantics, $2.stringValue); 
                 
                 if($3->childrenNumber == 0){
@@ -218,7 +217,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
         { 
                 HashTree_t* currentScope = getCurrentHash();
                 $1.stringValue = strdup( $2.stringValue);
-                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, Nfunc);
+                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
@@ -229,7 +228,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
         {
                 HashTree_t* currentScope = getCurrentHash();
                 $2.stringValue = $3.stringValue;
-                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, Nfunc);
+                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $3.stringValue); 
 
                 liberaValorLexico($1);
