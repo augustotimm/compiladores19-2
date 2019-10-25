@@ -55,9 +55,9 @@ extern void *arvore;
 
 %type <nodo> for_declaracao for_comandos for_lista_comandos declaracao_local inicializacao declaracao_local_simples
 
-%type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos
+%type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos parametro lista_parametros parametros_funcao
 
-%type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global 
+%type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global  
 
 //Destructors
 
@@ -160,13 +160,13 @@ elemento: declaracao_var_global { $$ = $1; }
 declaracao_var_global: tipo variavel ';' 
         {       
                 HashTree_t* currentScope = getCurrentHash();
-                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1);
+                $1.stringValue =  strdup($2->valorLexico.stringValue);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, Nvar);
                 addToHash(currentScope, varGlobalSemantics, $2->valorLexico.stringValue); 
-
                 if($2 != NULL){
                         
                         if($2->childrenNumber == 0){
-                                libera($2); 
+                                libera($2);
                                 $2 = NULL;
                         }
                         
@@ -179,6 +179,11 @@ declaracao_var_global: tipo variavel ';'
         }
         |  TK_PR_STATIC tipo variavel ';'
         {
+                HashTree_t* currentScope = getCurrentHash();
+                $2.stringValue =  strdup($3->valorLexico.stringValue);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, Nvar);
+                addToHash(currentScope, varGlobalSemantics, $3->valorLexico.stringValue); 
+                
                 if($3->childrenNumber == 0){
                         libera($3); 
                         $3=NULL;
@@ -196,9 +201,11 @@ def_funcao: cabecalho_funcao comandos_funcao
         }
 ;
 
-comandos_funcao: '{' bloco_comandos '}' 
+comandos_funcao: 
+        '{'{createHash(getCurrentHash()); }
+         bloco_comandos '}' 
         {
-                $$ = $2;
+                $$ = $3;
                 
         }
         | '{' '}'
@@ -208,30 +215,49 @@ comandos_funcao: '{' bloco_comandos '}'
         ;
 ;
 cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
-        {
+        { 
+                HashTree_t* currentScope = getCurrentHash();
+                $1.stringValue = $2.stringValue;
+                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, Nfunc);
+                addToHash(currentScope, funcSemantics, $2.stringValue); 
+                printNodo($3);
                 $$ = criaNodoValorLexico($2);
+                libera($3);
                 
         }
         | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao 
         {
+                HashTree_t* currentScope = getCurrentHash();
+                $2.stringValue = $3.stringValue;
+                ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, Nfunc);
+                addToHash(currentScope, funcSemantics, $3.stringValue); 
+
                 liberaValorLexico($1);
+                liberaValorLexico($3);
                 $$ = criaNodoValorLexico($3);
-        }                
+                libera($4);
+        }
         
         ;
 
-parametros_funcao: '(' lista_parametros ')' | '(' ')';
+parametros_funcao: '(' lista_parametros ')' {$$=$2;} | '(' ')' {$$=NULL;};
 
-lista_parametros: parametro ','  lista_parametros | parametro;
+lista_parametros: parametro ','  lista_parametros {addChildren($1,$3);$$=$1;}
+        | parametro {$$=$1;};
 
 parametro: tipo TK_IDENTIFICADOR
         {
-                liberaValorLexico($2);
+                $2.tipo = $1.tipo;
+                $$ = criaNodoValorLexico($2);
+                
+                //liberaValorLexico($1);
         }
         | TK_PR_CONST tipo TK_IDENTIFICADOR
         {
                 liberaValorLexico($1);
-                liberaValorLexico($3);
+                $3.tipo = $2.tipo;
+                $$ = criaNodoValorLexico($3);        
+                liberaValorLexico($2);
         }
         ;
 
