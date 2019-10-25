@@ -9,4 +9,4 @@ run:
 	./etapa4 < teste.txt
 
 clean:
-	rm -rf parser.lex.c parser.tab.c etapa2 parser.tab.h rm lex.yy.* parser.tab.* parser.output etapa3 *.csv *.o
+	rm -rf parser.lex.c parser.tab.c etapa4 parser.tab.h rm lex.yy.* parser.tab.* parser.output etapa3 *.csv *.o
