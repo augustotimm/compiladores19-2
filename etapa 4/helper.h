@@ -125,5 +125,6 @@ void deleteHash(HashTree_t* hashT);
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* identificador);
 HashTree_t* getCurrentHash();
 void addHashToList(HashTree_t* hashT);
-ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico);
+ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, Nature_s nature);
 void printHash(HashTree_t* HashT);
+void dumpHashes();
