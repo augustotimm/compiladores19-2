@@ -6,6 +6,14 @@
 
 #include "uthash.h"
 
+
+#define NATUREZA_LITERAL_INT        1
+#define NATUREZA_LITERAL_FLOAT      2
+#define NATUREZA_LITERAL_CHAR       3
+#define NATUREZA_LITERAL_STRING     4
+#define NATUREZA_LITERAL_BOOL       5
+#define NATUREZA_IDENTIFICADOR      6
+
 struct NodoArvore_t;
 
 
@@ -125,6 +133,6 @@ void deleteHash(HashTree_t* hashT);
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* identificador);
 HashTree_t* getCurrentHash();
 void addHashToList(HashTree_t* hashT);
-ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, Nature_s nature);
+ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int nature);
 void printHash(HashTree_t* HashT);
 void dumpHashes();

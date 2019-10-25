@@ -82,7 +82,7 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     return NULL;    
 }
 
-ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, Nature_s nature){
+ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int  nature){
 
     ValorSemantico_t* semanticValue = calloc(1, sizeof(ValorSemantico_t));
     semanticValue->numeroLinha = valorLexico.numeroLinha;
