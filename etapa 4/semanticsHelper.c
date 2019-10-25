@@ -1,12 +1,11 @@
-#include "semanticsHelper.h"
+#include "helper.h"
+#include "semanticsErrors.h"
 
 HashList_t* hashList = NULL;
 
 HashTree_t* createHash(HashTree_t* parent){
     HashTree_t* newHashT = calloc(1,sizeof(HashTree_t));
-    MyHash_t* newHash = calloc(1,sizeof(MyHash_t));
-    newHash->valorSemantico = calloc(1,sizeof(ValorSemantico_t));
-    newHashT->current =newHash;
+    newHashT->current = NULL;
     newHashT->parent = parent;
     addHashToList(newHashT);
     return newHashT;
@@ -19,7 +18,7 @@ void deleteHash(HashTree_t* hashT){
     UT_hash_handle hh = current->hh;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
-        liberaValorLexico( currentValue->valorSemantico->valorLexico_t );
+        liberaValorLexico( currentValue->valorSemantico->valorLexico );
         free(currentValue->valorSemantico);
         free(currentValue);
 
@@ -51,13 +50,17 @@ HashTree_t* getCurrentHash(){
     }
 }
 
-MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico){
+MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* identificadorVar){
     MyHash_t* newInput = calloc(1, sizeof(MyHash_t));
-    newInput->identificador = valorSemantico->valorLexico_t.stringValue;
+    newInput->identificador = identificadorVar;
     newInput->valorSemantico = valorSemantico;
     MyHash_t* current = hashT->current;
-    UT_hash_handle hh = current->hh;
-    HASH_ADD_KEYPTR( hh, current,newInput, strlen(newInput->identificador), newInput);
+    ValorSemantico_t* found = findSemanticValue(hashT,identificadorVar);
+    if(found != NULL){
+        printf("variavel Ja declarada no escopo");
+        exit(ERR_DECLARED);
+    }
+    HASH_ADD_STR( hashT->current, identificador, newInput);
     return newInput;
 }
 
@@ -65,7 +68,7 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico){
 ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     MyHash_t* found = NULL;
     HASH_FIND_STR( hashT->current,key,found );
-    if(found){
+    if(found != NULL){
         return found->valorSemantico;
     }
     else{
@@ -82,18 +85,49 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     return NULL;    
 }
 
+ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico){
 
-void freeListaHash(){
-    if(hashList->next == NULL){
-        deleteHash(hashList->hash);
-        free(hashList);
-        hashList = NULL;
+    ValorSemantico_t* semanticValue = calloc(1, sizeof(ValorSemantico_t));
+    semanticValue->numeroLinha = valorLexico.numeroLinha;
+    semanticValue->tipo = valorLexico.tipo;
+    semanticValue->nature = Nvar;
+    //todo definir sizeof
+    semanticValue->args = NULL;
+    semanticValue->valorLexico =valorLexico;
+
+    return semanticValue;    
+}
+
+
+void freeListaHashRecursive(HashList_t* currentHashList){
+    if(currentHashList->next == NULL){
+        deleteHash(currentHashList->hash);
+        free(currentHashList);
+        currentHashList = NULL;
+        return;
     }
     else{
-        freeLista(hashList->next);
-        deleteHash(hashList->hash);
-        free(hashList);
-        hashList = NULL;
+        freeListaHashRecursive(currentHashList->next);
+        deleteHash(currentHashList->hash);
+        free(currentHashList);
+        currentHashList = NULL;
     }
+}
+
+void freeListaHash(){
     
+    freeListaHashRecursive(hashList);
+}
+
+void printHash(HashTree_t* hashT){
+    MyHash_t* temp;
+    MyHash_t* currentValue;
+    MyHash_t* current = hashT->current;
+    UT_hash_handle hh = current->hh;
+
+   HASH_ITER(hh, current, currentValue, temp){
+       
+       printf("%s\n",currentValue->identificador);
+
+    }
 }

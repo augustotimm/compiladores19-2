@@ -25,7 +25,7 @@ void exporta(void *tree){
 
 ValorLexico_t criaValorLexicoOP(char* valor){
     ValorLexico_t novoValor;
-    novoValor.tipo = Top;
+    novoValor.tipo = Tvoid;
     novoValor.charValue = '\0'; 
     novoValor.boolValue = false; 
     novoValor.floatValue = 0; 
@@ -156,3 +156,4 @@ void freeLista(NodoList_t* lista){
     }
     
 }
+

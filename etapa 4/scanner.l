@@ -8,14 +8,14 @@
 
 #define DEF_NOTLITERAL yylval.valor_lexico.isLiteral = false;
 
-#define DEF_PALAVRA_RESERVADA yylval.valor_lexico.tipo  = Tpr;\
+#define DEF_PALAVRA_RESERVADA yylval.valor_lexico.tipo  = Tvoid;\
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
   yylval.valor_lexico.stringValue = strdup(yytext);\
 
-#define DEF_OPERACAO yylval.valor_lexico.tipo  = Top;\
+#define DEF_OPERACAO yylval.valor_lexico.tipo  = Tvoid;\
   yylval.valor_lexico.charValue = '\0'; \
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
@@ -26,7 +26,7 @@
 
 #define DEF_TYPE_INT yylval.valor_lexico.tipo  = Tint; 
 
-#define DEF_TYPE_IDENTIFICADOR yylval.valor_lexico.tipo  = Tid; 
+#define DEF_TYPE_IDENTIFICADOR yylval.valor_lexico.tipo  = Tvoid; 
 
 #define DEF_TYPE_FLOAT yylval.valor_lexico.tipo  = Tfloat;
 

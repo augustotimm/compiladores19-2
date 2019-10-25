@@ -3,7 +3,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "semanticsHelper.h"
+
 
 int yylex(void);
 void yyerror (char const *s);
@@ -15,6 +15,7 @@ extern void *arvore;
 %error-verbose
 %code requires {
   #include "helper.h"
+
 }
 
 %union{
@@ -159,13 +160,8 @@ elemento: declaracao_var_global { $$ = $1; }
 declaracao_var_global: tipo variavel ';' 
         {       
                 HashTree_t* currentScope = getCurrentHash();
-                ValorSemantico_t* varGlobalSemantics = calloc(1, sizeof(ValorSemantico_t));
-                varGlobalSemantics->numerLinha = $1->numeroLinha;
-                varGlobalSemantics->tipo = $1->tipo;
-                varGlobalSemantics->nature = Nvar;
-                //todo definir sizeof
-                varGlobalSemantics->args = NULL;
-                varGlobalSemantics->valor_lexico = $1;
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1);
+                addToHash(currentScope, varGlobalSemantics, $2->valorLexico.stringValue); 
 
                 if($2 != NULL){
                         
