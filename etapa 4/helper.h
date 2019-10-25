@@ -136,3 +136,4 @@ void addHashToList(HashTree_t* hashT);
 ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int nature);
 void printHash(HashTree_t* HashT);
 void dumpHashes();
+void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);

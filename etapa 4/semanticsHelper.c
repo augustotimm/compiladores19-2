@@ -130,3 +130,20 @@ void printHash(HashTree_t* hashT){
 
     }
 }
+void createArgsSemantics_recursive(ValorSemantico_t* func, NodoArvore_t* args){
+    if(args == NULL){
+        return;
+    }
+    else{
+
+        ValorSemantico_t* argSemantics = createSemanticValueFromLexical(args->valorLexico, NATUREZA_IDENTIFICADOR);
+        ArgsList_t* currentArgument = calloc(1, sizeof(ArgsList_t));
+        currentArgument->arg = currentArgument;
+        LL_APPEND(func->args, currentArgument);
+        createArgsSemantics_recursive(func, args->children);
+    }
+}
+
+void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args){
+    createArgsSemantics_recursive(func, args);
+}
