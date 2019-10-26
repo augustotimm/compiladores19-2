@@ -160,6 +160,10 @@ elemento: declaracao_var_global { $$ = $1; }
 declaracao_var_global: tipo variavel ';' 
         {       
                 HashTree_t* currentScope = getCurrentHash();
+                if($1.stringValue  != NULL){
+                        free($1.stringValue);
+                        $1.stringValue = NULL
+                }
                 $1.stringValue =  strdup($2->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, varGlobalSemantics, $1.stringValue); 
@@ -179,6 +183,10 @@ declaracao_var_global: tipo variavel ';'
         |  TK_PR_STATIC tipo variavel ';'
         {
                 HashTree_t* currentScope = getCurrentHash();
+                if($2.stringValue  != NULL){
+                        free($2.stringValue);
+                        $2.stringValue = NULL
+                }
                 $2.stringValue =  strdup($3->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, varGlobalSemantics, $2.stringValue); 
@@ -216,6 +224,10 @@ comandos_funcao:
 cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao 
         { 
                 HashTree_t* currentScope = getCurrentHash();
+                if($1.stringValue  != NULL){
+                        free($1.stringValue);
+                        $1.stringValue = NULL
+                }
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
@@ -227,9 +239,13 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
         | TK_PR_STATIC tipo TK_IDENTIFICADOR parametros_funcao 
         {
                 HashTree_t* currentScope = getCurrentHash();
-                $2.stringValue = $3.stringValue;
+                if($2.stringValue  != NULL){
+                        free($2.stringValue);
+                        $2.stringValue = NULL
+                }
+                $2.stringValue = strdup($3.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
-                addToHash(currentScope, funcSemantics, $3.stringValue); 
+                addToHash(currentScope, funcSemantics, $2.stringValue); 
 
                 liberaValorLexico($1);
                 liberaValorLexico($3);
@@ -248,8 +264,8 @@ parametro: tipo TK_IDENTIFICADOR
         {
                 $2.tipo = $1.tipo;
                 $$ = criaNodoValorLexico($2);
+                liberaValorLexico($1);
                 
-                //liberaValorLexico($1);
         }
         | TK_PR_CONST tipo TK_IDENTIFICADOR
         {
