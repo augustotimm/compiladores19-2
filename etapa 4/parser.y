@@ -162,7 +162,7 @@ declaracao_var_global: tipo variavel ';'
                 HashTree_t* currentScope = getCurrentHash();
                 if($1.stringValue  != NULL){
                         free($1.stringValue);
-                        $1.stringValue = NULL
+                        $1.stringValue = NULL;
                 }
                 $1.stringValue =  strdup($2->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
@@ -185,7 +185,7 @@ declaracao_var_global: tipo variavel ';'
                 HashTree_t* currentScope = getCurrentHash();
                 if($2.stringValue  != NULL){
                         free($2.stringValue);
-                        $2.stringValue = NULL
+                        $2.stringValue = NULL;
                 }
                 $2.stringValue =  strdup($3->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
@@ -226,7 +226,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 HashTree_t* currentScope = getCurrentHash();
                 if($1.stringValue  != NULL){
                         free($1.stringValue);
-                        $1.stringValue = NULL
+                        $1.stringValue = NULL;
                 }
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
@@ -241,7 +241,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 HashTree_t* currentScope = getCurrentHash();
                 if($2.stringValue  != NULL){
                         free($2.stringValue);
-                        $2.stringValue = NULL
+                        $2.stringValue = NULL;
                 }
                 $2.stringValue = strdup($3.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
@@ -262,17 +262,25 @@ lista_parametros: parametro ','  lista_parametros {addChildren($1,$3);$$=$1;}
 
 parametro: tipo TK_IDENTIFICADOR
         {
-                $2.tipo = $1.tipo;
-                $$ = criaNodoValorLexico($2);
-                liberaValorLexico($1);
+                if($1.stringValue  != NULL){
+                        free($1.stringValue);
+                        $1.stringValue = NULL;
+                }
+                $1.stringValue = strdup($1.stringValue);
+                $$ = criaNodoValorLexico($1);
+                liberaValorLexico($2);
                 
         }
         | TK_PR_CONST tipo TK_IDENTIFICADOR
         {
+                if($2.stringValue  != NULL){
+                        free($2.stringValue);
+                        $2.stringValue = NULL;
+                }
                 liberaValorLexico($1);
-                $3.tipo = $2.tipo;
-                $$ = criaNodoValorLexico($3);        
-                liberaValorLexico($2);
+                $2.stringValue =strdup($2.stringValue);
+                $$ = criaNodoValorLexico($2);
+                liberaValorLexico($3);
         }
         ;
 
@@ -514,23 +522,23 @@ bloco_comandos:  comando_simples ';'
 
 tipo: TK_PR_INT
         {
-                liberaValorLexico($1);
+                $$ = $1;
         }
     |   TK_PR_BOOL
     {
-        liberaValorLexico($1);
+        $$ = $1;
     }
     |   TK_PR_CHAR
     {
-        liberaValorLexico($1);
+        $$ = $1;
     }
     |   TK_PR_FLOAT
     {
-        liberaValorLexico($1);    
-        }
+        $$ = $1; 
+    }
     |   TK_PR_STRING
     {
-        liberaValorLexico($1);    
+            $$ = $1;
     }
     ;
 
