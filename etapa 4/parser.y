@@ -158,15 +158,17 @@ elemento: declaracao_var_global { $$ = $1; }
 
 
 declaracao_var_global: tipo variavel ';' 
-        {       
+        {      
                 HashTree_t* currentScope = getCurrentHash();
                 if($1.stringValue  != NULL){
                         free($1.stringValue);
                         $1.stringValue = NULL;
                 }
+
                 $1.stringValue =  strdup($2->valorLexico.stringValue);
                 ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, varGlobalSemantics, $1.stringValue); 
+                
                 if($2 != NULL){
                         
                         if($2->childrenNumber == 0){
@@ -175,7 +177,7 @@ declaracao_var_global: tipo variavel ';'
                         }
                         
                 }
-               
+                
                 $$ = $2;
                 
                         
@@ -233,6 +235,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
+                createArgsSemantics(funcSemantics, $3);
                 libera($3);
                 
         }
@@ -250,6 +253,8 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 liberaValorLexico($1);
                 liberaValorLexico($3);
                 $$ = criaNodoValorLexico($3);
+                createArgsSemantics(funcSemantics, $4);
+
                 libera($4);
         }
         
@@ -266,7 +271,7 @@ parametro: tipo TK_IDENTIFICADOR
                         free($1.stringValue);
                         $1.stringValue = NULL;
                 }
-                $1.stringValue = strdup($1.stringValue);
+                $1.stringValue = strdup($2.stringValue);
                 $$ = criaNodoValorLexico($1);
                 liberaValorLexico($2);
                 
@@ -278,7 +283,7 @@ parametro: tipo TK_IDENTIFICADOR
                         $2.stringValue = NULL;
                 }
                 liberaValorLexico($1);
-                $2.stringValue =strdup($2.stringValue);
+                $2.stringValue =strdup($3.stringValue);
                 $$ = criaNodoValorLexico($2);
                 liberaValorLexico($3);
         }
