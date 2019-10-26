@@ -18,8 +18,11 @@ void deleteHash(HashTree_t* hashT){
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
         free( currentValue->valorSemantico);
+        currentValue->valorSemantico= NULL;
         free(currentValue->identificador);
+        currentValue->identificador = NULL;
         free(currentValue);
+        currentValue = NULL;
 
     }
 }
@@ -100,6 +103,7 @@ void freeListaHashRecursive(HashList_t* currentHashList){
     if(currentHashList->next == NULL){
         deleteHash(currentHashList->hash);
         free(currentHashList->hash);
+        currentHashList->hash = NULL;
         free(currentHashList);
         currentHashList = NULL;
         return;
@@ -108,6 +112,7 @@ void freeListaHashRecursive(HashList_t* currentHashList){
         freeListaHashRecursive(currentHashList->next);
         deleteHash(currentHashList->hash);
         free(currentHashList->hash);
+        currentHashList->hash = NULL;
         free(currentHashList);
         currentHashList = NULL;
     }
@@ -138,9 +143,19 @@ void createArgsSemantics_recursive(ValorSemantico_t* func, NodoArvore_t* args){
 
         ValorSemantico_t* argSemantics = createSemanticValueFromLexical(args->valorLexico, NATUREZA_IDENTIFICADOR);
         ArgsList_t* currentArgument = calloc(1, sizeof(ArgsList_t));
-        currentArgument->arg = currentArgument;
+        currentArgument->arg = argSemantics;
         LL_APPEND(func->args, currentArgument);
-        createArgsSemantics_recursive(func, args->children);
+        if(args->childrenNumber > 1 ){
+            //ERRO NA AST
+        }
+        if(args->childrenNumber > 0){
+            NodoList_t* child = NULL;
+            LL_FOREACH(args->children, child){
+                createArgsSemantics_recursive(func, child->nodo);
+
+            }
+        }
+        return;
     }
 }
 
