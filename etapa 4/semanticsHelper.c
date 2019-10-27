@@ -11,12 +11,38 @@ HashTree_t* createHash(HashTree_t* parent){
     return newHashT;
 }
 
+void freeArgs(ArgsList_t* args){
+    if(args->next == NULL){
+        liberaValorLexico(args->arg->valorLexico);
+        free(args->arg);
+        args->arg= NULL;
+        free(args);
+        args = NULL;
+        return;    
+    }
+    else
+    {
+        liberaValorLexico(args->arg->valorLexico);
+        freeArgs(args->next);
+        free(args->arg);
+        args->arg= NULL;
+        free(args);
+        args = NULL;
+
+    }
+    
+
+}
+
 void deleteHash(HashTree_t* hashT){
     MyHash_t* temp;
     MyHash_t* currentValue;
     MyHash_t* current = hashT->current;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
+        if(currentValue->valorSemantico->args != NULL){
+            freeArgs(currentValue->valorSemantico->args);
+        }
         free( currentValue->valorSemantico);
         currentValue->valorSemantico= NULL;
         free(currentValue->identificador);
@@ -129,7 +155,7 @@ void printHash(HashTree_t* hashT){
     MyHash_t* current = hashT->current;
     UT_hash_handle hh = current->hh;
 
-   HASH_ITER(hh, current, currentValue, temp){
+    HASH_ITER(hh, current, currentValue, temp){
        
        printf("%s\n",currentValue->identificador);
 
@@ -140,10 +166,12 @@ void createArgsSemantics_recursive(ValorSemantico_t* func, NodoArvore_t* args){
         return;
     }
     else{
-
-        ValorSemantico_t* argSemantics = createSemanticValueFromLexical(args->valorLexico, NATUREZA_IDENTIFICADOR);
+        ValorLexico_t argsLexico = args->valorLexico;
+        argsLexico.stringValue = strdup(args->valorLexico.stringValue);
+        ValorSemantico_t* argSemantics = createSemanticValueFromLexical(argsLexico, NATUREZA_IDENTIFICADOR);
         ArgsList_t* currentArgument = calloc(1, sizeof(ArgsList_t));
         currentArgument->arg = argSemantics;
+        currentArgument->next = NULL;
         LL_APPEND(func->args, currentArgument);
         if(args->childrenNumber > 1 ){
             //ERRO NA AST
