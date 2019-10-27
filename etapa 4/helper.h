@@ -67,11 +67,7 @@ typedef struct NodoArvore_t{
 
 
 
-typedef enum {
-    Nliteral,
-    Nvar,
-    Nfunc,
-} Nature_s;
+
 
 
 typedef struct ArgsList_t{
@@ -83,7 +79,7 @@ typedef struct ArgsList_t{
 typedef struct ValorSemantico_t {
     int numeroLinha;
     Tipo_t tipo;
-    Nature_s nature;
+    int nature;
     int size;
     ArgsList_t* args;
     ValorLexico_t valorLexico;
