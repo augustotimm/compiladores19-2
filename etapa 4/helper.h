@@ -134,4 +134,4 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
 void printHash(HashTree_t* HashT);
 void dumpHashes();
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
-bool checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
+ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);

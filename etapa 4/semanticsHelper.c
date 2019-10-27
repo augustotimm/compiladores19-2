@@ -1,6 +1,11 @@
 #include "helper.h"
 #include "semanticsErrors.h"
 
+#define SIZE_OF_CHAR 1
+#define SIZE_OF_INT 4
+#define SIZE_OF_FLOAT 8
+#define SIZE_OF_BOOL 1
+
 HashList_t* hashList = NULL;
 
 HashTree_t* createHash(HashTree_t* parent, ValorSemantico_t* hashCreator){
@@ -202,12 +207,12 @@ void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args){
     createArgsSemantics_recursive(func, args);
 }
 
-bool checkIdentifierDeclared(HashTree_t* hashT, char* identificador){
+ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador){
     ValorSemantico_t* found = findSemanticValue(hashT, identificador);
     if(found == NULL){
         exit(ERR_UNDECLARED);
     }
     else{
-        return true;
+        return found;
     }
 }
