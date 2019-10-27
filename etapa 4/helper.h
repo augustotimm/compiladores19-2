@@ -97,6 +97,7 @@ typedef struct MyHash_t{
 
 typedef struct HashTree_t{
     MyHash_t* current;
+    ValorSemantico_t* hashCreator;
     struct HashTree_t* parent;
 } HashTree_t;
 
@@ -124,7 +125,7 @@ void saveLonelyNodo(NodoArvore_t* nodo, FILE* file);
 //Semantica
 
 ValorSemantico_t* findSemanticValue( HashTree_t* hashT, char* key);
-HashTree_t* createHash(HashTree_t* parent);
+HashTree_t* createHash(HashTree_t* parent, ValorSemantico_t* hashCreator);
 void deleteHash(HashTree_t* hashT);
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* identificador);
 HashTree_t* getCurrentHash();
@@ -133,3 +134,4 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
 void printHash(HashTree_t* HashT);
 void dumpHashes();
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
+bool checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
