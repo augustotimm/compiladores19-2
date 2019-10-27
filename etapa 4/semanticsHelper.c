@@ -3,10 +3,11 @@
 
 HashList_t* hashList = NULL;
 
-HashTree_t* createHash(HashTree_t* parent){
+HashTree_t* createHash(HashTree_t* parent, ValorSemantico_t* hashCreator){
     HashTree_t* newHashT = calloc(1,sizeof(HashTree_t));
     newHashT->current = NULL;
     newHashT->parent = parent;
+    newHashT->hashCreator = hashCreator;
     addHashToList(newHashT);
     return newHashT;
 }
@@ -95,10 +96,20 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* i
 ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
     MyHash_t* found = NULL;
     HASH_FIND_STR( hashT->current,key,found );
-    if(found != NULL){
+    if(found != NULL ){
         return found->valorSemantico;
     }
     else{
+        if(hashT->hashCreator != NULL){
+            ArgsList_t* arg;
+            LL_FOREACH(hashT->hashCreator->args, arg){
+                if (strcmp(key,arg->arg->valorLexico.stringValue)==0)
+                {
+                    return arg->arg;
+                }
+                
+            }
+        }
         if (hashT->parent != NULL)
         {
             return findSemanticValue(hashT->parent, key);
@@ -189,4 +200,14 @@ void createArgsSemantics_recursive(ValorSemantico_t* func, NodoArvore_t* args){
 
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args){
     createArgsSemantics_recursive(func, args);
+}
+
+bool checkIdentifierDeclared(HashTree_t* hashT, char* identificador){
+    ValorSemantico_t* found = findSemanticValue(hashT, identificador);
+    if(found == NULL){
+        exit(ERR_UNDECLARED);
+    }
+    else{
+        return true;
+    }
 }
