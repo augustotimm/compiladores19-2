@@ -338,6 +338,8 @@ inicializacao: TK_OC_LE literal
         }
         | TK_OC_LE variavel 
         {
+                checkIdentifierDeclared( getCurrentHash(), $2->valorLexico.stringValue);    
+                            
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
         }
@@ -361,6 +363,7 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR
 atribuicao: variavel '=' expressao 
         {
                 checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
+
                 NodoArvore_t* atrNodo = criaNodoValorLexico($2);
                 addChildren(atrNodo,$1);
                 addChildren(atrNodo,$3);
@@ -405,6 +408,9 @@ comando_return: TK_PR_RETURN expressao
 
 comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao 
         {
+                checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
+
+                
                 NodoArvore_t* slNodo = criaNodoValorLexico($2);
                 NodoArvore_t* identificador = criaNodoValorLexico($1);
                 addChildren(slNodo,identificador);
@@ -413,6 +419,9 @@ comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao
         }
         |  TK_IDENTIFICADOR TK_OC_SR expressao 
         {
+                checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
+
+
                 NodoArvore_t* srNodo = criaNodoValorLexico($2);
                 NodoArvore_t* identificador = criaNodoValorLexico($1);
                 addChildren(srNodo,identificador);
@@ -558,6 +567,7 @@ expressao: '(' expressao ')' {
         }
         | variavel
         {
+                checkIdentifierDeclared( getCurrentHash(), $1->valorLexico.stringValue);
                 $$ = $1;
         }
          | expressao '-' expressao 
