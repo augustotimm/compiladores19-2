@@ -130,7 +130,7 @@ extern void *arvore;
 
 %%
 
-entry: {createHash(NULL); }
+entry: {createHash(NULL, NULL); }
 programa {$$ = $2; arvore = $2;};
 
 programa: lista_elementos  {$$ =$1;   }
@@ -210,15 +210,15 @@ def_funcao: cabecalho_funcao comandos_funcao
         }
 ;
 
-comandos_funcao: 
-        '{'{createHash(getCurrentHash()); }
-         bloco_comandos '}' 
+comandos_funcao: '{' bloco_comandos '}' 
         {
-                $$ = $3;
+                deleteHash(getCurrentHash());
+                $$ = $2;
                 
         }
         | '{' '}'
         {
+                deleteHash(getCurrentHash());
                 $$ = NULL;
         }
         ;
@@ -233,6 +233,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
+                createHash(currentScope, funcSemantics);
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
                 createArgsSemantics(funcSemantics, $3);
@@ -359,6 +360,7 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR
 
 atribuicao: variavel '=' expressao 
         {
+                checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
                 NodoArvore_t* atrNodo = criaNodoValorLexico($2);
                 addChildren(atrNodo,$1);
                 addChildren(atrNodo,$3);
