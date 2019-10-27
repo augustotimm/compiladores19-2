@@ -135,3 +135,4 @@ void printHash(HashTree_t* HashT);
 void dumpHashes();
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
 ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
+Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB);

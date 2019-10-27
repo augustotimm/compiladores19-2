@@ -216,3 +216,85 @@ ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador
         return found;
     }
 }
+
+Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB){
+    switch (tipoA)
+    {
+    case  Tint:
+        switch (tipoB)
+        {
+        case Tint: return Tint;
+        
+        case Tfloat: return Tfloat;
+        
+        case Tbool: return Tint;
+
+        case Tchar: exit( ERR_CHAR_TO_X );
+        
+        case Tstring: exit( ERR_STRING_TO_X );
+        
+        }break;
+
+        
+    
+    case Tfloat:
+        switch (tipoB)
+        {
+        case Tint: return Tfloat;
+        
+        case Tfloat: return Tfloat;
+        
+        case Tbool: return Tfloat;
+        
+        case Tchar: exit( ERR_CHAR_TO_X );
+        
+        case Tstring: exit( ERR_STRING_TO_X );
+        }break;
+
+    case Tbool:
+        switch (tipoB)
+        {
+        case Tint: return Tint;
+        
+        case Tfloat: return Tfloat;
+        
+        case Tbool: return Tbool;
+        
+        case Tchar: exit( ERR_CHAR_TO_X );
+        
+        case Tstring: exit( ERR_STRING_TO_X );
+        }break;
+
+    case Tchar:
+        switch (tipoB)
+        {
+        case Tint: exit( ERR_CHAR_TO_X );
+        
+        case Tfloat: exit( ERR_CHAR_TO_X );
+        
+        case Tbool: exit( ERR_CHAR_TO_X );
+        
+        case Tchar: return Tchar;
+        
+        case Tstring: exit( ERR_CHAR_TO_X );
+        } break;
+
+    case Tstring:
+        switch (tipoB)
+        {
+        case Tint: exit( ERR_STRING_TO_X );
+        
+        case Tfloat: exit( ERR_STRING_TO_X );
+        
+        case Tbool: exit( ERR_STRING_TO_X );
+        
+        case Tchar: exit( ERR_STRING_TO_X );
+        
+        case Tstring: return Tstring;
+        } break;
+
+    default:
+        break;
+    }
+
+}
