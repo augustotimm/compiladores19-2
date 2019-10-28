@@ -400,6 +400,8 @@ atribuicao: variavel '=' expressao
 chamada_funcao: TK_IDENTIFICADOR '(' ')' 
         {
                 $$ = criaNodoValorLexico($1);
+                ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
+                verifyArgs(func->args, NULL);
                 
         }
         |  TK_IDENTIFICADOR '(' lista_expressao ')' 
@@ -407,6 +409,8 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
                 NodoArvore_t* chamadaNodo = criaNodoValorLexico($1);
                 addChildren(chamadaNodo,$3);
                 $$ = chamadaNodo;
+                ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
+                verifyArgs(func->args, $3);
         }
         ;
 
