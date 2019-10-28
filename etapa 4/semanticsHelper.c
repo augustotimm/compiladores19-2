@@ -350,3 +350,12 @@ void getNameFromAddress(ValorSemantico_t* valorSemantico){
     valorSemantico->name = createNameFromAddress(valorSemantico);
 
 }
+
+Tipo_t getParentFunctionType(HashTree_t* hashT){
+    if(hashT->hashCreator == NULL){
+        getParentFunctionType(hashT->parent);
+    }
+    else{
+        return hashT->hashCreator->tipo;
+    }
+}

@@ -142,3 +142,4 @@ void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
 ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
 Tipo_t typeInfer(Tipo_t tipoA, Tipo_t tipoB);
 void getNameFromAddress(ValorSemantico_t* valorSemantico);
+Tipo_t getParentFunctionType(HashTree_t* hashT);

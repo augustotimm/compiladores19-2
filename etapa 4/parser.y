@@ -430,6 +430,10 @@ comando_return: TK_PR_RETURN expressao
         {
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
+
+                if(getParentFunctionType(getCurrentHash()) != $2->tipo){
+                        exit(ERR_WRONG_PAR_RETURN);
+                }
         }
 ;
 
