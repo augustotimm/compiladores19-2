@@ -145,7 +145,7 @@ lista_elementos:   elemento  lista_elementos
                 else{
 
                         addChildren($1,$2);
-                        $$ = $2;
+                        $$ = $1;
                 }
                 
         }
@@ -233,8 +233,8 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
-                createHash(getCurrentHash(), funcSemantics);
-                printNodo($3);
+                createHash(currentScope, funcSemantics);
+                
                 $$ = criaNodoValorLexico($2);
                 createArgsSemantics(funcSemantics, $3);
                 libera($3);
