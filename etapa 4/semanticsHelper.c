@@ -353,9 +353,13 @@ void getNameFromAddress(ValorSemantico_t* valorSemantico){
 
 Tipo_t getParentFunctionType(HashTree_t* hashT){
     if(hashT->hashCreator == NULL){
+        if( hashT->parent ==NULL){
+            exit( ERR_WRONG_PAR_RETURN);
+        }
         getParentFunctionType(hashT->parent);
     }
     else{
+        
         return hashT->hashCreator->tipo;
     }
 }
