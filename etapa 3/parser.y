@@ -136,14 +136,18 @@ programa: lista_elementos  {$$ =$1;   }
 
 lista_elementos:   elemento  lista_elementos
         {
+
+
                 if($1 == NULL){
+                        printf("ELEMENTO IGNORADO");
                         $$ = $2;
                 }
                 else{
 
-                        addChildren($1,$2);
-                        $$ = $2;
+                        
                 }
+
+                $$ = $1;
                 
         }
         | elemento {$$ = $1; } 
