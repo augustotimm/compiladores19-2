@@ -143,3 +143,4 @@ ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador
 Tipo_t typeInfer(Tipo_t tipoA, Tipo_t tipoB);
 void getNameFromAddress(ValorSemantico_t* valorSemantico);
 Tipo_t getParentFunctionType(HashTree_t* hashT);
+bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received);

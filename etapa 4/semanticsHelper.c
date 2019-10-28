@@ -363,3 +363,80 @@ Tipo_t getParentFunctionType(HashTree_t* hashT){
         return hashT->hashCreator->tipo;
     }
 }
+
+
+bool argsTypeInfer(Tipo_t expected, Tipo_t received){
+    switch (expected)
+    {
+    case Tint: switch (received)
+        {
+        case Tint:
+            return true;
+            break;
+        case Tbool:
+            return true;
+        
+        default:
+            exit(ERR_WRONG_TYPE_ARGS);
+            break;
+        }
+        break;
+    
+    case Tfloat: switch (received)
+        {
+        case Tint:
+            return true;
+        case Tbool:
+            return true;
+        case Tfloat:
+            return true;
+        default:
+            exit(ERR_WRONG_TYPE_ARGS);
+            break;
+        }
+
+    case Tbool:
+        if(expected == Tbool){
+            return true;
+        }
+        else{
+            exit(ERR_WRONG_TYPE_ARGS);
+        }
+
+    case Tchar:
+        if(expected == Tchar){
+            return true;
+        }
+        else{
+            exit(ERR_WRONG_TYPE_ARGS);
+        }
+    case Tstring:
+        if(expected == Tstring){
+            return true;
+        }
+        else{
+            exit(ERR_WRONG_TYPE_ARGS);
+        }
+
+    default:
+        break;
+    }
+}
+
+bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received){
+    if(expected != NULL && received != NULL){
+        if( argsTypeInfer(expected->arg->tipo, received->tipo) ){
+            verifyArgs(expected->next, received->children->nodo);
+        }
+    }
+
+    if(expected == NULL && received != NULL ){
+        exit(ERR_EXCESS_ARGS );
+    }
+
+    if(expected != NULL && received == NULL){
+        exit(ERR_MISSING_ARGS);
+    }
+    
+}
+
