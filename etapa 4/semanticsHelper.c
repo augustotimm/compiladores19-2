@@ -365,19 +365,20 @@ Tipo_t getParentFunctionType(HashTree_t* hashT){
 }
 
 
-bool argsTypeInfer(Tipo_t expected, Tipo_t received){
+bool canConvertType(Tipo_t expected, Tipo_t received){
     switch (expected)
     {
     case Tint: switch (received)
         {
         case Tint:
             return true;
-            break;
+        case Tfloat:
+            return true;
         case Tbool:
             return true;
         
         default:
-            exit(ERR_WRONG_TYPE_ARGS);
+            return false;
             break;
         }
         break;
@@ -391,16 +392,21 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
         case Tfloat:
             return true;
         default:
-            exit(ERR_WRONG_TYPE_ARGS);
+            return false;
             break;
         }
 
-    case Tbool:
-        if(received == Tbool){
+    case Tbool:switch (received)
+        {
+        case Tint:
             return true;
-        }
-        else{
-            exit(ERR_WRONG_TYPE_ARGS);
+        case Tbool:
+            return true;
+        case Tfloat:
+            return true;
+        default:
+            return false;
+            break;
         }
 
     case Tchar:
@@ -408,14 +414,14 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
             return true;
         }
         else{
-            exit(ERR_WRONG_TYPE_ARGS);
+            return false;
         }
     case Tstring:
         if(received == Tstring){
             return true;
         }
         else{
-            exit(ERR_WRONG_TYPE_ARGS);
+            return false;
         }
 
     default:
@@ -425,7 +431,7 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
 
 bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received){
     if(expected != NULL && received != NULL){
-        if( argsTypeInfer(expected->arg->tipo, received->tipo) ){
+        if( canConvertType(expected->arg->tipo, received->tipo) ){
             if( expected->next == NULL && received->children != NULL){
                 exit(ERR_EXCESS_ARGS );
             }
