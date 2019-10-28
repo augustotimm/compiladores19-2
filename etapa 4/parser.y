@@ -233,7 +233,6 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
-                createHash(currentScope, funcSemantics);
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
                 createArgsSemantics(funcSemantics, $3);
@@ -510,9 +509,14 @@ lista_expressao: expressao
         ;
 
 
-bloco_comandos_start: '{' bloco_comandos '}' 
+bloco_comandos_start: '{'
         {
-                $$ = $2;
+                createHash(getCurrentHash(),NULL);
+
+        } bloco_comandos '}' 
+        {
+                $$ = $3;
+                deleteHash(getCurrentHash());
         }
         | '{' '}'  {$$ = criaNodoValorLexico(criaValorLexicoOP("{}"));}
         ;
@@ -522,7 +526,7 @@ bloco_comandos:  comando_simples ';'
         {
                    $$ = $1;
         }
-        |  comando_simples ';' bloco_comandos   
+        |  comando_simples ';' bloco_comandos
         {
                 if($1 == NULL){
                         $$ = $3;
