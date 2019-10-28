@@ -456,6 +456,12 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
                 addChildren(ifNodo,$5);
                 addChildren(ifNodo,$6);
                 $$ = ifNodo;
+
+                if($3->tipo != Tbool){
+                        exit(ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tvoid;
         }
 ;
 
@@ -474,6 +480,10 @@ for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_co
                 addChildren(forNodo, $7);
                 addChildren(forNodo, $9);
                 $$ = forNodo;
+
+                if($5->tipo != Tbool){
+                        exit(ERR_WRONG_TYPE);
+                }
         }
 ;
 
@@ -484,6 +494,10 @@ while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
                 addChildren($$,$3);
                 addChildren($$,$6);
                 liberaValorLexico($5);
+
+                if($3->tipo != Tbool){
+                        exit(ERR_WRONG_TYPE);
+                }
         }
 ;
 
