@@ -437,6 +437,9 @@ bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received){
     if(expected != NULL && received == NULL){
         exit(ERR_MISSING_ARGS);
     }
+    if(expected == NULL && received == NULL){
+        return true;
+    }
     
 }
 
