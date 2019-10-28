@@ -5,14 +5,16 @@
 #define SIZE_OF_FLOAT 8
 #define SIZE_OF_BOOL 1
 
-HashList_t* hashList = NULL;
+HashStack_t* hashStack = NULL;
 
 HashTree_t* createHash(HashTree_t* parent, ValorSemantico_t* hashCreator){
     HashTree_t* newHashT = calloc(1,sizeof(HashTree_t));
+    HashStack_t* newHashStack = calloc(1, sizeof(HashStack_t));
     newHashT->current = NULL;
     newHashT->parent = parent;
     newHashT->hashCreator = hashCreator;
-    addHashToList(newHashT);
+    newHashStack->hash = newHashT;
+    STACK_PUSH(hashStack,newHashStack);
     return newHashT;
 }
 
@@ -42,63 +44,77 @@ void freeArgs(ArgsList_t* args){
 }
 
 void deleteHash(HashTree_t* hashT){
-    MyHash_t* temp;
-    MyHash_t* currentValue;
-    MyHash_t* current = hashT->current;
-    HASH_ITER(hh, current, currentValue, temp){
-        HASH_DEL(current,currentValue);
-        
-        
-        if(currentValue->valorSemantico != NULL){
-            if(currentValue->valorSemantico->args != NULL){
-            freeArgs(currentValue->valorSemantico->args);
-            }
-            if(currentValue->valorSemantico->name != NULL){
-            free( currentValue->valorSemantico->name);
-            currentValue->valorSemantico->name = NULL;
+    MyHash_t* temp = NULL;
+    MyHash_t* currentValue = NULL;
+    if(hashT != NULL){
+        MyHash_t* current = hashT->current;
+        HASH_ITER(hh, current, currentValue, temp){
+            HASH_DEL(current,currentValue);
+            
+            
+            if(currentValue->valorSemantico != NULL){
+                if(currentValue->valorSemantico->args != NULL){
+                freeArgs(currentValue->valorSemantico->args);
+                }
+                if(currentValue->valorSemantico->name != NULL){
+                free( currentValue->valorSemantico->name);
+                currentValue->valorSemantico->name = NULL;
+                }
+                else{
+                    if(currentValue->identificador != NULL){
+                    free(currentValue->identificador);
+                    currentValue->identificador = NULL;
+                    }
+                }
+                
+                free( currentValue->valorSemantico);
+                currentValue->valorSemantico= NULL;
+                
+            }else{
+                if(currentValue->identificador != NULL){
+                    free(currentValue->identificador);
+                    currentValue->identificador = NULL;
+                }
             }
             
-            free( currentValue->valorSemantico);
-            currentValue->valorSemantico= NULL;
             
-        }
-        
-        if(currentValue->identificador){
-            free(currentValue->identificador);
-            currentValue->identificador = NULL;
-        }
-        if(currentValue != NULL){
-            free(currentValue);
-            currentValue = NULL;
-        }
-        
-        
+            if(currentValue != NULL){
+                free(currentValue);
+                currentValue = NULL;
+            }
+            
+            
 
+        }
+        free(hashT);
+        hashT = NULL;
+        HashStack_t* elt = NULL;
+        STACK_POP(hashStack, elt);
+        free(elt);
+        elt = NULL;
     }
+    
 }
 
 void addHashToList(HashTree_t* hashT){
-    if(hashList == NULL){
-        hashList = calloc(1,sizeof( HashList_t));
-        hashList->hash = hashT;
-        hashList->next = NULL;
+    if(hashStack == NULL){
+        hashStack = calloc(1,sizeof( HashStack_t));
+        hashStack->hash = hashT;
+        hashStack->next = NULL;
     }
     else{
-        HashList_t* newhash = calloc(1,sizeof(HashList_t));
+        HashStack_t* newhash = calloc(1,sizeof(HashStack_t));
         newhash->hash = hashT;
         newhash->next = NULL;
-        LL_APPEND( hashList, newhash);
+        LL_APPEND( hashStack, newhash);
     }
 
 }
 
 HashTree_t* getCurrentHash(){
-    HashList_t* tmp;
-    LL_FOREACH(hashList,tmp){
-        if(tmp->next== NULL){
-            return tmp->hash;
-        }
-    }
+    HashStack_t* temp;
+    temp= STACK_TOP(hashStack);
+    return temp->hash;
 }
 
 MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* identificadorVar){
@@ -160,13 +176,10 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
 }
 
 
-void freeListaHashRecursive(HashList_t* currentHashList){
+void freeListaHashRecursive(HashStack_t* currentHashList){
     if(currentHashList->next == NULL){
         if(currentHashList->hash != NULL){
             deleteHash(currentHashList->hash);
-            free(currentHashList->hash);
-            currentHashList->hash = NULL;
-
         }
         
         free(currentHashList);
@@ -177,9 +190,6 @@ void freeListaHashRecursive(HashList_t* currentHashList){
         freeListaHashRecursive(currentHashList->next);
         if(currentHashList->hash != NULL){
             deleteHash(currentHashList->hash);
-            free(currentHashList->hash);
-            currentHashList->hash = NULL;
-
         }
         free(currentHashList);
         currentHashList = NULL;
@@ -188,7 +198,7 @@ void freeListaHashRecursive(HashList_t* currentHashList){
 
 void dumpHashes(){
     
-    freeListaHashRecursive(hashList);
+    freeListaHashRecursive(hashStack);
 }
 
 void printHash(HashTree_t* hashT){
