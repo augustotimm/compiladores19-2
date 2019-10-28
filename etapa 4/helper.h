@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include<string.h> 
 #include "utlist.h"
+#include "semanticsErrors.h"
+
 
 #include "uthash.h"
 
@@ -62,7 +64,7 @@ typedef struct NodoList_t{
 typedef struct NodoArvore_t{
     int childrenNumber;
     ValorLexico_t valorLexico;
-    struct ValorSemantico_t* valorSemantico;
+    Tipo_t tipo;
     NodoList_t *children;
 } NodoArvore_t;
 
@@ -137,6 +139,5 @@ void printHash(HashTree_t* HashT);
 void dumpHashes();
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
 ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
-Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB);
-void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico );
+Tipo_t typeInfer(Tipo_t tipoA, Tipo_t tipoB);
 void getNameFromAddress(ValorSemantico_t* valorSemantico);

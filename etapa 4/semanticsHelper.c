@@ -1,5 +1,4 @@
 #include "helper.h"
-#include "semanticsErrors.h"
 
 #define SIZE_OF_CHAR 1
 #define SIZE_OF_INT 4
@@ -223,7 +222,7 @@ ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador
     }
 }
 
-Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB){
+Tipo_t typeInfer(Tipo_t tipoA, Tipo_t tipoB){
     switch (tipoA)
     {
     case  Tint:
@@ -305,11 +304,7 @@ Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB){
 
 }
 
-void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico ){
-    if(nodo->valorSemantico == NULL){
-        nodo->valorSemantico = valorSemantico;
-    }
-}
+
 
 void getNameFromAddress(ValorSemantico_t* valorSemantico){
     if( valorSemantico->name != NULL){
