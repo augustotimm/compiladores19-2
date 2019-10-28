@@ -770,18 +770,43 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_FALSE{
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
 }
         | TK_LIT_FLOAT{
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_FLOAT );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
 }
         | TK_LIT_INT{
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_INT );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
 }
         | TK_LIT_STRING{
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_STRING );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
 }
         | TK_LIT_TRUE{
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
 }
         ;
 
