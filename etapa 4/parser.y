@@ -306,6 +306,9 @@ comando_simples: atribuicao {$$ = $1;};
 
 declaracao_local: declaracao_local_simples inicializacao 
         {
+
+                
+
                 if( $2 != NULL){
                         addChildren($2,$1);
                         $$=$2;
@@ -349,11 +352,29 @@ inicializacao: TK_OC_LE literal
 
 declaracao_local_simples: tipo TK_IDENTIFICADOR 
         {
+                HashTree_t* currentScope = getCurrentHash();
+                if($1.stringValue  != NULL){
+                        free($1.stringValue);
+                        $1.stringValue = NULL;
+                }
+
+                $1.stringValue =  strdup($2.stringValue);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
+                addToHash(currentScope, varGlobalSemantics, $1.stringValue); 
+
                 $$ = criaNodoValorLexico($2);
         }
         | TK_PR_CONST tipo TK_IDENTIFICADOR
         {
-                liberaValorLexico($1);
+                HashTree_t* currentScope = getCurrentHash();
+                if($2.stringValue  != NULL){
+                        free($2.stringValue);
+                        $2.stringValue = NULL;
+                }
+
+                $2.stringValue =  strdup($3.stringValue);
+                ValorSemantico_t* varGlobalSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
+                addToHash(currentScope, varGlobalSemantics, $1.stringValue);
 
                 $$ = criaNodoValorLexico($3);
         }
