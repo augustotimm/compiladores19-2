@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include<string.h> 
 #include "utlist.h"
+#include "utstack.h"
 #include "semanticsErrors.h"
 
 
@@ -105,10 +106,10 @@ typedef struct HashTree_t{
     struct HashTree_t* parent;
 } HashTree_t;
 
-typedef struct HashList_t{
+typedef struct HashStack_t{
     struct HashTree_t *hash;
-    struct HashList_t* next;
-} HashList_t;
+    struct HashStack_t* next;
+} HashStack_t;
 
 
 
