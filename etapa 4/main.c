@@ -14,7 +14,6 @@ void exporta (void *arvore);
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 
-  dumpHashes();
   exporta (arvore);
   libera(arvore);
   arvore = NULL;
