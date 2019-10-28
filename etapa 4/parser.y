@@ -567,8 +567,10 @@ expressao: '(' expressao ')' {
         }
         | variavel
         {
-                checkIdentifierDeclared( getCurrentHash(), $1->valorLexico.stringValue);
                 $$ = $1;
+                ValorSemantico_t* semantics = checkIdentifierDeclared( getCurrentHash(), $1->valorLexico.stringValue);
+                $$->tipo = semantics->tipo;
+
         }
          | expressao '-' expressao 
         {
@@ -576,6 +578,15 @@ expressao: '(' expressao ')' {
                 addChildren(minusNodo, $1);
                 addChildren(minusNodo, $3);
                 $$=minusNodo;
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
         | expressao '+'  expressao
         {
@@ -584,6 +595,16 @@ expressao: '(' expressao ')' {
                 addChildren(plusNodo, $1);
                 addChildren(plusNodo, $3);
                 $$=plusNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = typeInfer($1->tipo, $3->tipo);     
         }       
         | expressao '*' expressao
         {
@@ -591,6 +612,8 @@ expressao: '(' expressao ')' {
                 addChildren(multNodo, $1);
                 addChildren(multNodo, $3);
                 $$=multNodo;
+
+                $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
         | expressao '/' expressao 
         {
@@ -598,6 +621,16 @@ expressao: '(' expressao ')' {
                 addChildren(divNodo, $1);
                 addChildren(divNodo, $3);
                 $$=divNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
         | expressao '%' expressao 
         {       
@@ -608,6 +641,16 @@ expressao: '(' expressao ')' {
                 addChildren(restoNodo, $3);
 
                 $$=restoNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tint;
         }
         | expressao '|' expressao 
         {
@@ -615,6 +658,17 @@ expressao: '(' expressao ')' {
                 addChildren(orNodo, $1);
                 addChildren(orNodo, $3);
                 $$=orNodo;
+                
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tint;
+                
         }
         | expressao '&' expressao 
         {
@@ -622,6 +676,16 @@ expressao: '(' expressao ')' {
                 addChildren(andNodo, $1);
                 addChildren(andNodo, $3);
                 $$=andNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tint;
         }
         | expressao '^' expressao 
         {
@@ -629,6 +693,16 @@ expressao: '(' expressao ')' {
                 addChildren(powNodo, $1);
                 addChildren(powNodo, $3);
                 $$=powNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tfloat;
         }
         | expressao TK_OC_LE expressao
         {
@@ -636,20 +710,16 @@ expressao: '(' expressao ')' {
                 addChildren(leNodo, $1);
                 addChildren(leNodo, $3);
                 $$=leNodo;
-        }
-        | expressao '<' expressao
-        {
-                NodoArvore_t* leNodo = criaNodoValorLexico($2);
-                addChildren(leNodo, $1);
-                addChildren(leNodo, $3);
-                $$=leNodo;
-        }
-        | expressao '>' expressao
-        {
-                NodoArvore_t* leNodo = criaNodoValorLexico($2);
-                addChildren(leNodo, $1);
-                addChildren(leNodo, $3);
-                $$=leNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
         }
         | expressao TK_OC_GE expressao
         {
@@ -657,6 +727,17 @@ expressao: '(' expressao ')' {
                 addChildren(geNodo, $1);
                 addChildren(geNodo, $3);
                 $$=geNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
+                
         }
         | expressao TK_OC_EQ expressao
         {
@@ -664,6 +745,16 @@ expressao: '(' expressao ')' {
                 addChildren(eqNodo, $1);
                 addChildren(eqNodo, $3);
                 $$=eqNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
         }
         | expressao TK_OC_NE expressao
         {
@@ -671,6 +762,17 @@ expressao: '(' expressao ')' {
                 addChildren(neNodo, $1);
                 addChildren(neNodo, $3);
                 $$=neNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
+
         }
         | expressao TK_OC_AND expressao
         {
@@ -678,6 +780,16 @@ expressao: '(' expressao ')' {
                 addChildren(andNodo, $1);
                 addChildren(andNodo, $3);
                 $$=andNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
         }
         | expressao TK_OC_OR expressao
         {
@@ -685,20 +797,16 @@ expressao: '(' expressao ')' {
                 addChildren(orNodo, $1);
                 addChildren(orNodo, $3);
                 $$=orNodo;
-        }
-        | expressao TK_OC_SL expressao
-        {
-                NodoArvore_t* slNodo = criaNodoValorLexico($2);
-                addChildren(slNodo, $1);
-                addChildren(slNodo, $3);
-                $$=slNodo;
-        }
-        | expressao TK_OC_SR expressao
-        {
-                NodoArvore_t* srNodo = criaNodoValorLexico($2);
-                addChildren(srNodo, $1);
-                addChildren(srNodo, $3);
-                $$=srNodo;
+
+                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
         }
         | '+' expressao %prec UNARIO
         {
@@ -764,7 +872,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_CHAR );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 
 
 }
@@ -774,7 +882,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 }
         | TK_LIT_FLOAT{
         $$ = criaNodoValorLexico( $1);
@@ -782,7 +890,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_FLOAT );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 }
         | TK_LIT_INT{
         $$ = criaNodoValorLexico( $1);
@@ -790,7 +898,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_INT );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 }
         | TK_LIT_STRING{
         $$ = criaNodoValorLexico( $1);
@@ -798,7 +906,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_STRING );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 }
         | TK_LIT_TRUE{
         $$ = criaNodoValorLexico( $1);
@@ -806,7 +914,7 @@ literal: TK_LIT_CHAR {
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
         getNameFromAddress(semantics);
         addToHash(getCurrentHash(), semantics, semantics->name);
-        $$->valorSemantico = semantics;
+        $$->tipo = semantics->tipo;
 }
         ;
 
