@@ -339,7 +339,7 @@ inicializacao: TK_OC_LE literal
         | TK_OC_LE variavel 
         {
                 checkIdentifierDeclared( getCurrentHash(), $2->valorLexico.stringValue);    
-                            
+
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
         }
@@ -760,6 +760,13 @@ expressao: '(' expressao ')' {
 
 literal: TK_LIT_CHAR {
         $$ = criaNodoValorLexico( $1);
+
+        ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_CHAR );
+        getNameFromAddress(semantics);
+        addToHash(getCurrentHash(), semantics, semantics->name);
+        $$->valorSemantico = semantics;
+
+
 }
         | TK_LIT_FALSE{
         $$ = criaNodoValorLexico( $1);
