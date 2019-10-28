@@ -368,6 +368,12 @@ atribuicao: variavel '=' expressao
                 addChildren(atrNodo,$1);
                 addChildren(atrNodo,$3);
                 $$ = atrNodo;
+                ValorSemantico_t* variableSemantics = checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
+                if( variableSemantics->tipo != $3->tipo){
+                        exit(ERR_WRONG_TYPE );
+                }
+                $$->tipo = Tvoid;
+
         }
 ;
 chamada_funcao: TK_IDENTIFICADOR '(' ')' 
@@ -864,14 +870,14 @@ expressao: '(' expressao ')' {
                 NodoArvore_t* addressNodo = criaNodoValorLexico($1);
                 addChildren(addressNodo, $2);         
                 $$=addressNodo;
-                $$->valorLexico.tipo = $2->valorLexico.tipo;
+                $$->tipo = $2->valorLexico.tipo;
         }
         | '*' expressao %prec UNARIO
         {
                 NodoArvore_t* pointerNodo = criaNodoValorLexico($1);
                 addChildren(pointerNodo, $2);         
                 $$=pointerNodo;
-                $$->valorLexico.tipo = $2->valorLexico.tipo;
+                $$->tipo = $2->valorLexico.tipo;
 
         }
         | expressao '?'  expressao ':' expressao
@@ -885,7 +891,7 @@ expressao: '(' expressao ')' {
                 if($1->valorLexico.tipo != Tbool){
                         exit( ERR_WRONG_TYPE);
                 }
-                $$->valorLexico.tipo = Tvoid;
+                $$->tipo = Tvoid;
                 
         }
         | '#' expressao %prec UNARIO
@@ -893,7 +899,7 @@ expressao: '(' expressao ')' {
                 NodoArvore_t* hashNodo = criaNodoValorLexico($1);
                 addChildren(hashNodo, $2);         
                 $$=hashNodo;
-                $$->valorLexico.tipo = Tvoid;
+                $$->tipo = Tvoid;
         }
         |chamada_funcao
         {
@@ -963,6 +969,10 @@ variavel: TK_IDENTIFICADOR {
         addChildren(idNodo,bracketNodo);
         addChildren(idNodo, $3);
         $$ = idNodo;
+
+        if($3->valorLexico.tipo != Tint){
+                exit(ERR_WRONG_TYPE);
+        }
  }
 ;
 %%
