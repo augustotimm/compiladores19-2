@@ -131,7 +131,7 @@ extern void *arvore;
 %%
 
 entry: {createHash(NULL, NULL); }
-programa {$$ = $2; arvore = $2;};
+programa {$$ = $2; arvore = $2; deleteHash(getCurrentHash());};
 
 programa: lista_elementos  {$$ =$1;   }
         | %empty {$$ = NULL;}
@@ -233,6 +233,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 $1.stringValue = strdup( $2.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
+                createHash(getCurrentHash(), funcSemantics);
                 printNodo($3);
                 $$ = criaNodoValorLexico($2);
                 createArgsSemantics(funcSemantics, $3);
@@ -817,36 +818,61 @@ expressao: '(' expressao ')' {
                 NodoArvore_t* plusNodo = criaNodoValorLexico($1);
                 addChildren(plusNodo, $2);         
                 $$=plusNodo;
+
+                if($2->tipo != Tint && $2->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = $2->valorLexico.tipo;
         }        
         | '?' expressao %prec UNARIO
         {
                 NodoArvore_t* interrogNodo = criaNodoValorLexico($1);
                 addChildren(interrogNodo, $2);         
                 $$=interrogNodo;
+
+               
+
+                $$->tipo = Tbool;
         }        
         | '-' expressao %prec UNARIO
         {
                 NodoArvore_t* minusNodo = criaNodoValorLexico($1);
                 addChildren(minusNodo, $2);         
                 $$=minusNodo;
+
+                if($2->tipo != Tint && $2->tipo != Tfloat ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = $2->valorLexico.tipo;
         }
         | '!' expressao %prec UNARIO
         {
                 NodoArvore_t* notNodo = criaNodoValorLexico($1);
                 addChildren(notNodo, $2);         
                 $$=notNodo;
+
+                if($2->tipo != Tbool  ){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                $$->tipo = Tbool;
         }
         | '&' expressao %prec UNARIO
         {
                 NodoArvore_t* addressNodo = criaNodoValorLexico($1);
                 addChildren(addressNodo, $2);         
                 $$=addressNodo;
+                $$->valorLexico.tipo = $2->valorLexico.tipo;
         }
         | '*' expressao %prec UNARIO
         {
                 NodoArvore_t* pointerNodo = criaNodoValorLexico($1);
                 addChildren(pointerNodo, $2);         
                 $$=pointerNodo;
+                $$->valorLexico.tipo = $2->valorLexico.tipo;
+
         }
         | expressao '?'  expressao ':' expressao
         {
@@ -856,6 +882,10 @@ expressao: '(' expressao ')' {
                 addChildren(tercNodo, $3);
                 addChildren(tercNodo, $5);
                 $$=tercNodo;
+                if($1->valorLexico.tipo != Tbool){
+                        exit( ERR_WRONG_TYPE);
+                }
+                $$->valorLexico.tipo = Tvoid;
                 
         }
         | '#' expressao %prec UNARIO
@@ -863,6 +893,7 @@ expressao: '(' expressao ')' {
                 NodoArvore_t* hashNodo = criaNodoValorLexico($1);
                 addChildren(hashNodo, $2);         
                 $$=hashNodo;
+                $$->valorLexico.tipo = Tvoid;
         }
         |chamada_funcao
         {
