@@ -47,18 +47,32 @@ void deleteHash(HashTree_t* hashT){
     MyHash_t* current = hashT->current;
     HASH_ITER(hh, current, currentValue, temp){
         HASH_DEL(current,currentValue);
-        if(currentValue->valorSemantico->args != NULL){
+        
+        
+        if(currentValue->valorSemantico != NULL){
+            if(currentValue->valorSemantico->args != NULL){
             freeArgs(currentValue->valorSemantico->args);
+            }
+            if(currentValue->valorSemantico->name != NULL){
+            free( currentValue->valorSemantico->name);
+            currentValue->valorSemantico->name = NULL;
+            }
+            
+            free( currentValue->valorSemantico);
+            currentValue->valorSemantico= NULL;
+            
         }
-        free( currentValue->valorSemantico->name);
-        currentValue->valorSemantico->name = NULL;
-
-        free( currentValue->valorSemantico);
-        currentValue->valorSemantico= NULL;
-        free(currentValue->identificador);
-        currentValue->identificador = NULL;
-        free(currentValue);
-        currentValue = NULL;
+        
+        if(currentValue->identificador){
+            free(currentValue->identificador);
+            currentValue->identificador = NULL;
+        }
+        if(currentValue != NULL){
+            free(currentValue);
+            currentValue = NULL;
+        }
+        
+        
 
     }
 }
@@ -148,18 +162,25 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
 
 void freeListaHashRecursive(HashList_t* currentHashList){
     if(currentHashList->next == NULL){
-        deleteHash(currentHashList->hash);
-        free(currentHashList->hash);
-        currentHashList->hash = NULL;
+        if(currentHashList->hash != NULL){
+            deleteHash(currentHashList->hash);
+            free(currentHashList->hash);
+            currentHashList->hash = NULL;
+
+        }
+        
         free(currentHashList);
         currentHashList = NULL;
         return;
     }
     else{
         freeListaHashRecursive(currentHashList->next);
-        deleteHash(currentHashList->hash);
-        free(currentHashList->hash);
-        currentHashList->hash = NULL;
+        if(currentHashList->hash != NULL){
+            deleteHash(currentHashList->hash);
+            free(currentHashList->hash);
+            currentHashList->hash = NULL;
+
+        }
         free(currentHashList);
         currentHashList = NULL;
     }
@@ -304,14 +325,18 @@ Tipo_t typeInfer(Tipo_t tipoA, Tipo_t tipoB){
 
 }
 
-
+char* createNameFromAddress(ValorSemantico_t* valorSemantico) {
+    
+    char* a = calloc(16, sizeof(char));
+    
+    snprintf(a, 16, "%p", valorSemantico );
+    return a;
+}
 
 void getNameFromAddress(ValorSemantico_t* valorSemantico){
     if( valorSemantico->name != NULL){
         free(valorSemantico->name);
     }
-    valorSemantico->name = calloc(16, sizeof(char));
-
-    snprintf(valorSemantico->name, 16, "%p", valorSemantico );
+    valorSemantico->name = createNameFromAddress(valorSemantico);
 
 }
