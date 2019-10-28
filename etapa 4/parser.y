@@ -486,7 +486,7 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
                 addChildren(ifNodo,$6);
                 $$ = ifNodo;
 
-                if($3->tipo != Tbool){
+                if(canConvertType(Tbool, $3->tipo)){
                         exit(ERR_WRONG_TYPE);
                 }
 
@@ -510,7 +510,7 @@ for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_co
                 addChildren(forNodo, $9);
                 $$ = forNodo;
 
-                if($5->tipo != Tbool){
+                if(canConvertType(Tbool, $5->tipo)){
                         exit(ERR_WRONG_TYPE);
                 }
         }
@@ -524,7 +524,7 @@ while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
                 addChildren($$,$6);
                 liberaValorLexico($5);
 
-                if($3->tipo != Tbool){
+                if(canConvertType(Tbool, $3->tipo) ){
                         exit(ERR_WRONG_TYPE);
                 }
         }
@@ -632,14 +632,15 @@ expressao: '(' expressao ')' {
                 addChildren(minusNodo, $1);
                 addChildren(minusNodo, $3);
                 $$=minusNodo;
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
-
+                convertNodeBoolToInt($1);
+                convertNodeBoolToInt($3);
                 $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
         | expressao '+'  expressao
@@ -650,13 +651,15 @@ expressao: '(' expressao ')' {
                 addChildren(plusNodo, $3);
                 $$=plusNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+                convertNodeBoolToInt($1);
+                convertNodeBoolToInt($3);
 
                 $$->tipo = typeInfer($1->tipo, $3->tipo);     
         }       
@@ -666,6 +669,16 @@ expressao: '(' expressao ')' {
                 addChildren(multNodo, $1);
                 addChildren(multNodo, $3);
                 $$=multNodo;
+                
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        exit( ERR_WRONG_TYPE);
+                }
+
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        exit( ERR_WRONG_TYPE);
+                }
+                convertNodeBoolToInt($1);
+                convertNodeBoolToInt($3);
 
                 $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
@@ -675,14 +688,16 @@ expressao: '(' expressao ')' {
                 addChildren(divNodo, $1);
                 addChildren(divNodo, $3);
                 $$=divNodo;
-
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+                convertNodeBoolToInt($1);
+                convertNodeBoolToInt($3);
 
                 $$->tipo = typeInfer($1->tipo, $3->tipo);
         }
@@ -696,13 +711,14 @@ expressao: '(' expressao ')' {
 
                 $$=restoNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+
 
                 $$->tipo = Tint;
         }
@@ -713,13 +729,14 @@ expressao: '(' expressao ')' {
                 addChildren(orNodo, $3);
                 $$=orNodo;
                 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+
 
                 $$->tipo = Tint;
                 
@@ -731,13 +748,14 @@ expressao: '(' expressao ')' {
                 addChildren(andNodo, $3);
                 $$=andNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+
 
                 $$->tipo = Tint;
         }
@@ -748,11 +766,11 @@ expressao: '(' expressao ')' {
                 addChildren(powNodo, $3);
                 $$=powNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -765,13 +783,15 @@ expressao: '(' expressao ')' {
                 addChildren(leNodo, $3);
                 $$=leNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+
+                
 
                 $$->tipo = Tbool;
         }
@@ -782,13 +802,14 @@ expressao: '(' expressao ')' {
                 addChildren(geNodo, $3);
                 $$=geNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
+
 
                 $$->tipo = Tbool;
                 
@@ -800,11 +821,11 @@ expressao: '(' expressao ')' {
                 addChildren(eqNodo, $3);
                 $$=eqNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -817,11 +838,11 @@ expressao: '(' expressao ')' {
                 addChildren(neNodo, $3);
                 $$=neNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -835,11 +856,11 @@ expressao: '(' expressao ')' {
                 addChildren(andNodo, $3);
                 $$=andNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tbool, $1->tipo) && !canConvertType(Tbool, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tbool, $3->tipo) && !canConvertType(Tbool, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -852,11 +873,11 @@ expressao: '(' expressao ')' {
                 addChildren(orNodo, $3);
                 $$=orNodo;
 
-                if($1->tipo != Tint && $1->tipo != Tfloat ){
+                if(!canConvertType(Tbool, $1->tipo) && !canConvertType(Tbool, $1->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
-                if($3->tipo != Tint && $3->tipo != Tfloat ){
+                if(!canConvertType(Tbool, $3->tipo) && !canConvertType(Tbool, $3->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -868,7 +889,7 @@ expressao: '(' expressao ')' {
                 addChildren(plusNodo, $2);         
                 $$=plusNodo;
 
-                if($2->tipo != Tint && $2->tipo != Tfloat ){
+                if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -880,7 +901,9 @@ expressao: '(' expressao ')' {
                 addChildren(interrogNodo, $2);         
                 $$=interrogNodo;
 
-               
+                if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
+                        exit( ERR_WRONG_TYPE);
+                }
 
                 $$->tipo = Tbool;
         }        
@@ -890,7 +913,7 @@ expressao: '(' expressao ')' {
                 addChildren(minusNodo, $2);         
                 $$=minusNodo;
 
-                if($2->tipo != Tint && $2->tipo != Tfloat ){
+                if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -902,7 +925,7 @@ expressao: '(' expressao ')' {
                 addChildren(notNodo, $2);         
                 $$=notNodo;
 
-                if($2->tipo != Tbool  ){
+                if(canConvertType(Tbool, $2->tipo) ){
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -931,7 +954,7 @@ expressao: '(' expressao ')' {
                 addChildren(tercNodo, $3);
                 addChildren(tercNodo, $5);
                 $$=tercNodo;
-                if($1->valorLexico.tipo != Tbool){
+                if(canConvertType(Tbool, $1->tipo) ){
                         exit( ERR_WRONG_TYPE);
                 }
                 $$->tipo = Tvoid;

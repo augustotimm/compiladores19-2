@@ -145,3 +145,4 @@ void getNameFromAddress(ValorSemantico_t* valorSemantico);
 Tipo_t getParentFunctionType(HashTree_t* hashT);
 bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received);
 bool canConvertType(Tipo_t expected, Tipo_t received);
+void convertNodeBoolToInt(NodoArvore_t* nodo);

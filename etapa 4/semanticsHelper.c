@@ -461,3 +461,9 @@ bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received){
     
 }
 
+void convertNodeBoolToInt(NodoArvore_t* nodo){
+    if( nodo->tipo == Tbool){
+        nodo->tipo = Tint;
+    }
+}
+
