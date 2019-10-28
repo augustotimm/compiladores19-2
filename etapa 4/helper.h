@@ -83,6 +83,7 @@ typedef struct ArgsList_t{
 typedef struct ValorSemantico_t {
     int numeroLinha;
     Tipo_t tipo;
+    bool isFunction;
     int nature;
     int size;
     char* name;

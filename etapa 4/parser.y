@@ -404,6 +404,15 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
         {
                 $$ = criaNodoValorLexico($1);
                 ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
+                if(! func->isFunction){
+                        if(func->valorLexico.isVector){
+                                exit(ERR_VECTOR)
+                        }
+                        else{
+                                exit(ERR_VARIABLE);
+                        }
+                        
+                }
                 verifyArgs(func->args, NULL);
                 
         }
@@ -413,6 +422,9 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
                 addChildren(chamadaNodo,$3);
                 $$ = chamadaNodo;
                 ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
+                if(! func->isFunction){
+                        exit(ERR_VARIABLE);
+                }
                 verifyArgs(func->args, $3);
         }
         ;
@@ -1035,9 +1047,15 @@ variavel: TK_IDENTIFICADOR {
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
                 printf("%s",$1.stringValue);
-                if(valId->valorLexico.isVector){
-                        exit(ERR_VECTOR);
+                if(valId->isFunction){
+                        exit(ERR_FUNCTION);
                 }
+                else{
+                        if(valId->valorLexico.isVector){
+                                exit(ERR_VECTOR);
+                        }
+                }
+                
         }
  }
         | TK_IDENTIFICADOR '[' expressao ']'{ 
@@ -1048,9 +1066,15 @@ variavel: TK_IDENTIFICADOR {
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
-                if(!valId->valorLexico.isVector){
-                        exit(ERR_VECTOR);
+                if(! valId->isFunction){
+                        exit(ERR_FUNCTION);
                 }
+                else{
+                        if(!valId->valorLexico.isVector){
+                                exit(ERR_VARIABLE);
+                        }
+                }
+                
         }
         if(!canConvertType(Tint,$3->tipo)){
                 exit(ERR_WRONG_TYPE);

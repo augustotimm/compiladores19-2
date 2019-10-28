@@ -168,6 +168,7 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
     semanticValue->numeroLinha = valorLexico.numeroLinha;
     semanticValue->tipo = valorLexico.tipo;
     semanticValue->nature = nature;
+    semanticValue->isFunction = false;
     //todo definir sizeof
     semanticValue->args = NULL;
     semanticValue->valorLexico =valorLexico;
