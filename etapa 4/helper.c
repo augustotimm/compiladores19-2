@@ -87,6 +87,7 @@ NodoArvore_t* criaNodo(){
 NodoArvore_t* criaNodoValorLexico( ValorLexico_t valor_lexico){
     NodoArvore_t* novoNodo = calloc(1, sizeof(NodoArvore_t));
     novoNodo->childrenNumber = 0;
+    novoNodo->valorSemantico = NULL;
     novoNodo->valorLexico = valor_lexico;
     
     return novoNodo;

@@ -298,3 +298,9 @@ Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB){
     }
 
 }
+
+void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico ){
+    if(nodo->valorSemantico == NULL){
+        nodo->valorSemantico = valorSemantico;
+    }
+}

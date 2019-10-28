@@ -62,6 +62,7 @@ typedef struct NodoList_t{
 typedef struct NodoArvore_t{
     int childrenNumber;
     ValorLexico_t valorLexico;
+    ValorSemantico_t* valorSemantico;
     NodoList_t *children;
 } NodoArvore_t;
 
@@ -136,3 +137,4 @@ void dumpHashes();
 void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
 ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
 Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB);
+void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico );
