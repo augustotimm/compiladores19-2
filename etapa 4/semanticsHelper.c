@@ -396,7 +396,7 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
         }
 
     case Tbool:
-        if(expected == Tbool){
+        if(received == Tbool){
             return true;
         }
         else{
@@ -404,14 +404,14 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
         }
 
     case Tchar:
-        if(expected == Tchar){
+        if(received == Tchar){
             return true;
         }
         else{
             exit(ERR_WRONG_TYPE_ARGS);
         }
     case Tstring:
-        if(expected == Tstring){
+        if(received == Tstring){
             return true;
         }
         else{
@@ -426,7 +426,19 @@ bool argsTypeInfer(Tipo_t expected, Tipo_t received){
 bool verifyArgs(ArgsList_t* expected, NodoArvore_t* received){
     if(expected != NULL && received != NULL){
         if( argsTypeInfer(expected->arg->tipo, received->tipo) ){
+            if( expected->next == NULL && received->children != NULL){
+                exit(ERR_EXCESS_ARGS );
+            }
+            if(expected->next != NULL && received->children == NULL) {
+                exit(ERR_MISSING_ARGS);
+            }
+            if(expected->next == NULL && received->children== NULL){
+                return true;
+            }
             verifyArgs(expected->next, received->children->nodo);
+        }
+        else{
+            exit(ERR_WRONG_TYPE_ARGS);
         }
     }
 
