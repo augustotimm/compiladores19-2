@@ -390,7 +390,7 @@ atribuicao: variavel '=' expressao
                 addChildren(atrNodo,$3);
                 $$ = atrNodo;
                 ValorSemantico_t* variableSemantics = checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
-                if( variableSemantics->tipo != $3->tipo){
+                if(!canConvertType(variableSemantics->tipo, $3->tipo)){
                         exit(ERR_WRONG_TYPE );
                 }
                 $$->tipo = Tvoid;
@@ -1036,7 +1036,7 @@ variavel: TK_IDENTIFICADOR {
         addChildren(idNodo, $3);
         $$ = idNodo;
 
-        if($3->valorLexico.tipo != Tint){
+        if(!canConvertType(Tint,$3->tipo)){
                 exit(ERR_WRONG_TYPE);
         }
  }
