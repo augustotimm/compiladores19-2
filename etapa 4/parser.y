@@ -175,6 +175,9 @@ declaracao_var_global: tipo variavel ';'
                                 libera($2);
                                 $2 = NULL;
                         }
+                        else{
+                                varGlobalSemantics->valorLexico.isVector = true;
+                        }
                         
                 }
                 
@@ -1026,8 +1029,16 @@ literal: TK_LIT_CHAR {
         ;
 
 variavel: TK_IDENTIFICADOR { 
+        $1.isVector = false;
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
         $$ = idNodo;
+        ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
+        if(valId != NULL){
+                printf("%s",$1.stringValue);
+                if(valId->valorLexico.isVector){
+                        exit(ERR_VECTOR);
+                }
+        }
  }
         | TK_IDENTIFICADOR '[' expressao ']'{ 
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
@@ -1035,7 +1046,12 @@ variavel: TK_IDENTIFICADOR {
         addChildren(idNodo,bracketNodo);
         addChildren(idNodo, $3);
         $$ = idNodo;
-
+        ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
+        if(valId != NULL){
+                if(!valId->valorLexico.isVector){
+                        exit(ERR_VECTOR);
+                }
+        }
         if(!canConvertType(Tint,$3->tipo)){
                 exit(ERR_WRONG_TYPE);
         }

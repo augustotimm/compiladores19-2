@@ -32,7 +32,7 @@ typedef enum {
 typedef struct ValorLexico_t {
     int numeroLinha;
     Tipo_t tipo;
-    Tipo_t tipoOperador;
+    bool isVector;
     bool isLiteral;
     char *stringValue;
     bool boolValue;
