@@ -15,7 +15,7 @@
 #define NATUREZA_IDENTIFICADOR      6
 
 struct NodoArvore_t;
-
+struct ValorSemantico_t;
 
 typedef enum {
     Tint,
@@ -62,7 +62,7 @@ typedef struct NodoList_t{
 typedef struct NodoArvore_t{
     int childrenNumber;
     ValorLexico_t valorLexico;
-    ValorSemantico_t* valorSemantico;
+    struct ValorSemantico_t* valorSemantico;
     NodoList_t *children;
 } NodoArvore_t;
 
@@ -82,6 +82,7 @@ typedef struct ValorSemantico_t {
     Tipo_t tipo;
     int nature;
     int size;
+    char* name;
     ArgsList_t* args;
     ValorLexico_t valorLexico;
 
@@ -138,3 +139,4 @@ void createArgsSemantics(ValorSemantico_t* func, NodoArvore_t* args);
 ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador);
 Tipo_t typerInfer(Tipo_t tipoA, Tipo_t tipoB);
 void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico );
+void getNameFromAddress(ValorSemantico_t* valorSemantico);

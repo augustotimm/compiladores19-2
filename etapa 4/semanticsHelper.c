@@ -30,6 +30,8 @@ void freeArgs(ArgsList_t* args){
     {
         liberaValorLexico(args->arg->valorLexico);
         freeArgs(args->next);
+        free(args->arg->name);
+        args->arg->name = NULL;
         free(args->arg);
         args->arg= NULL;
         free(args);
@@ -49,6 +51,9 @@ void deleteHash(HashTree_t* hashT){
         if(currentValue->valorSemantico->args != NULL){
             freeArgs(currentValue->valorSemantico->args);
         }
+        free( currentValue->valorSemantico->name);
+        currentValue->valorSemantico->name = NULL;
+
         free( currentValue->valorSemantico);
         currentValue->valorSemantico= NULL;
         free(currentValue->identificador);
@@ -130,6 +135,7 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
 ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int  nature){
 
     ValorSemantico_t* semanticValue = calloc(1, sizeof(ValorSemantico_t));
+    semanticValue->name = NULL;
     semanticValue->numeroLinha = valorLexico.numeroLinha;
     semanticValue->tipo = valorLexico.tipo;
     semanticValue->nature = nature;
@@ -303,4 +309,14 @@ void addSemanticsToNode(NodoArvore_t* nodo, ValorSemantico_t* valorSemantico ){
     if(nodo->valorSemantico == NULL){
         nodo->valorSemantico = valorSemantico;
     }
+}
+
+void getNameFromAddress(ValorSemantico_t* valorSemantico){
+    if( valorSemantico->name != NULL){
+        free(valorSemantico->name);
+    }
+    valorSemantico->name = calloc(16, sizeof(char));
+
+    snprintf(valorSemantico->name, 16, "%p", valorSemantico );
+
 }
