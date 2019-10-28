@@ -433,6 +433,15 @@ comando_entrada: TK_PR_INPUT expressao
         {
                 NodoArvore_t* inputNodo = criaNodoValorLexico($1);
                 addChildren(inputNodo,$2);
+                if($2->childrenNumber >0){
+                        exit(ERR_WRONG_PAR_INPUT);
+                }
+                else{
+                        ValorSemantico_t* inputSemantic = checkIdentifierDeclared(getCurrentHash(), $2->valorLexico.stringValue);
+                        if(inputSemantic->nature != NATUREZA_IDENTIFICADOR){
+                             exit(ERR_WRONG_PAR_INPUT);   
+                        }
+                }
                 $$ = inputNodo;
         }
 ;
