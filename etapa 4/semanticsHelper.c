@@ -122,7 +122,7 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* i
     newInput->identificador = identificadorVar;
     newInput->valorSemantico = valorSemantico;
     MyHash_t* current = hashT->current;
-    ValorSemantico_t* found = findSemanticValue(hashT,identificadorVar);
+    ValorSemantico_t* found = findSemanticValueCurrentScope(hashT,identificadorVar);
     if(found != NULL){
         printf("variavel Ja declarada no escopo");
         exit(ERR_DECLARED);
@@ -157,6 +157,31 @@ ValorSemantico_t* findSemanticValue(HashTree_t* hashT, char* key){
             return NULL;
         }
         
+    }
+    return NULL;    
+}
+
+
+
+
+ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key){
+    MyHash_t* found = NULL;
+    HASH_FIND_STR( hashT->current,key,found );
+    if(found != NULL ){
+        return found->valorSemantico;
+    }
+    else{
+        if(hashT->hashCreator != NULL){
+            ArgsList_t* arg;
+            LL_FOREACH(hashT->hashCreator->args, arg){
+                if (strcmp(key,arg->arg->valorLexico.stringValue)==0)
+                {
+                    return arg->arg;
+                }
+                
+            }
+        }
+                
     }
     return NULL;    
 }
@@ -248,6 +273,16 @@ ValorSemantico_t* checkIdentifierDeclared(HashTree_t* hashT, char* identificador
     ValorSemantico_t* found = findSemanticValue(hashT, identificador);
     if(found == NULL){
         exit(ERR_UNDECLARED);
+    }
+    else{
+        return found;
+    }
+}
+
+ValorSemantico_t* checkIdentifierDeclaredCurrentScope(HashTree_t* hashT, char* identificador){
+    ValorSemantico_t* found = findSemanticValueCurrentScope(hashT, identificador);
+    if(found == NULL){
+        return NULL;
     }
     else{
         return found;

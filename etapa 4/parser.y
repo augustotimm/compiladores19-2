@@ -237,6 +237,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $1, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $1.stringValue); 
                 createHash(currentScope, funcSemantics);
+                funcSemantics->isFunction = true;
                 
                 $$ = criaNodoValorLexico($2);
                 createArgsSemantics(funcSemantics, $3);
@@ -253,6 +254,7 @@ cabecalho_funcao: tipo TK_IDENTIFICADOR parametros_funcao
                 $2.stringValue = strdup($3.stringValue);
                 ValorSemantico_t* funcSemantics = createSemanticValueFromLexical( $2, NATUREZA_IDENTIFICADOR);
                 addToHash(currentScope, funcSemantics, $2.stringValue); 
+                funcSemantics->isFunction = true;
 
                 liberaValorLexico($1);
                 liberaValorLexico($3);
@@ -394,6 +396,12 @@ atribuicao: variavel '=' expressao
                 $$ = atrNodo;
                 ValorSemantico_t* variableSemantics = checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
                 if(!canConvertType(variableSemantics->tipo, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit(ERR_WRONG_TYPE );
                 }
                 $$->tipo = Tvoid;
@@ -406,7 +414,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
                 ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
                 if(! func->isFunction){
                         if(func->valorLexico.isVector){
-                                exit(ERR_VECTOR)
+                                exit(ERR_VECTOR);
                         }
                         else{
                                 exit(ERR_VARIABLE);
@@ -414,6 +422,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
                         
                 }
                 verifyArgs(func->args, NULL);
+                $$->tipo = func->tipo;
                 
         }
         |  TK_IDENTIFICADOR '(' lista_expressao ')' 
@@ -421,8 +430,11 @@ chamada_funcao: TK_IDENTIFICADOR '(' ')'
                 NodoArvore_t* chamadaNodo = criaNodoValorLexico($1);
                 addChildren(chamadaNodo,$3);
                 $$ = chamadaNodo;
+                
                 ValorSemantico_t* func = checkIdentifierDeclared(getCurrentHash(), $1.stringValue );
+                $$->tipo = func->tipo;
                 if(! func->isFunction){
+
                         exit(ERR_VARIABLE);
                 }
                 verifyArgs(func->args, $3);
@@ -458,9 +470,12 @@ comando_return: TK_PR_RETURN expressao
         {
                 $$ = criaNodoValorLexico($1);
                 addChildren($$,$2);
-
-                if(getParentFunctionType(getCurrentHash()) != $2->tipo){
-                        exit(ERR_WRONG_PAR_RETURN);
+                Tipo_t expected = getParentFunctionType(getCurrentHash());
+                if(expected != $2->tipo){
+                        if(!canConvertType(expected, $2->tipo)){
+                                exit(ERR_WRONG_PAR_RETURN);
+                        }
+                        
                 }
         }
 ;
@@ -657,10 +672,22 @@ expressao: '(' expressao ')' {
                 addChildren(minusNodo, $3);
                 $$=minusNodo;
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
                 convertNodeBoolToInt($1);
@@ -676,10 +703,22 @@ expressao: '(' expressao ')' {
                 $$=plusNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
                 convertNodeBoolToInt($1);
@@ -695,10 +734,22 @@ expressao: '(' expressao ')' {
                 $$=multNodo;
                 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
                 convertNodeBoolToInt($1);
@@ -714,10 +765,22 @@ expressao: '(' expressao ')' {
                 $$=divNodo;
                 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
                 convertNodeBoolToInt($1);
@@ -736,10 +799,22 @@ expressao: '(' expressao ')' {
                 $$=restoNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -754,10 +829,22 @@ expressao: '(' expressao ')' {
                 $$=orNodo;
                 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -773,10 +860,22 @@ expressao: '(' expressao ')' {
                 $$=andNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -791,10 +890,22 @@ expressao: '(' expressao ')' {
                 $$=powNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -808,10 +919,22 @@ expressao: '(' expressao ')' {
                 $$=leNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -827,10 +950,22 @@ expressao: '(' expressao ')' {
                 $$=geNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -846,10 +981,22 @@ expressao: '(' expressao ')' {
                 $$=eqNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -863,10 +1010,22 @@ expressao: '(' expressao ')' {
                 $$=neNodo;
 
                 if(!canConvertType(Tint, $1->tipo) && !canConvertType(Tfloat, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tint, $3->tipo) && !canConvertType(Tfloat, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -881,10 +1040,22 @@ expressao: '(' expressao ')' {
                 $$=andNodo;
 
                 if(!canConvertType(Tbool, $1->tipo) && !canConvertType(Tbool, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tbool, $3->tipo) && !canConvertType(Tbool, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -898,10 +1069,22 @@ expressao: '(' expressao ')' {
                 $$=orNodo;
 
                 if(!canConvertType(Tbool, $1->tipo) && !canConvertType(Tbool, $1->tipo)){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
                 if(!canConvertType(Tbool, $3->tipo) && !canConvertType(Tbool, $3->tipo)){
+                        if($3->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($3->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -914,6 +1097,12 @@ expressao: '(' expressao ')' {
                 $$=plusNodo;
 
                 if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
+                        if($2->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($2->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -926,6 +1115,12 @@ expressao: '(' expressao ')' {
                 $$=interrogNodo;
 
                 if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
+                        if($2->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($2->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -938,6 +1133,12 @@ expressao: '(' expressao ')' {
                 $$=minusNodo;
 
                 if(!canConvertType(Tint, $2->tipo) && !canConvertType(Tfloat, $2->tipo)){
+                        if($2->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($2->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -950,6 +1151,12 @@ expressao: '(' expressao ')' {
                 $$=notNodo;
 
                 if(canConvertType(Tbool, $2->tipo) ){
+                        if($2->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($2->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
 
@@ -979,6 +1186,12 @@ expressao: '(' expressao ')' {
                 addChildren(tercNodo, $5);
                 $$=tercNodo;
                 if(canConvertType(Tbool, $1->tipo) ){
+                        if($1->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($1->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
                         exit( ERR_WRONG_TYPE);
                 }
                 $$->tipo = Tvoid;
@@ -1055,7 +1268,6 @@ variavel: TK_IDENTIFICADOR {
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
-                printf("%s",$1.stringValue);
                 if(valId->isFunction){
                         exit(ERR_FUNCTION);
                 }
@@ -1075,11 +1287,12 @@ variavel: TK_IDENTIFICADOR {
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
-                if(! valId->isFunction){
+                if( valId->isFunction){
                         exit(ERR_FUNCTION);
                 }
                 else{
                         if(!valId->valorLexico.isVector){
+                                
                                 exit(ERR_VARIABLE);
                         }
                 }
