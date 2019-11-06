@@ -1299,6 +1299,12 @@ variavel: TK_IDENTIFICADOR {
                 
         }
         if(!canConvertType(Tint,$3->tipo)){
+                if($3->tipo == Tstring){
+                        exit(ERR_STRING_TO_X);
+                }
+                if($3->tipo == Tchar){
+                        exit(ERR_CHAR_TO_X);
+                }
                 exit(ERR_WRONG_TYPE);
         }
  }
