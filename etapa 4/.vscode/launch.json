@@ -6,7 +6,7 @@
         "name": "(gdb) Launch cunit",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceRoot}/etapa3",
+        "program": "${workspaceRoot}/etapa4",
         "args": ["<", "teste.txt" ],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
@@ -19,7 +19,7 @@
             "text": "-enable-pretty-printing",
             "ignoreFailures": true
           }
-        ]
+        ],
       }
     ]
   }

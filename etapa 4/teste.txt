@@ -1,6 +1,12 @@
-//As condicionais incluem o if com o else opcional, assim:
-int x;
+// ERR_STRING_TO_X
+string g()
+{
+  string ret;
+  return ret;
+}
 
-int func(){
-  x =2;
+int f()
+{
+  int x;
+  x = g();
 }
