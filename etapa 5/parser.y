@@ -57,7 +57,7 @@ extern void *arvore;
 
 %type <nodo> while_declaracao comando_simples comando_return bloco_comandos_start bloco_comandos parametro lista_parametros parametros_funcao
 
-%type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global  
+%type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global dimensao
 
 //Destructors
 
@@ -1279,11 +1279,9 @@ variavel: TK_IDENTIFICADOR {
                 
         }
  }
-        | TK_IDENTIFICADOR '[' expressao ']'{ 
+        | TK_IDENTIFICADOR dimensao { 
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
-        NodoArvore_t* bracketNodo = criaNodoValorLexico( criaValorLexicoOP("[]") );
-        addChildren(idNodo,bracketNodo);
-        addChildren(idNodo, $3);
+        addChildren(idNodo, $2);
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
@@ -1298,17 +1296,47 @@ variavel: TK_IDENTIFICADOR {
                 }
                 
         }
-        if(!canConvertType(Tint,$3->tipo)){
-                if($3->tipo == Tstring){
+        
+ }
+;
+
+dimensao: '[' expressao ']' 
+{
+        NodoArvore_t* bracketNodo = criaNodoValorLexico( criaValorLexicoOP("[]") );
+        addChildren(bracketNodo, $2);
+
+        if(!canConvertType(Tint,$2->tipo)){
+                if($2->tipo == Tstring){
                         exit(ERR_STRING_TO_X);
                 }
-                if($3->tipo == Tchar){
+                if($2->tipo == Tchar){
                         exit(ERR_CHAR_TO_X);
                 }
                 exit(ERR_WRONG_TYPE);
         }
- }
+        $$ = $2;
+}
+        | '[' expressao ']' dimensao
+        {
+                NodoArvore_t* bracketNodo = criaNodoValorLexico( criaValorLexicoOP("[]") );
+                addChildren(bracketNodo, $2);
+                addChildren(bracketNodo,$4);
+                if(!canConvertType(Tint,$2->tipo)){
+                        if($2->tipo == Tstring){
+                                exit(ERR_STRING_TO_X);
+                        }
+                        if($2->tipo == Tchar){
+                                exit(ERR_CHAR_TO_X);
+                        }
+                        exit(ERR_WRONG_TYPE);
+                }
+                $$ = $2;
+        }
+        
+
 ;
+
+
 %%
 
 void yyerror(const char *s) {
