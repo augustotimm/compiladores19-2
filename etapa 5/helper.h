@@ -149,3 +149,8 @@ bool canConvertType(Tipo_t expected, Tipo_t received);
 void convertNodeBoolToInt(NodoArvore_t* nodo);
 ValorSemantico_t* checkIdentifierDeclaredCurrentScope(HashTree_t* hashT, char* identificador);
 ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
+
+
+//iloc
+
+void nodeToIloc(NodoArvore_t* node, int registerNumber);
