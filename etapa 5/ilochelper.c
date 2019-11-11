@@ -7,8 +7,16 @@
 #define IS_MULT(str) strcmp(str,"*") ==0
 
 
-void nodeToIloc(NodoArvore_t* node, int registerNumber){
+OpData_t nodeToIloc(NodoArvore_t* node, int registerNumber){
     if(IS_IF(node->valorLexico.stringValue)){
+
+    }else if(IS_SUM(node->valorLexico.stringValue)){
+
+    }else if(IS_SUB(node->valorLexico.stringValue)){
+
+    }else if(IS_DIV(node->valorLexico.stringValue)){
+
+    }else if(IS_MULT(node->valorLexico.stringValue)){
 
     }
 
