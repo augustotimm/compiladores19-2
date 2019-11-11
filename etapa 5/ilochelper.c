@@ -1,7 +1,7 @@
 #include "helper.h"
 
 OpData_t* addToIloc(NodoArvore_t* node, int registerNumber);
-OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* loadIToIloc(NodoArvore_t* node, int registerNumber);
 
 int lastKnownRegister=0;
 
@@ -22,7 +22,7 @@ OpData_t* createIloc(){
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     if(node->operation == Iadd){
         addToIloc(node,registerNumber);
-    }else if(node->operation == Ilda){
+    }else if(node->operation == IloadI){
         ldaToIloc(node, registerNumber);
     }
     /*else if(IS_SUM(node->valorLexico.stringValue)){
@@ -55,7 +55,11 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
 
 }
 
-OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber){
+OpData_t* loadIToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    newOp->operation = IloadI;
+    newOp->registerNumberArg3 = registerNumber;
+    newOp->registerNumberArg1 = node->valorLexico.memoryDeloc;
 
 }
 
