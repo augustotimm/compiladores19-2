@@ -45,6 +45,7 @@ typedef struct ValorLexico_t {
     char charValue;
     int intValue;
     float floatValue;
+    int memoryDeloc;
 
 
 } ValorLexico_t;
@@ -175,5 +176,3 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 //iloc
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber);
-int getRfp();
-int getRbss();
