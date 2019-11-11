@@ -71,6 +71,9 @@ typedef struct NodoArvore_t{
 
 
 
+typedef enum {
+    Iadd
+}IlocOperations_t;
 
 
 
@@ -78,6 +81,18 @@ typedef struct ArgsList_t{
     struct ValorSemantico_t *arg;
     struct ArgsList_t* next;
 } ArgsList_t;
+
+typedef struct OpData_t{
+    IlocOperations_t operation;
+    int registerNumberArg1;
+    int registerNumberArg2;
+    int registerNumberArg3;
+} OpData_t;
+
+typedef struct OpDataList_t{
+    struct ValorSemantico_t *arg;
+    struct OpDataList_t* next;
+} OpDataList_t;
 
 
 typedef struct ValorSemantico_t {
