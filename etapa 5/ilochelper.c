@@ -1,7 +1,10 @@
 #include "helper.h"
 
 OpData_t* addToIloc(NodoArvore_t* node, int registerNumber);
-OpData_t* loadIToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* loadImediateToIlocValue(int value, int registerNumber);
+
 
 int lastKnownRegister=0;
 
@@ -20,20 +23,24 @@ OpData_t* createIloc(){
 }
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
-    if(node->operation == Iadd){
+    switch (node->operation)
+    {
+    case Iadd:
         addToIloc(node,registerNumber);
-    }else if(node->operation == IloadI){
-        ldaToIloc(node, registerNumber);
+        break;
+    case Iload:
+        loadToIloc(node, registerNumber);
+        break;
+    case IloadI:
+        loadImediateToIloc(node,registerNumber);
+        break;
+    default:
+        break;
     }
-    /*else if(IS_SUM(node->valorLexico.stringValue)){
 
-    }else if(IS_SUB(node->valorLexico.stringValue)){
+    
+    
 
-    }else if(IS_DIV(node->valorLexico.stringValue)){
-
-    }else if(IS_MULT(node->valorLexico.stringValue)){
-
-    }*/
 
 
 }
@@ -43,23 +50,58 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
     int regUm, regDois;
     regUm = newRegister();
     regDois = newRegister();
+    NodoArvore_t* childOne = node->children->nodo;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    if(childOne->valorLexico.isLiteral){
+
+    }else if(childTwo->valorLexico.isLiteral){
+
+    }
+
     newOp->operation = Iadd;
     newOp->registerNumberArg1 = regUm;
     newOp->registerNumberArg2 = regDois;
     newOp->registerNumberArg3 = registerNumber;
-    NodoArvore_t* childOne = node->children->nodo;
-    NodoArvore_t* childTwo = node->children->next->nodo;
+    
     nodeToIloc(childOne,regUm);
     nodeToIloc(childTwo,regDois);
 
 
 }
 
-OpData_t* loadIToIloc(NodoArvore_t* node, int registerNumber){
+OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    OpData_t* operationRegisterOne;
+    int registerOne = newRegister();
+    operationRegisterOne = loadImediateToIlocValue(node->valorLexico.memoryDeloc, registerOne);
+    newOp->operation = Iload;
+    newOp->registerNumberArg3 = registerNumber;
+    newOp->registerNumberArg1 = registerOne;
+
+}
+
+OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber){
     OpData_t* newOp = createIloc();
     newOp->operation = IloadI;
     newOp->registerNumberArg3 = registerNumber;
-    newOp->registerNumberArg1 = node->valorLexico.memoryDeloc;
+    switch (node->valorLexico.tipo)
+    {
+    case Tint:
+        newOp->registerNumberArg1 = node->valorLexico.intValue;
+        break;
+    
+    default:
+        break;
+    }
+    return newOp;
+    
 
+}
+OpData_t* loadImediateToIlocValue(int value, int registerNumber){
+    OpData_t* newOp = createIloc();
+    newOp->operation = IloadI;
+    newOp->registerNumberArg3 = registerNumber;
+    newOp->registerNumberArg1 = value;
+    return newOp;
 }
 

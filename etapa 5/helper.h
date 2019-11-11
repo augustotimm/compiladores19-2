@@ -32,7 +32,9 @@ typedef enum {
 typedef enum {
     Iadd,
     Inop,
-    Ilda
+    IloadI,
+    Iload,
+    IaddI
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {
