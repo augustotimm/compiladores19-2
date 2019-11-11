@@ -29,6 +29,11 @@ typedef enum {
     Tvoid
 } Tipo_t;
 
+typedef enum {
+    Iadd,
+    Inop
+}IlocOperations_t;
+
 typedef struct ValorLexico_t {
     int numeroLinha;
     Tipo_t tipo;
@@ -66,14 +71,13 @@ typedef struct NodoArvore_t{
     int childrenNumber;
     ValorLexico_t valorLexico;
     Tipo_t tipo;
+    IlocOperations_t operation;
     NodoList_t *children;
 } NodoArvore_t;
 
 
 
-typedef enum {
-    Iadd
-}IlocOperations_t;
+
 
 
 
