@@ -198,6 +198,20 @@ ValorSemantico_t* createSemanticValueFromLexical(ValorLexico_t valorLexico, int 
     semanticValue->nature = nature;
     semanticValue->isFunction = false;
     //todo definir sizeof
+    switch (valorLexico.tipo)
+    {
+    case Tint: semanticValue->size = 4;
+        break;
+    case Tfloat: semanticValue->size = 8;
+        break;
+    case Tchar: semanticValue->size = 1;
+        break;
+    case Tbool: semanticValue->size = 1;
+        break;
+    
+    default:
+        break;
+    }
     semanticValue->args = NULL;
     semanticValue->valorLexico =valorLexico;
 
