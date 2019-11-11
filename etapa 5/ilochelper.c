@@ -1,5 +1,8 @@
 #include "helper.h"
 
+OpData_t* addToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber);
+
 int lastKnownRegister=0;
 
 OpDataList_t* operationsList=NULL;
@@ -16,8 +19,11 @@ OpData_t* createIloc(){
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     if(node->operation == Iadd){
-
-    }/*else if(IS_SUM(node->valorLexico.stringValue)){
+        addToIloc(node,registerNumber);
+    }else if(node->operation == Ilda){
+        ldaToIloc(node, registerNumber);
+    }
+    /*else if(IS_SUM(node->valorLexico.stringValue)){
 
     }else if(IS_SUB(node->valorLexico.stringValue)){
 
@@ -45,5 +51,9 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
     nodeToIloc(childTwo,regDois);
 
 
+}
+
+OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber){
+    
 }
 
