@@ -174,3 +174,5 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 //iloc
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber);
+int getRfp();
+int getRbss();

@@ -5,11 +5,20 @@ OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber);
 
 int lastKnownRegister=0;
 
+int rfp =0;
+int rbss =1000;
+
 OpDataList_t* operationsList=NULL;
 
 int newRegister(){
     lastKnownRegister++;
     return lastKnownRegister;
+}
+int getRfp(){
+    return rfp;
+}
+int getRbss(){
+    return rbss;
 }
 
 OpData_t* createIloc(){
@@ -54,6 +63,6 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
 }
 
 OpData_t* ldaToIloc(NodoArvore_t* node, int registerNumber){
-    
+
 }
 
