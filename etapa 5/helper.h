@@ -168,4 +168,4 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 
 //iloc
 
-void OpData_t(NodoArvore_t* node, int registerNumber);
+OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber);
