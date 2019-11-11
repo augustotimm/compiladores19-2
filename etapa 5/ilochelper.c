@@ -62,6 +62,10 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
     newOp->registerNumberArg1 = regUm;
     newOp->registerNumberArg2 = regDois;
     newOp->registerNumberArg3 = registerNumber;
+
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(operationsList, newOpListElement);
     
     nodeToIloc(childOne,regUm);
     nodeToIloc(childTwo,regDois);
@@ -77,6 +81,13 @@ OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber){
     newOp->operation = Iload;
     newOp->registerNumberArg3 = registerNumber;
     newOp->registerNumberArg1 = registerOne;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
+    
+    return newOp;
+
 
 }
 
@@ -93,6 +104,10 @@ OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber){
     default:
         break;
     }
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
     return newOp;
     
 
@@ -102,6 +117,10 @@ OpData_t* loadImediateToIlocValue(int value, int registerNumber){
     newOp->operation = IloadI;
     newOp->registerNumberArg3 = registerNumber;
     newOp->registerNumberArg1 = value;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
     return newOp;
 }
 
