@@ -34,7 +34,8 @@ typedef enum {
     Inop,
     IloadI,
     Iload,
-    IaddI
+    IaddI, 
+    Imult
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {
