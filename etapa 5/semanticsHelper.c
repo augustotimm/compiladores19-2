@@ -12,6 +12,7 @@ HashTree_t* createHash(HashTree_t* parent, ValorSemantico_t* hashCreator){
     HashStack_t* newHashStack = calloc(1, sizeof(HashStack_t));
     newHashT->current = NULL;
     newHashT->parent = parent;
+    newHashT->memoryDeloc=0;
     newHashT->hashCreator = hashCreator;
     newHashStack->hash = newHashT;
     STACK_PUSH(hashStack,newHashStack);
@@ -127,6 +128,8 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* i
         printf("variavel Ja declarada no escopo");
         exit(ERR_DECLARED);
     }
+    hashT->memoryDeloc = hashT->memoryDeloc + valorSemantico->size;
+    valorSemantico->memoryDeloc = hashT->memoryDeloc;
     HASH_ADD_STR( hashT->current, identificador, newInput);
     return newInput;
 }

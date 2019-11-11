@@ -107,9 +107,9 @@ typedef struct ValorSemantico_t {
     int nature;
     int size;
     char* name;
+    int memoryDeloc;
     ArgsList_t* args;
     ValorLexico_t valorLexico;
-
 
 } ValorSemantico_t;
 
@@ -124,6 +124,7 @@ typedef struct MyHash_t{
 typedef struct HashTree_t{
     MyHash_t* current;
     ValorSemantico_t* hashCreator;
+    int memoryDeloc;
     struct HashTree_t* parent;
 } HashTree_t;
 
