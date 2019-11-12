@@ -25,10 +25,32 @@ OpData_t* createIloc(){
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     switch (node->operation)
     {
-    case Iadd:
+  
+    case Iadd: 
         genericBinaryOperationToIloc(node,registerNumber);
         break;
-    case Imult: 
+    case Isub:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Imult:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Idiv:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Ilshift:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Irshift:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Iand:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Ior:
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Ixor:
         genericBinaryOperationToIloc(node,registerNumber);
         break;
     case Iload:
@@ -37,7 +59,6 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     case IloadI:
         loadImediateToIloc(node,registerNumber);
         break;
-    
     default:
         genericBinaryOperationToIloc(node,registerNumber);
         break;;
