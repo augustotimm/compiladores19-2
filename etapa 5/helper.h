@@ -53,6 +53,7 @@ typedef enum {
     IxorI,
     Istore,
     IstoreA,
+    IloadA,
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {

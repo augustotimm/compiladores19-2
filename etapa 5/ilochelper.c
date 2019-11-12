@@ -7,6 +7,7 @@ OpData_t* loadImediateToIlocValue(int value, int registerNumber);
 OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree);
 OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previousRegister);
+OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber);
 
 
 int lastKnownRegister=0;
@@ -64,6 +65,12 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
         break;
     case Istore:
         storeToIloc(node,registerNumber);
+        break;
+    case IstoreA:
+        storeAToIloc(node,registerNumber);
+        break;
+    case IloadA:
+        storeAToIloc(node,registerNumber);
         break;
     default:
         genericBinaryOperationToIloc(node,registerNumber);
@@ -262,6 +269,8 @@ OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber){
     
     return newOp;
 }
+
+
 
 OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree){
     NodoArvore_t* childTwo = node->children->next->nodo;
