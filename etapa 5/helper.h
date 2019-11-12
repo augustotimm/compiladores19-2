@@ -51,6 +51,7 @@ typedef enum {
     IorI,
     Ixor,
     IxorI,
+    Istore,
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {

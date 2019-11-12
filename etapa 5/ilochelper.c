@@ -4,6 +4,7 @@ OpData_t* genericBinaryOperationToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIlocValue(int value, int registerNumber);
+OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber);
 
 
 int lastKnownRegister=0;
@@ -58,6 +59,9 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
         break;
     case IloadI:
         loadImediateToIloc(node,registerNumber);
+        break;
+    case Istore:
+        storeToIloc(node,registerNumber);
         break;
     default:
         genericBinaryOperationToIloc(node,registerNumber);
@@ -212,4 +216,27 @@ OpData_t* loadImediateToIlocValue(int value, int registerNumber){
     LL_PREPEND(operationsList, newOpListElement);
     return newOp;
 }
+
+OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    OpData_t* operationRegisterOne;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    NodoArvore_t* childOne = node->children->nodo;
+    int valueDeloc = childOne->valorLexico.memoryDeloc;
+
+    int registerOne = newRegister();
+    
+    newOp->operation = node->operation;
+    newOp->registerNumberArg2 = registerNumber;
+    newOp->registerNumberArg1 = registerOne;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
+    loadImediateToIlocValue(valueDeloc, registerNumber);
+    nodeToIloc(childTwo,registerOne);
+    
+    return newOp;
+}
+
 
