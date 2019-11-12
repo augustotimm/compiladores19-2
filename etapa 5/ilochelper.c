@@ -1,10 +1,9 @@
 #include "helper.h"
 
-OpData_t* addToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* genericBinaryOperationToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIlocValue(int value, int registerNumber);
-OpData_t* multToIloc(NodoArvore_t* node, int registerNumber);
 
 
 int lastKnownRegister=0;
@@ -27,7 +26,10 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     switch (node->operation)
     {
     case Iadd:
-        addToIloc(node,registerNumber);
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;
+    case Imult: 
+        genericBinaryOperationToIloc(node,registerNumber);
         break;
     case Iload:
         loadToIloc(node, registerNumber);
@@ -35,11 +37,10 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
     case IloadI:
         loadImediateToIloc(node,registerNumber);
         break;
-    case Imult: 
-        multToIloc(node,registerNumber);
-        break;
+    
     default:
-        break;
+        genericBinaryOperationToIloc(node,registerNumber);
+        break;;
     }
 
     
@@ -49,13 +50,13 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
 
 }
 
-OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
+OpData_t* genericBinaryOperationToIloc(NodoArvore_t* node, int registerNumber){
     OpData_t* newOp = createIloc();
     int regUm, regDois;
 
     NodoArvore_t* childOne = node->children->nodo;
     NodoArvore_t* childTwo = node->children->next->nodo;
-    newOp->operation = Imult;
+    newOp->operation = node->operation;
     regUm = newRegister();
     newOp->registerNumberArg1 = regUm;
 
@@ -98,60 +99,42 @@ OpData_t* addToIloc(NodoArvore_t* node, int registerNumber){
 
         }
     }
+    if(childTwo->valorLexico.isLiteral || childOne->valorLexico.isLiteral ){
+        switch (node->operation)
+        {
+        
+        case Iadd: 
+            newOp->operation = IaddI;
+            break;
+        case Isub:
+            newOp->operation = IsubI;
+            break;
+        case Imult:
+            newOp->operation = ImultI;
+            break;
+        case Idiv:
+            newOp->operation = IdivI;
+            break;
+        case Ilshift:
+            newOp->operation = IlshiftI;
+            break;
+        case Irshift:
+            newOp->operation = IrshiftI;
+            break;
+        case Iand:
+            newOp->operation = IandI;
+            break;
+        case Ior:
+            newOp->operation = IorI;
+            break;
+        case Ixor:
+            newOp->operation = IxorI;
+            break;
+        default:
+            break;
+        }
+    }
     
-    return newOp;
-
-}
-
-OpData_t* multToIloc(NodoArvore_t* node, int registerNumber){
-    OpData_t* newOp = createIloc();
-    int regUm, regDois;
-
-    NodoArvore_t* childOne = node->children->nodo;
-    NodoArvore_t* childTwo = node->children->next->nodo;
-    newOp->operation = Imult;
-    regUm = newRegister();
-    newOp->registerNumberArg1 = regUm;
-
-    if(childTwo->valorLexico.isLiteral && childOne->valorLexico.isLiteral){
-        newOp->registerNumberArg2 = childTwo->valorLexico.intValue;
-        newOp->registerNumberArg3 = registerNumber;
-        OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
-        newOpListElement->arg = newOp;
-        LL_PREPEND(operationsList, newOpListElement);
-        loadImediateToIloc(childOne, regUm);
-    }
-    else
-    {
-        if(childOne->valorLexico.isLiteral){
-            newOp->registerNumberArg2 = childOne->valorLexico.intValue;
-            newOp->registerNumberArg3 = registerNumber;
-            OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
-            newOpListElement->arg = newOp;
-            LL_PREPEND(operationsList, newOpListElement);
-            nodeToIloc(childTwo,regUm);
-
-
-        }else if(childTwo->valorLexico.isLiteral){
-            newOp->registerNumberArg2 = childTwo->valorLexico.intValue;
-            newOp->registerNumberArg3 = registerNumber;
-            OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
-            newOpListElement->arg = newOp;
-            LL_PREPEND(operationsList, newOpListElement);
-            nodeToIloc(childOne,regUm);
-        }
-        if(!childTwo->valorLexico.isLiteral && !childOne->valorLexico.isLiteral){
-            regDois = newRegister();
-            newOp->registerNumberArg2 = regDois;
-            newOp->registerNumberArg3 = registerNumber;
-            OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
-            newOpListElement->arg = newOp;
-            LL_PREPEND(operationsList, newOpListElement);
-            nodeToIloc(childOne,regUm);
-            nodeToIloc(childOne,regDois);
-
-        }
-    }
     
     return newOp;
 

@@ -31,11 +31,26 @@ typedef enum {
 
 typedef enum {
     Iadd,
+    IaddI,
     Inop,
     IloadI,
     Iload,
-    IaddI, 
-    Imult
+    Imult,
+    ImultI,
+    Idiv,
+    IdivI,
+    Iand,
+    IandI,
+    Isub,
+    IsubI,
+    Ilshift,
+    IlshiftI,
+    Irshift,
+    IrshiftI,
+    Ior,
+    IorI,
+    Ixor,
+    IxorI,
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {
