@@ -5,6 +5,8 @@ OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* loadImediateToIlocValue(int value, int registerNumber);
 OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree);
+OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previousRegister);
 
 
 int lastKnownRegister=0;
@@ -239,4 +241,73 @@ OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber){
     return newOp;
 }
 
+OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    OpData_t* operationRegisterOne;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    NodoArvore_t* childOne = node->children->nodo;
+    int registerThree = newRegister();
+    int registerOne = newRegister();
+    
+    newOp->operation = node->operation;
+    newOp->registerNumberArg2 = registerNumber;
+    newOp->registerNumberArg1 = registerOne;
+    newOp->registerNumberArg3 = registerThree;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
+    storeAHelper(childOne, registerNumber, registerThree);
+    nodeToIloc(childTwo,registerOne);
+    
+    return newOp;
+}
+
+OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree){
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    NodoArvore_t* childOne = node->children->nodo;
+    
+    if(childTwo->childrenNumber >0){
+        int registerNewDimension = newRegister();
+        recursiveIndexCalc(childTwo,registerNewDimension, registerThree);
+    }
+    if(childTwo->valorLexico.isLiteral){
+        loadImediateToIlocValue(childTwo->valorLexico.memoryDeloc,registerThree);
+
+    }
+    else
+    {
+        nodeToIloc(childTwo,registerThree);
+    }
+    
+
+    loadImediateToIlocValue(childOne->valorLexico.memoryDeloc,registerNumber);
+}
+
+OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previousRegister){
+    OpData_t* addEnd = createIloc();
+    addEnd->registerNumberArg1 = registerNumber;
+    addEnd->registerNumberArg2 = previousRegister;
+    addEnd->registerNumberArg3 = previousRegister;
+    NodoArvore_t* currentChild = node->children->nodo;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = addEnd;
+
+    LL_PREPEND(operationsList, newOpListElement);
+
+    if(currentChild->childrenNumber >0){
+        recursiveIndexCalc(currentChild->children->nodo,newRegister(),previousRegister);
+    }
+
+    if(currentChild->valorLexico.isLiteral){
+        addEnd->operation = IaddI;
+        loadImediateToIlocValue(currentChild->valorLexico.memoryDeloc,registerNumber);
+
+    }
+    else{
+        addEnd->operation = Iadd;
+        nodeToIloc(currentChild,registerNumber);
+
+    }
+}
 

@@ -52,6 +52,7 @@ typedef enum {
     Ixor,
     IxorI,
     Istore,
+    IstoreA,
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {
@@ -115,7 +116,7 @@ typedef struct OpData_t{
 } OpData_t;
 
 typedef struct OpDataList_t{
-    struct ValorSemantico_t *arg;
+    struct OpData_t *arg;
     struct OpDataList_t* next;
 } OpDataList_t;
 
