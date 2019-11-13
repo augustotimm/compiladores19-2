@@ -54,6 +54,13 @@ typedef enum {
     Istore,
     IstoreA,
     IloadA,
+    IcmpLt,
+    IcmpLe,
+    IcmpEq,
+    IcmpGe,
+    IcmpGt,
+    IcmpNe,
+    Icbr,
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {

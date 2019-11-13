@@ -8,7 +8,7 @@ OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree);
 OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previousRegister);
 OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber);
-
+OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber);
 
 int lastKnownRegister=0;
 
@@ -71,6 +71,24 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
         break;
     case IloadA:
         storeAToIloc(node,registerNumber);
+        break;
+    case IcmpLt:
+        genericCompareOperationToIloc(node,registerNumber);
+        break;
+    case IcmpLe:
+        genericCompareOperationToIloc(node,registerNumber);
+        break;
+    case IcmpEq:
+        genericCompareOperationToIloc(node,registerNumber);
+        break;
+    case IcmpGe:
+        genericCompareOperationToIloc(node,registerNumber);
+        break;
+    case IcmpGt:
+        genericCompareOperationToIloc(node,registerNumber);
+        break;
+    case IcmpNe:
+        genericCompareOperationToIloc(node,registerNumber);
         break;
     default:
         genericBinaryOperationToIloc(node,registerNumber);
@@ -318,5 +336,46 @@ OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previou
         nodeToIloc(currentChild,registerNumber);
 
     }
+}
+
+
+OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    int regUm, regDois;
+
+    NodoArvore_t* childOne = node->children->nodo;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    newOp->operation = node->operation;
+    regUm = newRegister();
+    regDois = newRegister();
+    newOp->registerNumberArg1 = regUm;
+    newOp->registerNumberArg2 = regDois;
+    newOp->registerNumberArg3 = registerNumber;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(operationsList, newOpListElement);
+
+    if(childOne->valorLexico.isLiteral){
+        loadImediateToIloc(childOne, regUm);
+
+    }
+    else
+    {
+        nodeToIloc(childOne,regUm);
+
+    }
+    
+
+    if(childTwo->valorLexico.isLiteral){
+               
+        loadImediateToIloc(childTwo,regDois);
+    }
+    else{
+        nodeToIloc(childTwo,regDois);
+
+    }      
+    
+    return newOp;
+
 }
 
