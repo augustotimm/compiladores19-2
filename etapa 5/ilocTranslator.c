@@ -110,6 +110,60 @@ void loadTranslate(OpData_t* currentOp ){
      currentOp->registerNumberArg1, currentOp->registerNumberArg3 );
 }
 
+void loadAITranslate(OpData_t* currentOp ){
+    fprintf( stdout, "loadAI      r%d,%d    =>  r%d",
+     currentOp->registerNumberArg1,currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void loadA0Translate(OpData_t* currentOp ){
+    fprintf( stdout, "loadA0      r%d,r%d    =>  r%d",
+     currentOp->registerNumberArg1,currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void storeAITranslate(OpData_t* currentOp ){
+    fprintf( stdout, "storeAI      r%d,%d    =>  r%d",
+     currentOp->registerNumberArg1,currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void storeA0Translate(OpData_t* currentOp ){
+    fprintf( stdout, "storeA0      r%d,r%d    =>  r%d",
+     currentOp->registerNumberArg1,currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void storeTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "store      r%d,    =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2 );
+}
+
+void cmpLTTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_LT      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void cmpLETranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_LE      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void cmpEQTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_EQ      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void cmpGETranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_GE      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void cmpGTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_GT      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void cmpNETranslate(OpData_t* currentOp ){
+    fprintf( stdout, "cmp_NE      r%d, %d   =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
 
 void translateIloc(){
     OpDataList_t* current;
@@ -160,37 +214,43 @@ void translateIloc(){
             xorITranslate(current);
             break;
         case Iload:
-            loadToIloc(node, registerNumber);
+            loadTranslate(current);
             break;
         case IloadI:
-            loadImediateToIloc(node,registerNumber);
+            loadITranslate(current);
             break;
         case Istore:
-            storeToIloc(node,registerNumber);
+            storeTranslate(current);
             break;
-        case IstoreA:
-            storeAToIloc(node,registerNumber);
+        case IstoreA0:
+            storeA0Translate(current);
             break;
-        case IloadA:
-            storeAToIloc(node,registerNumber);
+        case IloadA0:
+            loadA0Translate(current);
+            break;
+        case IloadAI:
+            loadAITranslate(current);
+            break;
+        case IstoreAI:
+            storeAITranslate(current);
             break;
         case IcmpLt:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpLTranslate(current);
             break;
         case IcmpLe:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpLETranslate(current);
             break;
         case IcmpEq:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpEQTranslate(current);
             break;
         case IcmpGe:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpGETranslate(current);
             break;
         case IcmpGt:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpGTTranslate(current);
             break;
         case IcmpNe:
-            genericCompareOperationToIloc(node,registerNumber);
+            cmpNETranslate(current);
             break;
         default:
             genericBinaryOperationToIloc(node,registerNumber);
