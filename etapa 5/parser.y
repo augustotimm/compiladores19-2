@@ -133,7 +133,7 @@ extern void *arvore;
 entry: {createHash(NULL, NULL); }
 programa {$$ = $2; arvore = $2; deleteHash(getCurrentHash());};
 
-programa: lista_elementos  {$$ =$1;   }
+programa: lista_elementos  {$$ =$1;  translateIloc(); }
         | %empty {$$ = NULL;}
         ; 
 
@@ -295,7 +295,7 @@ parametro: tipo TK_IDENTIFICADOR
         }
         ;
 
-comando_simples: atribuicao {$$ = $1;};
+comando_simples: atribuicao {$$ = $1; $$->operation = Istore; nodeToIloc($$,-1);};
             | chamada_funcao {$$ = $1;};
             | comando_shift {$$ = $1;};
             | comando_entrada {$$ = $1;};
@@ -668,6 +668,7 @@ expressao: '(' expressao ')' {
          | expressao '-' expressao 
         {
                 NodoArvore_t* minusNodo = criaNodoValorLexico($2);
+                minusNodo->operation = Isub;
                 addChildren(minusNodo, $1);
                 addChildren(minusNodo, $3);
                 $$=minusNodo;
@@ -697,7 +698,7 @@ expressao: '(' expressao ')' {
         | expressao '+'  expressao
         {
                 NodoArvore_t* plusNodo = criaNodoValorLexico($2);
-                
+                plusNodo->operation = Iadd;
                 addChildren(plusNodo, $1);
                 addChildren(plusNodo, $3);
                 $$=plusNodo;
@@ -729,6 +730,7 @@ expressao: '(' expressao ')' {
         | expressao '*' expressao
         {
                 NodoArvore_t* multNodo = criaNodoValorLexico($2);
+                multNodo->operation = Imult;
                 addChildren(multNodo, $1);
                 addChildren(multNodo, $3);
                 $$=multNodo;
@@ -760,6 +762,7 @@ expressao: '(' expressao ')' {
         | expressao '/' expressao 
         {
                 NodoArvore_t* divNodo = criaNodoValorLexico($2);
+                divNodo->operation = Idiv;
                 addChildren(divNodo, $1);
                 addChildren(divNodo, $3);
                 $$=divNodo;
@@ -914,6 +917,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_LE expressao
         {
                 NodoArvore_t* leNodo = criaNodoValorLexico($2);
+                leNodo->operation = IcmpLe;
                 addChildren(leNodo, $1);
                 addChildren(leNodo, $3);
                 $$=leNodo;
@@ -945,6 +949,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_GE expressao
         {
                 NodoArvore_t* geNodo = criaNodoValorLexico($2);
+                geNodo->operation = IcmpGe;
                 addChildren(geNodo, $1);
                 addChildren(geNodo, $3);
                 $$=geNodo;
@@ -976,6 +981,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_EQ expressao
         {
                 NodoArvore_t* eqNodo = criaNodoValorLexico($2);
+                eqNodo->operation = IcmpEq;
                 addChildren(eqNodo, $1);
                 addChildren(eqNodo, $3);
                 $$=eqNodo;
@@ -1005,6 +1011,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_NE expressao
         {
                 NodoArvore_t* neNodo = criaNodoValorLexico($2);
+                neNodo->operation= IcmpNe;
                 addChildren(neNodo, $1);
                 addChildren(neNodo, $3);
                 $$=neNodo;
@@ -1035,6 +1042,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_AND expressao
         {
                 NodoArvore_t* andNodo = criaNodoValorLexico($2);
+                andNodo->operation = Iand;
                 addChildren(andNodo, $1);
                 addChildren(andNodo, $3);
                 $$=andNodo;
@@ -1064,6 +1072,7 @@ expressao: '(' expressao ')' {
         | expressao TK_OC_OR expressao
         {
                 NodoArvore_t* orNodo = criaNodoValorLexico($2);
+                orNodo->operation = Ior;
                 addChildren(orNodo, $1);
                 addChildren(orNodo, $3);
                 $$=orNodo;
@@ -1265,6 +1274,7 @@ literal: TK_LIT_CHAR {
 variavel: TK_IDENTIFICADOR { 
         $1.isVector = false;
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
+        idNodo->operation = Iload;
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
@@ -1282,7 +1292,9 @@ variavel: TK_IDENTIFICADOR {
         | TK_IDENTIFICADOR dimensao { 
         NodoArvore_t* idNodo = criaNodoValorLexico( $1 );
         addChildren(idNodo, $2);
+        idNodo->operation = IloadA;
         $$ = idNodo;
+        
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
                 if( valId->isFunction){
