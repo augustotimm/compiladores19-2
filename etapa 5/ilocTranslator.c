@@ -90,13 +90,13 @@ void orITranslate(OpData_t* currentOp ){
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void xorITranslate(OpData_t* currentOp ){
-    fprintf( stdout, "xor      r%d, %d   =>  r%d",
+void xorTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "xor      r%d, r%d   =>  r%d",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void xorITranslate(OpData_t* currentOp ){
-    fprintf( stdout, "xor      r%d, %d   =>  r%d",
+    fprintf( stdout, "xorI      r%d, %d   =>  r%d",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
@@ -172,88 +172,87 @@ void translateIloc(){
         {
     
         case Iadd: 
-            addTranslate(current );
+            addTranslate(current->arg );
             break;
         case Isub:
-            subTranslate(current);
+            subTranslate(current->arg);
             break;
         case Imult:
-            multTranslate(current);
+            multTranslate(current->arg);
             break;
         case Idiv:
-            divTranslate(current);
+            divTranslate(current->arg);
             break;
         case IaddI: 
-            addITranslate(current );
+            addITranslate(current->arg );
             break;
         case IsubI:
-            subITranslate(current);
+            subITranslate(current->arg);
             break;
         case ImultI:
-            multITranslate(current);
+            multITranslate(current->arg);
             break;
         case IdivI:
-            divITranslate(current);
+            divITranslate(current->arg);
             break;
         case Iand:
-            andTranslate(current);
+            andTranslate(current->arg);
             break;
         case IandI:
-            andITranslate(current);
+            andITranslate(current->arg);
             break;
         case Ior:
-            orTranslate(current);
+            orTranslate(current->arg);
             break;
         case IorI:
-            orITranslate(current);
+            orITranslate(current->arg);
             break;
         case Ixor:
-            xorTranslate(current);
+            xorTranslate(current->arg);
             break;
         case IxorI:
-            xorITranslate(current);
+            xorITranslate(current->arg);
             break;
         case Iload:
-            loadTranslate(current);
+            loadTranslate(current->arg);
             break;
         case IloadI:
-            loadITranslate(current);
+            loadITranslate(current->arg);
             break;
         case Istore:
-            storeTranslate(current);
+            storeTranslate(current->arg);
             break;
         case IstoreA0:
-            storeA0Translate(current);
+            storeA0Translate(current->arg);
             break;
         case IloadA0:
-            loadA0Translate(current);
+            loadA0Translate(current->arg);
             break;
         case IloadAI:
-            loadAITranslate(current);
+            loadAITranslate(current->arg);
             break;
         case IstoreAI:
-            storeAITranslate(current);
+            storeAITranslate(current->arg);
             break;
         case IcmpLt:
-            cmpLTranslate(current);
+            cmpLTTranslate(current->arg);
             break;
         case IcmpLe:
-            cmpLETranslate(current);
+            cmpLETranslate(current->arg);
             break;
         case IcmpEq:
-            cmpEQTranslate(current);
+            cmpEQTranslate(current->arg);
             break;
         case IcmpGe:
-            cmpGETranslate(current);
+            cmpGETranslate(current->arg);
             break;
         case IcmpGt:
-            cmpGTTranslate(current);
+            cmpGTranslate(current->arg);
             break;
         case IcmpNe:
-            cmpNETranslate(current);
+            cmpNETranslate(current->arg);
             break;
         default:
-            genericBinaryOperationToIloc(node,registerNumber);
             break;;
         }
     }
