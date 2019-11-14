@@ -53,7 +53,11 @@ typedef enum {
     IxorI,
     Istore,
     IstoreA,
+    IstoreAI,
+    IstoreA0,
     IloadA,
+    IloadA0,
+    IloadAI,
     IcmpLt,
     IcmpLe,
     IcmpEq,
@@ -204,3 +208,5 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 //iloc
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber);
+
+void translateIloc();

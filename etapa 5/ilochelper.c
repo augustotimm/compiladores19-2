@@ -283,7 +283,36 @@ OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber){
 
     LL_PREPEND(operationsList, newOpListElement);
     storeAHelper(childOne, registerNumber, registerThree);
-    nodeToIloc(childTwo,registerOne);
+    if(childTwo->valorLexico.isLiteral){
+        switch (node->operation)
+        {
+        case IloadA:
+            node->operation = IloadAI;
+            break;
+        case IstoreA:
+            node->operation = IstoreAI;
+            break;        
+        default:
+            break;
+        }
+    }
+    else
+    {
+        switch (node->operation)
+        {
+        case IloadA:
+            node->operation = IloadA0;
+            break;
+        case IstoreA:
+            node->operation = IstoreA0;
+            break;        
+        default:
+            break;
+        }
+        nodeToIloc(childTwo,registerOne);
+    }
+    
+    
     
     return newOp;
 }
