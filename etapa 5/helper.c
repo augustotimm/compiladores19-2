@@ -69,7 +69,7 @@ void printNodo(NodoArvore_t* nodo){
         }
     }
     else{
-        printf("Nodo NULLO\n");
+        //printf("Nodo NULLO\n");
     }
     
     
