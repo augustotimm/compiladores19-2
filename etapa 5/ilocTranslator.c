@@ -5,8 +5,21 @@ extern OpDataList_t* operationsList;
 
 
 void addTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "add      r%d, r%d   =>  r%d",
-     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    if(currentOp->registerType == Rfp){
+        fprintf( stdout, "add      rfp, r%d   =>  r%d",
+         currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
+
+    if(currentOp->registerType == Rbss) {
+        fprintf( stdout, "add      rbss, r%d   =>  r%d",
+         currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
+
+    if(currentOp->registerType == Rdefault) {
+        fprintf( stdout, "add      r%d, r%d   =>  r%d",
+         currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
+    
 }
 
 void subTranslate(OpData_t* currentOp ){
@@ -26,8 +39,20 @@ void divTranslate(OpData_t* currentOp ){
     
 
 void addITranslate(OpData_t* currentOp ){
-    fprintf( stdout, "add      r%d, %d   =>  r%d",
-     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    if(currentOp->registerType == Rfp){
+        fprintf( stdout, "add      rfp, %d   =>  r%d",
+         currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
+
+    if(currentOp->registerType == Rbss) {
+        fprintf( stdout, "add      rbss, %d   =>  r%d",
+         currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
+
+    if(currentOp->registerType == Rdefault) {
+        fprintf( stdout, "add      r%d, %d   =>  r%d",
+         currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+    }
 }
 
 void subITranslate(OpData_t* currentOp ){

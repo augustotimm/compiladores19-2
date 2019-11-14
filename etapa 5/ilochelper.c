@@ -9,6 +9,11 @@ OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree
 OpData_t* recursiveIndexCalc(NodoArvore_t* node, int registerNumber, int previousRegister);
 OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber);
 OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal);
+OpData_t* addRfp( int deslocamento, int registerNumber, bool isLocal);
+
+
 
 int lastKnownRegister=0;
 
@@ -23,6 +28,7 @@ int newRegister(){
 
 OpData_t* createIloc(){
        OpData_t* newOp = calloc(1, sizeof(OpData_t));
+       newOp->registerType = Rdefault;
        return newOp;
 }
 
@@ -260,6 +266,14 @@ OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber){
     newOpListElement->arg = newOp;
 
     LL_PREPEND(operationsList, newOpListElement);
+    if(childTwo->valorLexico.isLiteral){
+        addIRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+    }
+    else{
+        addRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+    }
+
+
     loadImediateToIlocValue(valueDeloc, registerNumber);
     nodeToIloc(childTwo,registerOne);
     
@@ -282,33 +296,27 @@ OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber){
     newOpListElement->arg = newOp;
 
     LL_PREPEND(operationsList, newOpListElement);
-    storeAHelper(childOne, registerNumber, registerThree);
     if(childTwo->valorLexico.isLiteral){
-        switch (node->operation)
-        {
-        case IloadA:
-            node->operation = IloadAI;
-            break;
-        case IstoreA:
-            node->operation = IstoreAI;
-            break;        
-        default:
-            break;
-        }
+        addIRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+    }
+    else{
+        addRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+    }
+
+
+    
+    if(childTwo->valorLexico.isLiteral && childTwo->childrenNumber ==0){
+        
+        node->operation = IstoreAI;
+        registerThree = childTwo->valorLexico.memoryDeloc;
+
+
     }
     else
     {
-        switch (node->operation)
-        {
-        case IloadA:
-            node->operation = IloadA0;
-            break;
-        case IstoreA:
-            node->operation = IstoreA0;
-            break;        
-        default:
-            break;
-        }
+        storeAHelper(childOne, registerNumber, registerThree);    
+        node->operation = IstoreA0;
+
         nodeToIloc(childTwo,registerOne);
     }
     
@@ -317,6 +325,52 @@ OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber){
     return newOp;
 }
 
+
+
+OpData_t* loadAToIloc(NodoArvore_t* node, int registerNumber){
+    OpData_t* newOp = createIloc();
+    OpData_t* operationRegisterOne;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    NodoArvore_t* childOne = node->children->nodo;
+    int registerTwo = newRegister();
+    int registerOne = newRegister();
+    
+    newOp->operation = node->operation;
+    newOp->registerNumberArg2 = registerTwo;
+    newOp->registerNumberArg1 = registerOne;
+    newOp->registerNumberArg3 = registerNumber;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+
+    LL_PREPEND(operationsList, newOpListElement);
+    if(childTwo->valorLexico.isLiteral){
+        addIRfp(childTwo->valorLexico.memoryDeloc,registerOne, childTwo->valorLexico.isLocal);
+    }
+    else{
+        addRfp(childTwo->valorLexico.memoryDeloc,registerOne, childTwo->valorLexico.isLocal);
+    }
+
+
+    
+    if(childTwo->valorLexico.isLiteral && childTwo->childrenNumber ==0){
+        
+        node->operation = IstoreAI;
+        registerTwo = childTwo->valorLexico.memoryDeloc;
+
+
+    }
+    else
+    {
+        storeAHelper(childOne, registerNumber, registerTwo);    
+        node->operation = IstoreA0;
+
+        nodeToIloc(childTwo,registerOne);
+    }
+    
+    
+    
+    return newOp;
+}
 
 
 OpData_t* storeAHelper(NodoArvore_t* node, int registerNumber, int registerThree){
@@ -408,3 +462,35 @@ OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber){
 
 }
 
+OpData_t* addRfp( int registerDeslocamento, int registerNumber, bool isLocal){
+    OpData_t* newOp = createIloc();
+    newOp->operation = Iadd;
+    if(isLocal){
+        newOp->registerType = Rfp;
+    }
+    else{
+        newOp->registerNumberArg1 = Rbss;
+    }
+
+    newOp->registerNumberArg2 = registerDeslocamento;
+    newOp->registerNumberArg3 = registerNumber;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(operationsList, newOpListElement);
+}
+
+OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal){
+    OpData_t* newOp = createIloc();
+    newOp->operation = IaddI;
+     if(isLocal){
+        newOp->registerType = Rfp;
+    }
+    else{
+        newOp->registerNumberArg1 = Rbss;
+    }
+    newOp->registerNumberArg2 = deslocamento;
+    newOp->registerNumberArg3 = registerNumber;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(operationsList, newOpListElement);
+}

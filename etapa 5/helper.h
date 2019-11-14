@@ -74,6 +74,7 @@ typedef struct ValorLexico_t {
     bool isLiteral;
     char *stringValue;
     bool boolValue;
+    bool isLocal;
     char charValue;
     int intValue;
     float floatValue;
@@ -111,7 +112,11 @@ typedef struct NodoArvore_t{
 
 
 
-
+typedef enum {
+    Rdefault,
+    Rfp,
+    Rbss,
+} RegisterType_t;
 
 
 
@@ -125,6 +130,7 @@ typedef struct OpData_t{
     int registerNumberArg1;
     int registerNumberArg2;
     int registerNumberArg3;
+    RegisterType_t registerType;
 } OpData_t;
 
 typedef struct OpDataList_t{
