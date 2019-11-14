@@ -4,75 +4,85 @@ extern OpDataList_t* operationsList;
 
 
 
-void addTranslate(OpData_t* addop ){
+void addTranslate(OpData_t* currentOp ){
     fprintf( stdout, "add      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void subTranslate(OpData_t* addop ){
+void subTranslate(OpData_t* currentOp ){
     fprintf( stdout, "sub      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void multTranslate(OpData_t* addop ){
+void multTranslate(OpData_t* currentOp ){
     fprintf( stdout, "mult      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void divTranslate(OpData_t* addop ){
+void divTranslate(OpData_t* currentOp ){
     fprintf( stdout, "div      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
     
 
-void addITranslate(OpData_t* addop ){
+void addITranslate(OpData_t* currentOp ){
     fprintf( stdout, "add      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void subITranslate(OpData_t* addop ){
+void subITranslate(OpData_t* currentOp ){
     fprintf( stdout, "sub      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void multITranslate(OpData_t* addop ){
+void multITranslate(OpData_t* currentOp ){
     fprintf( stdout, "mult      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void divITranslate(OpData_t* addop ){
+void divITranslate(OpData_t* currentOp ){
     fprintf( stdout, "div      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void andTranslate(OpData_t* addop ){
+void andTranslate(OpData_t* currentOp ){
     fprintf( stdout, "and      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void andITranslate(OpData_t* addop ){
+void andITranslate(OpData_t* currentOp ){
     fprintf( stdout, "and      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void orTranslate(OpData_t* addop ){
+void orTranslate(OpData_t* currentOp ){
     fprintf( stdout, "or      r%d, r%d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void orITranslate(OpData_t* addop ){
+void orITranslate(OpData_t* currentOp ){
     fprintf( stdout, "or      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void xorITranslate(OpData_t* addop ){
+void xorITranslate(OpData_t* currentOp ){
     fprintf( stdout, "xor      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
-void xorITranslate(OpData_t* addop ){
+void xorITranslate(OpData_t* currentOp ){
     fprintf( stdout, "xor      r%d, %d   =>  r%d",
-     addop->registerNumberArg1, addop->registerNumberArg2, addop->registerNumberArg3 );
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void loadITranslate(OpData_t* currentOp ){
+    fprintf( stdout, "loadI      %d,    =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg3 );
+}
+
+void loadTranslate(OpData_t* currentOp ){
+    fprintf( stdout, "load      r%d,    =>  r%d",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg3 );
 }
 
 
