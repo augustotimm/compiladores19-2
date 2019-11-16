@@ -388,13 +388,12 @@ declaracao_local_simples: tipo TK_IDENTIFICADOR
 
 atribuicao: variavel '=' expressao 
         {
-                checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
-
+                ValorSemantico_t*  variableSemantics = checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
+                $1->valorLexico.memoryDeloc = variableSemantics->memoryDeloc;
                 NodoArvore_t* atrNodo = criaNodoValorLexico($2);
                 addChildren(atrNodo,$1);
                 addChildren(atrNodo,$3);
                 $$ = atrNodo;
-                ValorSemantico_t* variableSemantics = checkIdentifierDeclared(getCurrentHash(), $1->valorLexico.stringValue);
                 if(!canConvertType(variableSemantics->tipo, $3->tipo)){
                         if($3->tipo == Tstring){
                                 exit(ERR_STRING_TO_X);
@@ -482,9 +481,8 @@ comando_return: TK_PR_RETURN expressao
 
 comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao 
         {
-                checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
-
-                
+                ValorSemantico_t*  semanticsval = checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
+                $1.memoryDeloc = semanticsval->memoryDeloc;
                 NodoArvore_t* slNodo = criaNodoValorLexico($2);
                 NodoArvore_t* identificador = criaNodoValorLexico($1);
                 addChildren(slNodo,identificador);
@@ -493,8 +491,9 @@ comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao
         }
         |  TK_IDENTIFICADOR TK_OC_SR expressao 
         {
-                checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
+                ValorSemantico_t*  semanticsval = checkIdentifierDeclared( getCurrentHash(), $1.stringValue);
 
+                $1.memoryDeloc = semanticsval->memoryDeloc;
 
                 NodoArvore_t* srNodo = criaNodoValorLexico($2);
                 NodoArvore_t* identificador = criaNodoValorLexico($1);
@@ -1278,6 +1277,8 @@ variavel: TK_IDENTIFICADOR {
         $$ = idNodo;
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
+                $1.memoryDeloc = valId->memoryDeloc;
+
                 if(valId->isFunction){
                         exit(ERR_FUNCTION);
                 }
@@ -1297,6 +1298,8 @@ variavel: TK_IDENTIFICADOR {
         
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
+                $1.memoryDeloc = valId->memoryDeloc;
+
                 if( valId->isFunction){
                         exit(ERR_FUNCTION);
                 }
