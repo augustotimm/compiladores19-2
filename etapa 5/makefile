@@ -3,7 +3,7 @@ all: parser.y scanner.l
 	gcc -c parser.tab.c helper.c -lcunit
 	flex --header-file=lex.yy.h scanner.l
 	gcc -c lex.yy.c -lcunit
-	gcc  -o etapa5 lex.yy.o parser.tab.o  -lm  main.c semanticsHelper.c helper.c helper.h ilochelper.c -g  -lfl -O0 -lcunit
+	gcc  -o etapa5 lex.yy.o parser.tab.o  -lm  main.c semanticsHelper.c helper.c helper.h ilochelper.c ilocTranslator.c -g  -lfl -O0 -lcunit
 
 run:
 	./etapa5 < teste.txt >saida.iloc
