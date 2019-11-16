@@ -207,9 +207,8 @@ OpData_t* genericBinaryOperationToIloc(NodoArvore_t* node, int registerNumber, C
 
 OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head){
     OpData_t* newOp = createIloc();
-    OpData_t* operationRegisterOne;
     int registerOne = newRegister();
-    operationRegisterOne = loadImediateToIlocValue(node->valorLexico.memoryDeloc, registerOne, head);
+    
     newOp->operation = Iload;
     newOp->registerNumberArg3 = registerNumber;
     newOp->registerNumberArg1 = registerOne;
@@ -217,6 +216,8 @@ OpData_t* loadToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head
     newOpListElement->arg = newOp;
 
     LL_PREPEND(head->arg, newOpListElement);
+
+    addIRfp(node->valorLexico.memoryDeloc,registerOne, node->valorLexico.isLocal, head);
     
     return newOp;
 
