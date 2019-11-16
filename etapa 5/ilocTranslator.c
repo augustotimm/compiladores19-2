@@ -260,4 +260,6 @@ void translateIloc(){
         }
         
     }
+
+    dumpAllInterface();
 }

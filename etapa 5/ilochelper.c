@@ -512,3 +512,54 @@ OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal, ComandsLi
     LL_PREPEND(head->arg, newOpListElement);
     return newOp;
 }
+
+
+void dumpAllOperations(OpDataList_t* listOperations){
+    if(listOperations == NULL){
+        return;
+    }
+    else{
+        dumpAllOperations(listOperations->next);
+        free(listOperations->arg);
+        listOperations->arg = NULL;
+        if(listOperations->next != NULL){
+            free(listOperations->next);
+            listOperations->next = NULL;
+        }
+        
+
+        return;
+    }
+}
+
+
+
+void dumpAllCommands(ComandsList_t* listCommands){
+    if(listCommands == NULL){
+        return;
+    }
+    else
+    {   
+        dumpAllCommands(listCommands->next);
+        dumpAllOperations(listCommands->arg);
+        if(listCommands->arg != NULL){
+            free(listCommands->arg);
+            listCommands->arg = NULL;
+        }
+        if(listCommands->next != NULL){
+            free(listCommands->next);
+            listCommands->next = NULL;
+        }
+        return;
+    };
+    
+
+}
+
+
+
+void dumpAllInterface(){
+    dumpAllCommands(commandsList);
+    free(commandsList);
+    commandsList = NULL;
+}

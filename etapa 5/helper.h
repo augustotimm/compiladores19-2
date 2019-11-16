@@ -220,3 +220,4 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
 
 void translateIloc();
+void dumpAllInterface();
