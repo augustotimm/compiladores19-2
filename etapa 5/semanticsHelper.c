@@ -128,9 +128,11 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* i
         printf("variavel Ja declarada no escopo");
         exit(ERR_DECLARED);
     }
-    hashT->memoryDeloc = hashT->memoryDeloc + valorSemantico->size;
-    valorSemantico->memoryDeloc = hashT->memoryDeloc;
-    valorSemantico->valorLexico.memoryDeloc = valorSemantico->memoryDeloc;
+    if(!valorSemantico->valorLexico.isLiteral && !valorSemantico->isFunction){
+        valorSemantico->memoryDeloc = hashT->memoryDeloc;
+        hashT->memoryDeloc = hashT->memoryDeloc + valorSemantico->size;    
+        valorSemantico->valorLexico.memoryDeloc = valorSemantico->memoryDeloc;
+    }    
     HASH_ADD_STR( hashT->current, identificador, newInput);
     return newInput;
 }
