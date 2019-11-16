@@ -20,7 +20,8 @@
   yylval.valor_lexico.boolValue = false; \
   yylval.valor_lexico.intValue = 0; \
   yylval.valor_lexico.floatValue = 0; \
-  yylval.valor_lexico.stringValue = strdup(yytext);
+  yylval.valor_lexico.stringValue = strdup(yytext);\
+  yylval.valor_lexico.isLiteral = false;
 
 #define DEF_TYPE_CHAR  yylval.valor_lexico.tipo  = Tchar; 
 
