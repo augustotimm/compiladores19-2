@@ -33,6 +33,9 @@ OpData_t* createIloc(){
 }
 
 OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber){
+    if(registerNumber == -1){
+        registerNumber = newRegister();
+    }
     switch (node->operation)
     {
   
@@ -264,18 +267,27 @@ OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber){
     newOp->registerNumberArg1 = registerOne;
     OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
     newOpListElement->arg = newOp;
-
-    LL_PREPEND(operationsList, newOpListElement);
-    if(childTwo->valorLexico.isLiteral){
-        addIRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+    if(childOne->valorLexico.isLocal){
+        newOp->registerType = Rfp;
     }
     else{
-        addRfp(childTwo->valorLexico.memoryDeloc,registerNumber, childTwo->valorLexico.isLocal);
+        newOp->registerType = Rbss;
     }
+    
+
+    LL_PREPEND(operationsList, newOpListElement);
+    addIRfp(valueDeloc,registerNumber, childTwo->valorLexico.isLocal);
 
 
-    loadImediateToIlocValue(valueDeloc, registerNumber);
-    nodeToIloc(childTwo,registerOne);
+
+
+    
+    if(childTwo->valorLexico.isLiteral){
+        loadImediateToIloc(childTwo,registerOne);
+    }
+    else{
+        nodeToIloc(childTwo,registerOne);
+    }    
     
     return newOp;
 }
@@ -469,7 +481,7 @@ OpData_t* addRfp( int registerDeslocamento, int registerNumber, bool isLocal){
         newOp->registerType = Rfp;
     }
     else{
-        newOp->registerNumberArg1 = Rbss;
+        newOp->registerType = Rbss;
     }
 
     newOp->registerNumberArg2 = registerDeslocamento;
@@ -477,6 +489,7 @@ OpData_t* addRfp( int registerDeslocamento, int registerNumber, bool isLocal){
     OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
     newOpListElement->arg = newOp;
     LL_PREPEND(operationsList, newOpListElement);
+    return newOp;
 }
 
 OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal){
@@ -486,11 +499,12 @@ OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal){
         newOp->registerType = Rfp;
     }
     else{
-        newOp->registerNumberArg1 = Rbss;
+        newOp->registerType = Rbss;
     }
     newOp->registerNumberArg2 = deslocamento;
     newOp->registerNumberArg3 = registerNumber;
     OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
     newOpListElement->arg = newOp;
     LL_PREPEND(operationsList, newOpListElement);
+    return newOp;
 }
