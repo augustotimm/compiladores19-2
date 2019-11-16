@@ -1,6 +1,6 @@
 #include "helper.h"
 
-extern OpDataList_t* operationsList;
+extern ComandsList_t* commandsList;
 
 
 
@@ -166,93 +166,98 @@ void cmpNETranslate(OpData_t* currentOp ){
 }
 
 void translateIloc(){
-    OpDataList_t* current;
-    LL_FOREACH(operationsList, current){
-        switch (current->arg->operation)
-        {
-        
-            case Iadd: 
-                addTranslate(current->arg );
-                break;
-            case Isub:
-                subTranslate(current->arg);
-                break;
-            case Imult:
-                multTranslate(current->arg);
-                break;
-            case Idiv:
-                divTranslate(current->arg);
-                break;
-            case IaddI: 
-                addITranslate(current->arg );
-                break;
-            case IsubI:
-                subITranslate(current->arg);
-                break;
-            case ImultI:
-                multITranslate(current->arg);
-                break;
-            case IdivI:
-                divITranslate(current->arg);
-                break;
-            case Iand:
-                andTranslate(current->arg);
-                break;
-            case IandI:
-                andITranslate(current->arg);
-                break;
-            case Ior:
-                orTranslate(current->arg);
-                break;
-            case IorI:
-                orITranslate(current->arg);
-                break;
-            case Ixor:
-                xorTranslate(current->arg);
-                break;
-            case IxorI:
-                xorITranslate(current->arg);
-                break;
-            case Iload:
-                loadTranslate(current->arg);
-                break;
-            case IloadI:
-                loadITranslate(current->arg);
-                break;
-            case Istore:
-                storeTranslate(current->arg);
-                break;
-            case IstoreA0:
-                storeA0Translate(current->arg);
-                break;
-            case IloadA0:
-                loadA0Translate(current->arg);
-                break;
-            case IloadAI:
-                loadAITranslate(current->arg);
-                break;
-            case IstoreAI:
-                storeAITranslate(current->arg);
-                break;
-            case IcmpLt:
-                cmpLTTranslate(current->arg);
-                break;
-            case IcmpLe:
-                cmpLETranslate(current->arg);
-                break;
-            case IcmpEq:
-                cmpEQTranslate(current->arg);
-                break;
-            case IcmpGe:
-                cmpGETranslate(current->arg);
-                break;
-            case IcmpGt:
-                cmpGTranslate(current->arg);
-                break;
-                cmpNETranslate(current->arg);
-                break;
-            default:
-                break;;
+    ComandsList_t* currentCommand;
+    LL_FOREACH(commandsList, currentCommand){
+        OpDataList_t* current;
+
+        LL_FOREACH(currentCommand->arg, current){
+            switch (current->arg->operation)
+            {
+            
+                case Iadd: 
+                    addTranslate(current->arg );
+                    break;
+                case Isub:
+                    subTranslate(current->arg);
+                    break;
+                case Imult:
+                    multTranslate(current->arg);
+                    break;
+                case Idiv:
+                    divTranslate(current->arg);
+                    break;
+                case IaddI: 
+                    addITranslate(current->arg );
+                    break;
+                case IsubI:
+                    subITranslate(current->arg);
+                    break;
+                case ImultI:
+                    multITranslate(current->arg);
+                    break;
+                case IdivI:
+                    divITranslate(current->arg);
+                    break;
+                case Iand:
+                    andTranslate(current->arg);
+                    break;
+                case IandI:
+                    andITranslate(current->arg);
+                    break;
+                case Ior:
+                    orTranslate(current->arg);
+                    break;
+                case IorI:
+                    orITranslate(current->arg);
+                    break;
+                case Ixor:
+                    xorTranslate(current->arg);
+                    break;
+                case IxorI:
+                    xorITranslate(current->arg);
+                    break;
+                case Iload:
+                    loadTranslate(current->arg);
+                    break;
+                case IloadI:
+                    loadITranslate(current->arg);
+                    break;
+                case Istore:
+                    storeTranslate(current->arg);
+                    break;
+                case IstoreA0:
+                    storeA0Translate(current->arg);
+                    break;
+                case IloadA0:
+                    loadA0Translate(current->arg);
+                    break;
+                case IloadAI:
+                    loadAITranslate(current->arg);
+                    break;
+                case IstoreAI:
+                    storeAITranslate(current->arg);
+                    break;
+                case IcmpLt:
+                    cmpLTTranslate(current->arg);
+                    break;
+                case IcmpLe:
+                    cmpLETranslate(current->arg);
+                    break;
+                case IcmpEq:
+                    cmpEQTranslate(current->arg);
+                    break;
+                case IcmpGe:
+                    cmpGETranslate(current->arg);
+                    break;
+                case IcmpGt:
+                    cmpGTranslate(current->arg);
+                    break;
+                    cmpNETranslate(current->arg);
+                    break;
+                default:
+                    break;;
+            }
         }
+        
     }
 }

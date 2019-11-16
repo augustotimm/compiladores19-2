@@ -295,7 +295,7 @@ parametro: tipo TK_IDENTIFICADOR
         }
         ;
 
-comando_simples: atribuicao {$$ = $1; $$->operation = Istore; nodeToIloc($$,-1);};
+comando_simples: atribuicao {$$ = $1; $$->operation = Istore; nodeToIloc($$,-1, NULL);};
             | chamada_funcao {$$ = $1;};
             | comando_shift {$$ = $1;};
             | comando_entrada {$$ = $1;};

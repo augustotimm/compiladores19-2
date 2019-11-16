@@ -138,6 +138,10 @@ typedef struct OpDataList_t{
     struct OpDataList_t* next;
 } OpDataList_t;
 
+typedef struct ComandsList_t{
+    struct OpDataList_t* arg;
+    struct ComandsList_t* next;
+}ComandsList_t;
 
 typedef struct ValorSemantico_t {
     int numeroLinha;
@@ -213,6 +217,6 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key);
 
 //iloc
 
-OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber);
+OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
 
 void translateIloc();
