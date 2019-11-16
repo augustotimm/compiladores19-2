@@ -172,6 +172,9 @@ ValorSemantico_t* findSemanticValueCurrentScope(HashTree_t* hashT, char* key){
     MyHash_t* found = NULL;
     HASH_FIND_STR( hashT->current,key,found );
     if(found != NULL ){
+        
+        found->valorSemantico->valorLexico.isLocal =  !(hashT->parent == NULL);
+        
         return found->valorSemantico;
     }
     else{
