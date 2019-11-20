@@ -101,12 +101,12 @@ void xorITranslate(OpData_t* currentOp ){
 }
 
 void loadITranslate(OpData_t* currentOp ){
-    fprintf( stdout, "loadI      %d,    =>  r%d\n",
+    fprintf( stdout, "loadI      %d    =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg3 );
 }
 
 void loadTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "load      r%d,    =>  r%d\n",
+    fprintf( stdout, "load      r%d    =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg3 );
 }
 
@@ -131,7 +131,7 @@ void storeA0Translate(OpData_t* currentOp ){
 }
 
 void storeTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "store      r%d,    =>  r%d\n",
+    fprintf( stdout, "store      r%d    =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2 );
 }
 
