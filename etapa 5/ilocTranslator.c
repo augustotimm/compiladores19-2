@@ -165,6 +165,19 @@ void cmpNETranslate(OpData_t* currentOp ){
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
+void cbrTranslate(OpData_t* currentOp  ){
+    fprintf(stdout, "cbr    r%d    ->    l%d, l%d\n",
+     currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
+}
+
+void labelTranslate( OpData_t* currentOp ){
+    fprintf(stdout, "l%d: nop\n", currentOp->registerNumberArg1);
+}
+
+void jumpITranslate( OpData_t* currentOp ){
+    fprintf(stdout, "jumpI        -> l%d\n", currentOp->registerNumberArg1);
+}
+
 void translateIloc(){
     ComandsList_t* currentCommand;
     LL_FOREACH(commandsList, currentCommand){
@@ -252,8 +265,19 @@ void translateIloc(){
                 case IcmpGt:
                     cmpGTranslate(current->arg);
                     break;
+                case IcmpNe: 
                     cmpNETranslate(current->arg);
                     break;
+                case Icbr:
+                    cbrTranslate(current->arg);
+                    break;
+                case Ilabel:
+                    labelTranslate(current->arg);
+                    break;
+                case IjumpI:
+                    jumpITranslate(current->arg);
+                    break;
+
                 default:
                     break;;
             }

@@ -66,7 +66,8 @@ typedef enum {
     IcmpNe,
     Icbr,
     Ilabel,
-    IjumpI
+    IjumpI,
+    Iliteral
 }IlocOperations_t;
 
 typedef struct ValorLexico_t {
