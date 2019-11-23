@@ -12,10 +12,11 @@ OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber, 
 OpData_t* storeAToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
 OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal, ComandsList_t* head);
 OpData_t* addRfp( int deslocamento, int registerNumber, bool isLocal, ComandsList_t* head);
-
+int createLabel(ComandsList_t* head);
 
 
 int lastKnownRegister=0;
+int lastKnownLabel =0;
 
 
 ComandsList_t* commandsList=NULL;
@@ -61,7 +62,7 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head
         genericBinaryOperationToIloc(node,registerNumber, head);
         break;
     case Iand:
-        genericBinaryOperationToIloc(node,registerNumber, head);
+        andToIloc(node,registerNumber, head);
         break;
     case Ior:
         genericBinaryOperationToIloc(node,registerNumber, head);
@@ -477,6 +478,73 @@ OpData_t* genericCompareOperationToIloc(NodoArvore_t* node, int registerNumber, 
     return newOp;
 
 }
+
+
+
+OpData_t* andToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head){
+    OpData_t* newOpTrue = createIloc();
+    OpData_t* newOpFalse = createIloc();
+    newOpTrue->registerNumberArg3 = registerNumber;
+    newOpFalse->registerNumberArg3 = registerNumber;
+    newOpTrue->registerNumberArg1 = 0;
+    newOpFalse->registerNumberArg1 = 1;
+    OpData_t* newOpBranch1 = createIloc();
+    OpData_t* newOpbranch2 = createIloc();
+    OpData_t* newOpJumpI = createIloc();
+    newOpJumpI->operation= IjumpI;
+    newOpBranch1->operation = Icbr;
+    newOpbranch2->operation = Icbr;
+    int regiterRightSide = newRegister();
+    int registerLeftSide = newRegister();
+    newOpbranch2->registerNumberArg1 = regiterRightSide;
+    newOpBranch1->registerNumberArg1 = registerLeftSide;
+
+    NodoArvore_t* childOne = node->children->nodo;
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    OpDataList_t* newOpListElementFalse = calloc(1, sizeof(OpDataList_t));
+
+    int labelEnd = createLabel(head);
+
+    newOpListElementFalse->arg = newOpFalse;
+    LL_PREPEND(head->arg, newOpListElementFalse);
+    int labelFalse = createLabel(head);
+    
+    newOpJumpI->registerNumberArg1 = labelEnd;
+    OpDataList_t* newOpListjump = calloc(1, sizeof(OpDataList_t));
+    LL_PREPEND(head->arg, newOpListjump);
+
+    OpDataList_t* newOpListElementTrue = calloc(1, sizeof(OpDataList_t));
+    LL_PREPEND(head->arg, newOpListElementTrue);
+    int labelTrue = createLabel(head);
+
+    newOpbranch2->registerNumberArg2 = labelTrue;
+    newOpbranch2->registerNumberArg3 = labelFalse;
+    OpDataList_t* newOpListElementBranch2 = calloc(1, sizeof(OpDataList_t));
+    LL_PREPEND(head->arg, newOpListElementBranch2);
+    
+    nodeToIloc(childTwo,regiterRightSide,head);
+    int labelBranch2 = createLabel(head);
+
+    newOpBranch1->registerNumberArg2 = labelBranch2;
+    newOpBranch1->registerNumberArg3 = labelFalse;
+    OpDataList_t* newOpListElementBranch1 = calloc(1, sizeof(OpDataList_t));
+    LL_PREPEND(head->arg, newOpListElementBranch1);
+
+    nodeToIloc(childOne, registerLeftSide, head );
+
+}
+
+int createLabel(ComandsList_t* head){
+    OpData_t* newOp = createIloc();
+    lastKnownLabel++;
+    newOp->operation = Ilabel;
+    newOp->registerNumberArg1  = lastKnownLabel;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(head->arg, newOpListElement);
+}
+
+
 
 OpData_t* addRfp( int registerDeslocamento, int registerNumber, bool isLocal, ComandsList_t* head){
     OpData_t* newOp = createIloc();
