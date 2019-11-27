@@ -59,6 +59,8 @@ extern void *arvore;
 
 %type <nodo> cabecalho_funcao def_funcao comandos_funcao elemento lista_elementos programa entry declaracao_var_global dimensao
 
+%type <nodo> comando_simples_dois bloco_comandos_start_dois controle_fluxo_dois bloco_comandos_dois
+
 //Destructors
 
 
@@ -309,6 +311,19 @@ comando_simples: atribuicao {$$ = $1; $$->operation = Istore; nodeToIloc($$,-1, 
             ;
 
 
+comando_simples_dois: atribuicao {$$ = $1; $$->operation = Istore;};
+            | chamada_funcao {$$ = $1;};
+            | comando_shift {$$ = $1;};
+            | comando_entrada {$$ = $1;};
+            | comando_saida {$$ = $1;};
+            | comando_return {$$ = $1;};
+            | TK_PR_BREAK {$$ = criaNodoValorLexico($1);}
+            | TK_PR_CONTINUE {$$ = criaNodoValorLexico($1);}
+            | controle_fluxo_dois {$$ = $1;};
+            | declaracao_local {$$ = $1;};
+            | bloco_comandos_start {$$ = $1 ;}
+            ;
+
 declaracao_local: declaracao_local_simples inicializacao 
         {
 
@@ -506,6 +521,8 @@ comando_shift: TK_IDENTIFICADOR TK_OC_SL expressao
 controle_fluxo: if_declaracao
         {
                 $$ = $1;
+                $$->operation = Icbr;
+                 nodeToIloc($$,-1, NULL);
         }
         | for_declaracao 
         {
@@ -514,9 +531,26 @@ controle_fluxo: if_declaracao
         | while_declaracao
         {
                 $$ = $1;
+                $$->operation = Iwhile;
+                nodeToIloc($$,-1, NULL);
         };
 
-if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
+controle_fluxo_dois: if_declaracao
+        {
+                $$ = $1;
+                $$->operation = Icbr;
+        }
+        | for_declaracao 
+        {
+                $$ = $1;
+        }
+        | while_declaracao
+        {
+                $$ = $1;
+                $$->operation = Iwhile;
+        };
+
+if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start_dois else_declaracao
         {
                 NodoArvore_t* ifNodo = criaNodoValorLexico($1);
                 addChildren(ifNodo,$3);
@@ -524,7 +558,7 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
                 addChildren(ifNodo,$6);
                 $$ = ifNodo;
 
-                if(canConvertType(Tbool, $3->tipo)){
+                if(!canConvertType(Tbool, $3->tipo)){
                         exit(ERR_WRONG_TYPE);
                 }
 
@@ -533,7 +567,7 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start else_declaracao
 ;
 
 else_declaracao: %empty { $$ =NULL;}
-        | TK_PR_ELSE bloco_comandos_start
+        | TK_PR_ELSE bloco_comandos_start_dois
         {
                 $$=$2;
         }
@@ -554,7 +588,7 @@ for_declaracao: TK_PR_FOR '(' for_lista_comandos ':' expressao ':'  for_lista_co
         }
 ;
 
-while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
+while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start_dois
         {
 
                 $$ = criaNodoValorLexico($1);
@@ -562,7 +596,7 @@ while_declaracao: TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_comandos_start
                 addChildren($$,$6);
                 liberaValorLexico($5);
 
-                if(canConvertType(Tbool, $3->tipo) ){
+                if(!canConvertType(Tbool, $3->tipo) ){
                         exit(ERR_WRONG_TYPE);
                 }
         }
@@ -608,6 +642,35 @@ bloco_comandos_start: '{'
         }
         | '{' '}'  {$$ = criaNodoValorLexico(criaValorLexicoOP("{}"));}
         ;
+
+bloco_comandos_start_dois: '{'
+        {
+                createHash(getCurrentHash(),NULL);
+
+        } bloco_comandos_dois '}' 
+        {
+                $$ = $3;
+                deleteHash(getCurrentHash());
+        }
+        | '{' '}'  {$$ = criaNodoValorLexico(criaValorLexicoOP("{}"));}
+        ;
+
+
+bloco_comandos_dois:  comando_simples_dois ';' 
+        {
+                   $$ = $1;
+        }
+        |  comando_simples_dois ';' bloco_comandos_dois
+        {
+                if($1 == NULL){
+                        $$ = $3;
+                }
+                else{
+                        addChildren($1,$3);
+                        $$ = $1;
+                }             
+        }
+
 
 
 bloco_comandos:  comando_simples ';' 
@@ -661,6 +724,7 @@ expressao: '(' expressao ')' {
         {
                 $$ = $1;
                 ValorSemantico_t* semantics = checkIdentifierDeclared( getCurrentHash(), $1->valorLexico.stringValue);
+                $$->valorLexico.isLiteral = false;
                 $$->tipo = semantics->tipo;
 
         }
@@ -1220,6 +1284,7 @@ expressao: '(' expressao ')' {
 
 literal: TK_LIT_CHAR {
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_CHAR );
         getNameFromAddress(semantics);
@@ -1230,6 +1295,7 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_FALSE{
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
         getNameFromAddress(semantics);
@@ -1238,6 +1304,7 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_FLOAT{
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_FLOAT );
         getNameFromAddress(semantics);
@@ -1246,6 +1313,7 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_INT{
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_INT );
         getNameFromAddress(semantics);
@@ -1254,6 +1322,7 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_STRING{
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_STRING );
         getNameFromAddress(semantics);
@@ -1262,6 +1331,7 @@ literal: TK_LIT_CHAR {
 }
         | TK_LIT_TRUE{
         $$ = criaNodoValorLexico( $1);
+        $$->operation = Iliteral;
 
         ValorSemantico_t* semantics = createSemanticValueFromLexical($1,NATUREZA_LITERAL_BOOL );
         getNameFromAddress(semantics);

@@ -136,32 +136,32 @@ void storeTranslate(OpData_t* currentOp ){
 }
 
 void cmpLTTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_LT      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_LT      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void cmpLETranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_LE      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_LE      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void cmpEQTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_EQ      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_EQ      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void cmpGETranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_GE      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_GE      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void cmpGTranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_GT      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_GT      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 
 void cmpNETranslate(OpData_t* currentOp ){
-    fprintf( stdout, "cmp_NE      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "cmp_NE      r%d, r%d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 

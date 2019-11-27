@@ -56,7 +56,7 @@
 #define DEF_LIT_FALSE DEF_TYPE_BOOL; \
   DEF_ISLITERAL\
   yylval.valor_lexico.charValue = '\0'; \
-  yylval.valor_lexico.intValue = 0; \
+  yylval.valor_lexico.intValue = 1; \
   yylval.valor_lexico.floatValue = 0; \
   yylval.valor_lexico.stringValue = strdup(yytext);\
   yylval.valor_lexico.boolValue = false;

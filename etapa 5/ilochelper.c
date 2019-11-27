@@ -14,6 +14,7 @@ OpData_t* addIRfp( int deslocamento, int registerNumber, bool isLocal, ComandsLi
 OpData_t* addRfp( int deslocamento, int registerNumber, bool isLocal, ComandsList_t* head);
 OpData_t* orToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
 OpData_t* andToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
+OpData_t* cbrToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head);
 int createLabel(ComandsList_t* head);
 
 
@@ -107,6 +108,12 @@ OpData_t* nodeToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head
         break;
     case Iliteral:
         loadImediateToIloc(node,registerNumber,head);
+        break;
+    case Icbr:
+        cbrToIloc(node,registerNumber,head);
+        break;
+    case Iwhile:
+        cbrToIloc(node,registerNumber,head);
         break;
     default:
         genericBinaryOperationToIloc(node,registerNumber, head);
@@ -239,7 +246,9 @@ OpData_t* loadImediateToIloc(NodoArvore_t* node, int registerNumber, ComandsList
     case Tint:
         newOp->registerNumberArg1 = node->valorLexico.intValue;
         break;
-    
+    case Tbool:
+        newOp->registerNumberArg1 = node->valorLexico.intValue;
+        break;
     default:
         break;
     }
@@ -614,6 +623,63 @@ int createLabel(ComandsList_t* head){
     return lastKnownLabel;
 }
 
+
+OpData_t* cbrToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head){
+    OpData_t* newOp = createIloc();
+    newOp->operation = Icbr;
+    newOp->registerNumberArg1 = registerNumber;
+
+    OpData_t* jumpOpThen = createIloc();
+    jumpOpThen->operation = IjumpI;
+    
+    OpData_t* jumpOpWhile;
+
+    NodoArvore_t* childTwo = node->children->next->nodo;
+    NodoArvore_t* childOne = node->children->nodo;
+    NodoArvore_t* childThree = NULL;
+    int endLabel = createLabel(head);
+    int elseLabel;
+    int thenLabel;
+    jumpOpThen->registerNumberArg1 = endLabel;
+
+    if(node->operation == Iwhile){
+        jumpOpWhile = createIloc();
+        jumpOpWhile->operation = IjumpI;
+    }
+    
+    if(node->childrenNumber > 2){
+        childThree =  node->children->next->next->nodo;
+        nodeToIloc(childThree, newRegister(), head);
+        elseLabel = createLabel(head);
+
+    }
+    else{
+        elseLabel = endLabel;
+    }
+
+    OpDataList_t* jumpList = calloc(1, sizeof(OpDataList_t));
+    jumpList->arg = jumpOpThen;
+    LL_PREPEND(head->arg, jumpList);
+    
+    nodeToIloc(childTwo,newRegister(),head);
+    thenLabel = createLabel(head);
+    newOp->registerNumberArg2 = thenLabel;
+    newOp->registerNumberArg3 = elseLabel;
+    OpDataList_t* newOpListElement = calloc(1, sizeof(OpDataList_t));
+    newOpListElement->arg = newOp;
+    LL_PREPEND(head->arg, newOpListElement);
+
+    nodeToIloc(childOne, registerNumber, head);
+    if(node->operation == Iwhile){
+        jumpOpWhile->registerNumberArg1 = createLabel(head);
+    }
+
+
+
+
+
+
+}
 
 
 OpData_t* addRfp( int registerDeslocamento, int registerNumber, bool isLocal, ComandsList_t* head){
