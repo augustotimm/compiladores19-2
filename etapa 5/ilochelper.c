@@ -651,15 +651,21 @@ OpData_t* cbrToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head)
         childThree =  node->children->next->next->nodo;
         nodeToIloc(childThree, newRegister(), head);
         elseLabel = createLabel(head);
-
+        OpDataList_t* jumpList = calloc(1, sizeof(OpDataList_t));
+        jumpList->arg = jumpOpThen;
+        LL_PREPEND(head->arg, jumpList);
     }
     else{
         elseLabel = endLabel;
     }
 
-    OpDataList_t* jumpList = calloc(1, sizeof(OpDataList_t));
-    jumpList->arg = jumpOpThen;
-    LL_PREPEND(head->arg, jumpList);
+   if(node->operation == Iwhile){
+        jumpOpWhile = createIloc();
+        jumpOpWhile->operation = IjumpI;
+        OpDataList_t* jumpList = calloc(1, sizeof(OpDataList_t));
+        jumpList->arg = jumpOpWhile;
+        LL_PREPEND(head->arg, jumpList);
+    }
     
     nodeToIloc(childTwo,newRegister(),head);
     thenLabel = createLabel(head);
