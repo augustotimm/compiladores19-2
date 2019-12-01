@@ -569,6 +569,7 @@ if_declaracao: TK_PR_IF '(' expressao ')' bloco_comandos_start_dois else_declara
 else_declaracao: %empty { $$ =NULL;}
         | TK_PR_ELSE bloco_comandos_start_dois
         {
+                liberaValorLexico($1);
                 $$=$2;
         }
 ;

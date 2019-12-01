@@ -629,8 +629,7 @@ OpData_t* cbrToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head)
     newOp->operation = Icbr;
     newOp->registerNumberArg1 = registerNumber;
 
-    OpData_t* jumpOpThen = createIloc();
-    jumpOpThen->operation = IjumpI;
+    
     
     OpData_t* jumpOpWhile;
 
@@ -640,17 +639,17 @@ OpData_t* cbrToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* head)
     int endLabel = createLabel(head);
     int elseLabel;
     int thenLabel;
-    jumpOpThen->registerNumberArg1 = endLabel;
 
-    if(node->operation == Iwhile){
-        jumpOpWhile = createIloc();
-        jumpOpWhile->operation = IjumpI;
-    }
     
     if(node->childrenNumber > 2){
+        OpData_t* jumpOpThen = createIloc();
+        jumpOpThen->operation = IjumpI;
+        jumpOpThen->registerNumberArg1 = endLabel;
+
         childThree =  node->children->next->next->nodo;
         nodeToIloc(childThree, newRegister(), head);
         elseLabel = createLabel(head);
+        
         OpDataList_t* jumpList = calloc(1, sizeof(OpDataList_t));
         jumpList->arg = jumpOpThen;
         LL_PREPEND(head->arg, jumpList);
