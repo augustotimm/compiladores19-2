@@ -1349,6 +1349,7 @@ variavel: TK_IDENTIFICADOR {
         ValorSemantico_t* valId = findSemanticValue(getCurrentHash(), $1.stringValue);
         if(valId != NULL){
                 $1.memoryDeloc = valId->memoryDeloc;
+                $$->valorLexico.isLocal = valId->valorLexico.isLocal;
 
                 if(valId->isFunction){
                         exit(ERR_FUNCTION);
@@ -1382,6 +1383,7 @@ variavel: TK_IDENTIFICADOR {
                 }
                 
         }
+        $$->valorLexico.isLocal = valId->valorLexico.isLocal;
         
  }
 ;

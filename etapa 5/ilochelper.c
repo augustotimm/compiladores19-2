@@ -295,7 +295,7 @@ OpData_t* storeToIloc(NodoArvore_t* node, int registerNumber, ComandsList_t* hea
     
 
     LL_PREPEND(head->arg, newOpListElement);
-    addIRfp(valueDeloc,registerNumber, childTwo->valorLexico.isLocal, head);
+    addIRfp(valueDeloc,registerNumber, childOne->valorLexico.isLocal, head);
 
 
 

@@ -1,0 +1,3 @@
+loadI      93    =>  r2
+addI      rbss, 0   =>  r1
+store      r2    =>  r1

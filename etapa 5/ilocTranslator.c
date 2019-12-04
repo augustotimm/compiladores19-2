@@ -56,7 +56,7 @@ void addITranslate(OpData_t* currentOp ){
 }
 
 void subITranslate(OpData_t* currentOp ){
-    fprintf( stdout, "sub      r%d, %d   =>  r%d\n",
+    fprintf( stdout, "subI      r%d, %d   =>  r%d\n",
      currentOp->registerNumberArg1, currentOp->registerNumberArg2, currentOp->registerNumberArg3 );
 }
 

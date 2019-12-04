@@ -132,6 +132,14 @@ MyHash_t* addToHash(HashTree_t* hashT, ValorSemantico_t* valorSemantico, char* i
         valorSemantico->memoryDeloc = hashT->memoryDeloc;
         hashT->memoryDeloc = hashT->memoryDeloc + valorSemantico->size;    
         valorSemantico->valorLexico.memoryDeloc = valorSemantico->memoryDeloc;
+        if(getCurrentHash()->parent == NULL){
+            valorSemantico->valorLexico.isLocal = false;
+        }
+        else
+        {
+            valorSemantico->valorLexico.isLocal = true;
+        }
+        
     }    
     HASH_ADD_STR( hashT->current, identificador, newInput);
     return newInput;
